@@ -1,0 +1,81 @@
+Smule DAMP
+https://zenodo.org/search?page=1&size=20&q=smule&keywords=Smule
+Access requested, waiting
+amateur singing and backing tracks
+
+MelodyDB
+https://medleydb.weebly.com/
+https://zenodo.org/record/1715175#.YdxXJRPMLOR 
+[]Great potential, need to explore more
+
+Karaoke-Version
+https://www.karaoke-version.co.uk/free/gauthier-galand/la-reponse-est-l-amour.html
+180 full-length songs 
+30 seconds of preview on any songs!
+Processed original vocal
+Processed original backing tracks (multi-tracks)
+Should be more than in the link
+
+Rock Band
+http://multitrackdownloads.blogspot.com/2012/03/rock-band-multitracks.html
+Processed original vocal
+Processed original backing tracks (multi-tracks)
+
+Mixing Secrets
+https://sigsep.github.io/datasets/dsd100.html
+https://www.cambridge-mt.com/ms/mtk/
+Vocal tracks are processed
+The MUSDB offer processed backing tracks
+All are well-processed, not real mixing, not Karaoke
+
+
+From DAMP
+https://github.com/chitralekha18/lyrics-aligned-solo-singing-dataset
+just an example, vocal only
+
+Kara1k
+http://yannbayle.fr/karamir/kara1k.php
+Only extracted features are available
+[]May contact the author
+
+ccMixter
+http://beta.ccmixter.org/#music_div
+http://www.ccmixter.org/
+http://ccmixter.org/files/KristianVuljar/64597
+Processed vocal
+Processed mix
+Need to manually download
+
+
+
+
+
+Structural Segmentation
+http://www.eecs.qmul.ac.uk/~stevenh/multi_seg.html
+website down
+ccMixter
+
+
+Shaking Through
+https://weathervanemusic.org/shakingthrough/episode-index
+Paid
+
+
+Amateur songs
+https://www.wikiloops.com/tracks/Vocals.php
+No professional mix
+
+The Open Multitrack Testbed
+http://multitrack.eecs.qmul.ac.uk/
+No backing tracks
+
+MIR-1K
+https://sites.google.com/site/unvoicedsoundseparation/mir-1k
+No professional mix
+
+Virtual DJ
+https://www.virtualdj.com/products/onlinecatalogs.html
+Paid 
+
+http://www.atiam.ircam.fr/Archives/Stages1718/PRETET_Laure_Memoire_Stage.pdf
+Building a singing voice separation dataset from released instrumental versions
