@@ -12,7 +12,6 @@ import essentia.standard
 
 
 read_path = "../../MIR-1K/UndividedWavfile/"
-#filename = "abjones_3.wav"
 write_path = "../../Output/"
 
 target_loudness_range = 0
