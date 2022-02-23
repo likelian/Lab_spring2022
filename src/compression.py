@@ -1,10 +1,13 @@
 import numpy as np
 import soundfile as sf
 from os import walk
+from pedalboard import Pedalboard, load_plugin
 import sys
+
 sys.path.append('/usr/local/lib/python3.8/site-packages')
 import essentia
 import essentia.standard
+
 
 
 
@@ -35,25 +38,47 @@ def compression(read_path, target_loudness_range):
         vox = data.T[1]
 
 
+        vst_path = "../VST3/"
+        vst_name = "ValhallaVintageVerb.vst3"
+        #vst_name = "TR5 White 2A.vst3"
+        vst_name = "OmniCompressor.vst3"
+
+        vst = load_plugin(vst_path + vst_name)
+
+        print(vst.parameters.keys())
+
+
+        #shortTermLoudness = LoudnessEBUR128(data)[1][:-1].T[:, np.newaxis]
+
         hop_size = 0.1
-
         LoudnessEBUR128 = essentia.standard.LoudnessEBUR128(sampleRate=rate, hopSize=hop_size)
-        """
-        LoudnessEBUR128 Outputs:
-            momentaryLoudness (vector_real) - momentary loudness (over 400ms) (LUFS)
-            shortTermLoudness (vector_real) - short-term loudness (over 3 seconds) (LUFS)
-            integratedLoudness (real) - integrated loudness (overall) (LUFS)
-            loudnessRange (real) - loudness range over an arbitrary long time interval [3] (dB, LU)
-        """
 
-        shortTermLoudness = LoudnessEBUR128(data)[1][:-1].T[:, np.newaxis]
         loudnessRange = LoudnessEBUR128(data)[3]
-
         print(loudnessRange)
+
+        for i in np.arange(5):
+
+            threshold_db = -10.0 #range [-50.0dB, 10.0dB]
+            threshold_db_str = str(threshold_db) + " dB"
+            #vst.peak_reduction = peak_reduction_str
+            vst.threshold_db = threshold_db
+
+            data = vst(data, rate)
+
+            loudnessRange = LoudnessEBUR128(data)[3]
+            print("loudnessRange", loudnessRange)
+            Print("target_loudness_range", target_loudness_range)
+
+
 
 
 
         break
+
+        sf.write('../audio/output/output.wav', effected, rate)
+
+
+
 
 
     return None
