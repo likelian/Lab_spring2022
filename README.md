@@ -1,8 +1,5 @@
 # Lab_spring2022
 
-
-# Lab_spring2022
-
 * * *
 ### 01/10/2022
 
@@ -48,7 +45,7 @@ About the project:
 * Both
 
 
-To-Do:
+**To-do:**
 
 1.  Research on the market, app and hardware products
 2.  Try the software reverseDemo_mac from "reverse engineering the mix"
@@ -61,12 +58,12 @@ To-Do:
 * * *
 
 
-**2/23**
+**2/23/2022**
 
 **To-do:**
 
 1. Iterative compression optimization
-2. (Optional) Non-iterative compression optimization 
+2. (Optional) Non-iterative compression optimization
 3. Define a plan of reverb parameter matching from impulse response
 4. Define a rule-based reverb control from an existing tempo-reverbTime relationship in publications. Define it as linear by myself.
 5. (Optional) Implement short-term loudness meter, and loudness range meter
@@ -74,5 +71,37 @@ To-Do:
 7. dynamic distribution as evaluation metric
 8. A milestone-like progress report every week
 
+
+* * *
+
+
+
+**3/2/2022**
+
+**Done:**
+
+1. Short-term loudness and loudness range implementation (untested)
+2. rule-based reverb survey
+    1. tempo/reverb time formula
+    2. auto-correlation, spectral flux?
+3. impulse respoonse matching survey
+    1. Genetic algorithm
+    2. Hill climbing
+
+**Meeting:**
+
+1. K-filter coefficient error is acceptable, most likely due to floating point error
+2. In reverb task, two signals as input can be two large for deep learning
+    1. consider vocal as mel-spectrogram, and extracted features from backing tracks (tempo, etc.) as condition. More combinations to be considered and experimented. Interview with mixing engineers for opinions, weighting on the vocal or thhe backing track?
+2. barkband and melband as cost function are not very different. But what is the metric to evaluate the impulse response estimation?
+3. Since the reverb rule is unclear, extract the tempo(spectral flux) and reverb time from the dataset, and do a linearly fit (or other fit).
+
+
+**To-do:**
+
+1. rule-based compression implementation
+2. verify the commercial tool for IR extraction
+    1. reverb applied to dry signal, extract IR, comparing with originnal IR
+3. outline the rule-based EQ
 
 * * *
