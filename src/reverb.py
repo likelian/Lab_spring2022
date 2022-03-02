@@ -25,8 +25,16 @@ vst = load_plugin(vst_path + vst_name)
 print(vst.parameters.keys())
 
 
-vst.reverberation_time_s = 8.0
-vst.dry_wet = 1.
+vst.room_size = 20
+vst.reverberation_time_s = 4.0
+vst.dry_wet = .70
+
+# set other parameters to default
+vst.lows_gain_db_s = 0.
+vst.highs_gain_db_s = 0.
+vst.fade_in_time_s = 0.01
+vst.fdn_size_internal = 64
+
 
 
 data = vst(data, sample_rate)
