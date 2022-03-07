@@ -90,21 +90,21 @@ def shortTermLoudness(signal, fs, overlapSize = 0.1):
 
     if overlapSize < 0.1: print("overlapSize too small")
 
+    if len(signal.shape) < 2:
+        print("mono")
+        signal_mono = signal
+        signal = np.array([signal_mono, signal_mono]).T
+
     signal_2 = K_filter(signal, fs)
 
     windowSize = fs * 3 #rectangular window in samples of 3 seconds
     hopSize = int(fs * overlapSize) #hopSize in samples
 
-    if len(signal.shape) < 2:
-        print("mono")
-        return None
 
-    print(signal.shape)
 
     readIdx = 0
     inLengthInSamples = signal.shape[0]
     blockNum = int((inLengthInSamples - windowSize) / hopSize)
-    print("blockNum", blockNum)
 
     shortTermArray = np.zeros(blockNum)
 
@@ -113,7 +113,7 @@ def shortTermLoudness(signal, fs, overlapSize = 0.1):
         blocked = np.power(blocked, 2) #power of 2
         mean = np.mean(blocked, axis=1) #take the averge
         mean = np.mean(mean, axis=0) #sum the channels
-        shortTermArray[i] = -0.691 + 10.0 * np.log10(mean)
+        shortTermArray[i] = -0.691 + 10.0 * np.log10(mean+0.000001)
 
 
     return shortTermArray
@@ -157,17 +157,14 @@ def LoudnessRange(signal, fs, overlapSize = 0.1):
     #Compute the Loudness Range measure
     LRA = stl_perc_high - stl_perc_low # in LU
 
-    print(LRA)
-
     return LRA
 
 
 
-import soundfile as sf
+#import soundfile as sf
 
-read_path = "../../MIR-1K/UndividedWavfile/abjones_1.wav"
+#read_path = "../../MIR-1K/UndividedWavfile/abjones_1.wav"
 
-data, rate = sf.read(read_path)
+#data, rate = sf.read(read_path)
 
-
-LRA = LoudnessRange(data, rate, overlapSize = 0.1)
+#LRA = LoudnessRange(data, rate, overlapSize = 0.1)

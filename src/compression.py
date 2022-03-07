@@ -2,22 +2,15 @@ import numpy as np
 import soundfile as sf
 from os import walk
 from pedalboard import Pedalboard, load_plugin
-import sys
-
-sys.path.append('/usr/local/lib/python3.8/site-packages')
-import essentia
-import essentia.standard
-
-
+import loudness
 
 
 read_path = "../../MIR-1K/UndividedWavfile/"
 write_path = "../../Output/"
 
-target_loudness_range = 0
 
 
-def compression(read_path, target_loudness_range):
+def compression(read_path, targetLRA):
     """
     """
     f = []
@@ -36,6 +29,9 @@ def compression(read_path, target_loudness_range):
         acc = data.T[0]
         vox = data.T[1]
 
+        signal_mono = vox
+        vox = np.array([signal_mono, signal_mono]).T
+
 
         vst_path = "../VST3/"
         vst_name = "ValhallaVintageVerb.vst3"
@@ -44,43 +40,45 @@ def compression(read_path, target_loudness_range):
 
         vst = load_plugin(vst_path + vst_name)
 
-        print(vst.parameters.keys())
+        #print(vst.parameters.keys())
 
 
-        #shortTermLoudness = LoudnessEBUR128(data)[1][:-1].T[:, np.newaxis]
+        LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
 
-        hop_size = 0.1
-        LoudnessEBUR128 = essentia.standard.LoudnessEBUR128(sampleRate=rate, hopSize=hop_size)
+        print("LRA", LRA)
 
-        loudnessRange = LoudnessEBUR128(data)[3]
-        print(loudnessRange)
+        threshold_db = 10.0 #range [-50.0dB, 10.0dB]
 
-        for i in np.arange(5):
+        makeup_gain_db = 0.
+        for i in np.arange(10):
 
-            threshold_db = -10.0 #range [-50.0dB, 10.0dB]
+            threshold_db -= 5.0
             threshold_db_str = str(threshold_db) + " dB"
-            #vst.peak_reduction = peak_reduction_str
+            vst.normalization = "N3D"
             vst.threshold_db = threshold_db
+            vst.ratio_1 = 3.
+            vst.attack_time_ms = 50.
+            vst.release_time_ms = 500.
+            vst.makeup_gain_db += 1.
 
-            data = vst(data, rate)
+            output = vst(vox, rate)
 
-            loudnessRange = LoudnessEBUR128(data)[3]
-            print("loudnessRange", loudnessRange)
-            Print("target_loudness_range", target_loudness_range)
+            LRA = loudness.LoudnessRange(output, rate, overlapSize = 0.1)
+            print("threshold_dbs", threshold_db)
+            print("loudnessRange", LRA)
+            print("target_loudness_range", targetLRA)
 
-
-
-
-
-        break
-
-        sf.write('../audio/output/output.wav', effected, rate)
+            if (LRA - targetLRA) < 1.0:
+                break
 
 
+        sf.write('../audio/output/output.wav', output, rate)
 
 
 
     return None
 
 
-compression(read_path, target_loudness_range)
+targetLRA = 14
+
+compression(read_path, targetLRA)
