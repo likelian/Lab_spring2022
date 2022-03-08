@@ -6,9 +6,6 @@ import loudness
 import pyloudnorm as pyln
 
 
-read_path = "../../MIR-1K/UndividedWavfile/"
-write_path = "../../Output/"
-
 
 def compression(read_path, targetLRA):
     """
@@ -55,7 +52,6 @@ def compression(read_path, targetLRA):
 
         vst_path = "../VST3/"
         vst_name = "OmniCompressor.vst3"
-
 
 
         LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
@@ -132,6 +128,10 @@ def compression(read_path, targetLRA):
 
     return None
 
+
+
+read_path = "../../MIR-1K/UndividedWavfile/"
+write_path = "../../Output/"
 
 targetLRA = 14
 
