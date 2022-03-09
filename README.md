@@ -1,7 +1,7 @@
 # Lab_spring2022
 
 * * *
-### 01/10/2022
+#### 01/10/2022
 
 original published mix to inform KK mix
 Real-time live singing?
@@ -19,7 +19,7 @@ To-do:
 3. Research on the market, app and hardware products
 
 * * *
-### 01/19/2022
+#### 01/19/2022
 
 About proposal:
 * options to solve the problem
@@ -58,7 +58,7 @@ About the project:
 * * *
 
 
-**2/23/2022**
+#### 2/23/2022
 
 **To-do:**
 
@@ -74,9 +74,7 @@ About the project:
 
 * * *
 
-
-
-**3/2/2022**
+#### 3/2/2022
 
 **Done:**
 
@@ -103,5 +101,39 @@ About the project:
 2. verify the commercial tool for IR extraction
     1. reverb applied to dry signal, extract IR, comparing with originnal IR
 3. outline the rule-based EQ
+4. download dataset
 
 * * *
+
+#### 3/9/2022
+
+**Done:**
+
+1. Rule-based compression implemented
+2. Reverb time extracted from MUSDB18 Training set
+3. audio features from mixture fail to correlate with reverb time, including:
+    1. Tempo
+    2. Spectral Centroid Variance
+    3. Onset Density
+    4. Averaged Spectral Flux
+    5. Zero crossing rate
+
+
+**Meeting:**
+
+It it possible that reverb time is not supposed to corelated with any audio features. Octave errors of tempo detection hurts. 100 songs may not be representative either. The distribution can be some use. The problem is what input to use for the deep learning model.
+
+literature-based reverb rule is still an option.
+
+
+**To-do:**
+
+1. revisit the code
+2. Some more features to try out:
+    1. vocal onset density
+    2. mixture downbeat density
+    3. mixture chord change density
+ 3. If none of the audio features work, use a literature-based reverb rule.
+ 4. rule-based EQ
+ 5. verify the commercial tool for IR extraction
+ 
