@@ -3,18 +3,18 @@ from pandas import read_csv
 import matplotlib.pyplot as plt
 
 
-path = "../data/reverb_time/train/reverb_timeAndSpectralFlux.csv"
+path = "../data/reverb_time/train/reverb_timeAndOnset.csv"
 df = read_csv(path)
 data = df.values
 
 reverbTime = data[:,[1,2]].T[0]
-Flux = data[:,[1,2]].T[1]
+onset = data[:,[1,2]].T[1]
 
-plt.scatter(Flux, reverbTime)
+plt.scatter(onset, reverbTime)
 plt.title("musdb18_train")
-plt.xlabel("SpectralFlux")
+plt.xlabel("Onset Density")
 plt.ylabel("Reverb Time (Seconds)")
 
 #plt.show()
 
-plt.savefig('../data/reverb_time/train/Reverb Time and SpectralFlux.png')
+plt.savefig('../data/reverb_time/train/Reverb Time and Onset.png')
