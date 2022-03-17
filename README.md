@@ -136,4 +136,37 @@ literature-based reverb rule is still an option.
  3. If none of the audio features work, use a literature-based reverb rule.
  4. rule-based EQ
  5. verify the commercial tool for IR extraction
- 
+
+* * *
+
+#### 3/17/2022
+
+**Done:**
+
+1. Tried the following features with reverb time, and none of them work
+    * vocal onset density
+    * mixture beat density
+    * mixture downbeat density
+    * mixture chord change density
+2. Review and modfify the rule-based frequency masking model in the paper
+
+
+**Meeting:**
+Since the audio feature and reverb time do not align, go back to the simple linear reverb time and tempo model.
+
+What to do if deep learning does not show any correlation? The risk is always there. One thing to do is to extend the dataset by source separation.
+
+Prepare audio examples for the Monday presentation. EQ implementation is not necessary.
+
+About the rule-based frequency masking model, apply a K-filter or dBA filter before determining the essential frequency range.
+
+Be aware of overfitting when tuning the rule-based system. Maybe use an iterative process to listen to many audio files and tweak a bit every time. Humans are neural networks and we can be overfitting the problems too.
+
+
+**To-DO:**
+
+1. Rule-based reverb model
+2. Rule-based EQ model
+3. Audio example for presentation
+4. revise the presentation
+5. get the plugin
