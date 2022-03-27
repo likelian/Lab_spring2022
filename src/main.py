@@ -12,8 +12,7 @@ write_path = "../../Output/"
 f_1 = []
 for (dirpath, dirnames, filenames) in walk(read_path):
 
-    if len(filenames) == 3 \
-        and "mix.m4a" in filenames \
+    if  and "mix.m4a" in filenames \
         and "background.m4a" in filenames \
         and "vocal.ogg" in filenames:
 

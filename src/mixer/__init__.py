@@ -3,6 +3,7 @@ import numpy as np
 from .level import level_balance
 from .compression import compression
 from .reverb import reverb
+from .EQ import EQ
 
 
 class mixer:
@@ -31,6 +32,11 @@ class mixer:
     def process(self):
 
         self.checkShape()
+
+        EQ(self)
+
+        #quit()
+
 
         compression(self)
         level_balance(self)

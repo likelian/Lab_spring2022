@@ -31,9 +31,6 @@ def compression(self):
 
     vox = pyln.normalize.peak(vox, -1.0)
 
-    vst_path = "../VST3/"
-    vst_name = "OmniCompressor.vst3"
-
     LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
 
     #print("-------------------")
@@ -57,6 +54,8 @@ def compression(self):
 
     makeup_gain_db = 0.
 
+    vst_path = "../VST3/"
+    vst_name = "OmniCompressor.vst3"
     vst = load_plugin(vst_path + vst_name)
     vst.attack_time_ms = 10.
     vst.release_time_ms = 200.
