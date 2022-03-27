@@ -32,10 +32,12 @@ for filename in f:
     mixer_one.set_sampleRate(rate)
 
     mixer_one.set_target_vox_acc_ratio(-0.5)
-    mixer_one.set_targetLRA(14)
+    mixer_one.set_targetLRA(15)
 
     vox = mixer_one.process()
-    
-    mix = mixer_one.mix()
+
+    mix = mixer_one.get_mix()
+
+    sf.write('../audio/output/output.wav', mix, rate)
 
     break

@@ -1,46 +1,34 @@
 import numpy as np
-import soundfile as sf
-from pedalboard import Pedalboard, Reverb, load_plugin
+import librosa
+from pedalboard import Pedalboard, load_plugin
 
 
+def reverb(self):
 
-tempo = 60
+    rate = self.sampleRate
+    acc = self.acc
+    vox = self.vox
 
-RT60 = -1.1*tempo + 136.1
+    onset_env = librosa.onset.onset_strength(acc, rate)
+    tempo = librosa.beat.tempo(onset_env, rate)
 
-print(RT60)
+    RT = (-1/45) * tempo + (40/9)
 
+    vst_path = "../VST3/"
+    vst_name = "FdnReverb.vst3"
 
-vst_path = "../VST3/"
-vst_name = "FdnReverb.vst3"
+    vst = load_plugin(vst_path + vst_name)
 
-read_path = "../../MIR-1K/UndividedWavfile/abjones_1.wav"
+    vst.room_size = 20
+    vst.reverberation_time_s = RT
+    vst.dry_wet = .25   #0. is 100% dry
 
+    # set other parameters to default
+    vst.lows_gain_db_s = 0.
+    vst.highs_gain_db_s = 0.
+    vst.fade_in_time_s = 0.01
+    vst.fdn_size_internal = 64
 
-data, sample_rate = sf.read(read_path)
+    output = vst(vox, rate)
 
-
-vst = load_plugin(vst_path + vst_name)
-
-print(vst.parameters.keys())
-
-
-vst.room_size = 20
-vst.reverberation_time_s = 4.0
-vst.dry_wet = .70
-
-# set other parameters to default
-vst.lows_gain_db_s = 0.
-vst.highs_gain_db_s = 0.
-vst.fade_in_time_s = 0.01
-vst.fdn_size_internal = 64
-
-
-
-data = vst(data, sample_rate)
-
-
-
-sf.write('../audio/output/output.wav', data, sample_rate)
-
-print(data)
+    self.vox = output

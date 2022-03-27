@@ -1,11 +1,12 @@
 from .level import level_balance
 from .compression import compression
+from .reverb import reverb
 
 
 class mixer:
     def __init__(self):
         self.target_vox_acc_ratio = -0.5
-        self.targetLRA = 14
+        self.targetLRA = 15
 
 
     def set_target_vox_acc_ratio(self, target_vox_acc_ratio):
@@ -26,11 +27,19 @@ class mixer:
 
 
     def process(self):
-        level_balance(self)
         compression(self)
+        reverb(self)
+        level_balance(self)
 
-        return self.vox
 
+    def get_acc(self):
+        acc = self.acc
+        return acc
 
-    def mix(self):
-        return self.acc + self.vox
+    def get_vox(self):
+        vox = self.vox
+        return vox
+
+    def get_mix(self):
+        mix = self.acc + self.vox
+        return mix
