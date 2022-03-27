@@ -1,3 +1,5 @@
+import numpy as np
+
 from .level import level_balance
 from .compression import compression
 from .reverb import reverb
@@ -27,9 +29,34 @@ class mixer:
 
 
     def process(self):
+
+        self.checkShape()
+
         compression(self)
-        reverb(self)
         level_balance(self)
+        reverb(self)
+
+
+    def checkShape(self):
+
+        acc = self.acc
+        vox = self.vox
+
+        if len(acc.shape) == 2 and len(vox.shape) == 1:
+            vox = np.array((vox, vox)).T
+
+
+        if acc.shape[0] > vox.shape[0]:
+            diff = acc.shape[0] - vox.shape[0]
+            vox = np.pad(vox, ((0,diff),(0,0)), 'constant')
+
+        if acc.shape[0] < vox.shape[0]:
+            diff =  vox.shape[0] - acc.shape[0]
+            acc = np.pad(acc, ((0,diff),(0,0)), 'constant')
+
+        self.acc = acc
+        self.vox = vox
+
 
 
     def get_acc(self):
@@ -41,5 +68,12 @@ class mixer:
         return vox
 
     def get_mix(self):
-        mix = self.acc + self.vox
+
+        self.checkShape()
+
+        acc = self.acc
+        vox = self.vox
+
+
+        mix = acc + vox
         return mix

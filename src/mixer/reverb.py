@@ -9,7 +9,12 @@ def reverb(self):
     acc = self.acc
     vox = self.vox
 
-    onset_env = librosa.onset.onset_strength(acc, rate)
+    if len(acc.shape) == 2:
+        monoAcc = np.mean(acc, axis=0)
+        onset_env = librosa.onset.onset_strength(monoAcc, rate)
+    else:
+        onset_env = librosa.onset.onset_strength(acc, rate)
+
     tempo = librosa.beat.tempo(onset_env, rate)
 
     RT = (-1/45) * tempo + (40/9)
@@ -21,7 +26,7 @@ def reverb(self):
 
     vst.room_size = 20
     vst.reverberation_time_s = RT
-    vst.dry_wet = .25   #0. is 100% dry
+    vst.dry_wet = .3   #0. is 100% dry
 
     # set other parameters to default
     vst.lows_gain_db_s = 0.
