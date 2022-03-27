@@ -1,78 +1,41 @@
 import numpy as np
 import soundfile as sf
-import pyloudnorm as pyln
 from os import walk
+from mixer import mixer
 
 
 
-def level_balance(read_path, target_vox_acc_ratio):
-
-    f = []
-    for (dirpath, dirnames, filenames) in walk(read_path):
-        f.extend(filenames)
-        break
+read_path = "../../MIR-1K/UndividedWavfile/"
+write_path = "../../Output/"
 
 
-    for filename in f:
+f = []
+for (dirpath, dirnames, filenames) in walk(read_path):
+    f.extend(filenames)
+    break
 
-        if ".wav" not in filename:
-            continue
+for filename in f:
 
-        # load audio (with shape (samples, channels))
-        data, rate = sf.read(read_path+filename)
+    if ".wav" not in filename:
+        continue
 
-        #MIR-1K has the backing track on the left and the vocal track on the right
-        acc = data.T[0]
-        vox = data.T[1]
-        mix = acc + vox
+    data, rate = sf.read(read_path+filename) # load audio (with shape (samples, channels))
 
+    acc = data.T[0]
+    vox = data.T[1]
 
-        meter = pyln.Meter(rate) # create BS.1770 meter
-        acc_loudness = meter.integrated_loudness(acc) # measure loudness
-        vox_loudness = meter.integrated_loudness(vox) # measure loudness
-        mix_loudness = meter.integrated_loudness(mix) # measure loudness
+    mixer_one = mixer()
 
-        vox_acc_ratio = vox_loudness - acc_loudness
-        vox_mix_ratio = vox_loudness - mix_loudness
+    mixer_one.load_acc(acc)
+    mixer_one.load_vox(vox)
 
-        """
-        print("acc_loudness", acc_loudness)
-        print("vox_loudness", vox_loudness)
-        print("mix_loudness", mix_loudness)
-        print("vox_acc_ratio", vox_acc_ratio)
-        print("vox_mix_ratio", vox_mix_ratio)
-        """
+    mixer_one.set_sampleRate(rate)
 
-        dB = target_vox_acc_ratio - vox_acc_ratio
-        gain = 10**(dB/20)
-        vox *= gain
-        mix = acc + vox
+    mixer_one.set_target_vox_acc_ratio(-0.5)
+    mixer_one.set_targetLRA(14)
 
-        acc_loudness = meter.integrated_loudness(acc) # measure loudness
-        vox_loudness = meter.integrated_loudness(vox) # measure loudness
-        mix_loudness = meter.integrated_loudness(mix) # measure loudness
+    vox = mixer_one.process()
+    
+    mix = mixer_one.mix()
 
-        vox_acc_ratio = vox_loudness - acc_loudness
-        vox_mix_ratio = vox_loudness - mix_loudness
-
-        """
-        print("acc_loudness", acc_loudness)
-        print("vox_loudness", vox_loudness)
-        print("mix_loudness", mix_loudness)
-        print("vox_acc_ratio", vox_acc_ratio)
-        print("vox_mix_ratio", vox_mix_ratio)
-        """
-
-        #sf.write(write_path+filename, mix, rate) # load audio (with shape (samples, channels))
-
-    #print(vox_mix_ratio_list)
-    #print("average", np.average(vox_mix_ratio_list))
-    #print("variance", np.var(vox_mix_ratio_list))
-
-    #average = total / count
-    #print("average vox_mix_ratio after changing the gain", average)
-
-
-
-
-level_balance(read_path, target_vox_acc_ratio)
+    break
