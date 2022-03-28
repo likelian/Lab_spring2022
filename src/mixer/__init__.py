@@ -9,7 +9,7 @@ from .EQ import EQ
 class mixer:
     def __init__(self):
         self.target_vox_acc_ratio = -0.5
-        self.targetLRA = 15
+        self.targetLRA = 14
 
 
     def set_target_vox_acc_ratio(self, target_vox_acc_ratio):
@@ -31,16 +31,15 @@ class mixer:
 
     def process(self):
 
-        self.checkShape()
+        checked = self.checkShape()
+        if checked is False:
+            return None
 
-        EQ(self)
-
-        #quit()
-
-
-        compression(self)
         level_balance(self)
+        EQ(self)
+        compression(self)
         reverb(self)
+        level_balance(self)
 
 
     def checkShape(self):
@@ -48,9 +47,12 @@ class mixer:
         acc = self.acc
         vox = self.vox
 
+        if vox.shape[0] < 1000 or acc.shape[0] < 1000:
+            print("No signal")
+            return False
+
         if len(acc.shape) == 2 and len(vox.shape) == 1:
             vox = np.array((vox, vox)).T
-
 
         if acc.shape[0] > vox.shape[0]:
             diff = acc.shape[0] - vox.shape[0]

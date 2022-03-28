@@ -144,6 +144,10 @@ def LoudnessRange(signal, fs, overlapSize = 0.1):
     # only include loudness levels that are above gate threshold
     stl_relgated_vec = abs_gate_vec[abs_gate_vec > (stl_integrated + REL_THRES)]
 
+    if stl_relgated_vec.shape[0] == 0:
+        print("something is wrong at LoudnessRange")
+        return 14.
+
     #Compute the high and low percentiles of the distribution
     #of values in stl_relgated_vec
     n = stl_relgated_vec.shape[0]

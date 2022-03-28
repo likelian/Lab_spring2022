@@ -24,14 +24,14 @@ def reverb(self):
 
     vst = load_plugin(vst_path + vst_name)
 
-    vst.room_size = 20
+    vst.room_size = 30
     vst.reverberation_time_s = RT
-    vst.dry_wet = .3   #0. is 100% dry
+    vst.dry_wet = 0.6   #0. is 100% dry
 
     # set other parameters to default
     vst.lows_gain_db_s = 0.
     vst.highs_gain_db_s = 0.
-    vst.fade_in_time_s = 0.01
+    vst.fade_in_time_s = 0.2
     vst.fdn_size_internal = 64
 
     output = vst(vox, rate)

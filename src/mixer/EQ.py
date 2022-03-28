@@ -1,13 +1,85 @@
 import numpy as np
+from scipy import signal
 from pedalboard import Pedalboard, load_plugin
+import loudness
+from .level import level_process
 
 
 def EQ(self):
 
-
     rate = self.sampleRate
     acc = self.acc
     vox = self.vox
+
+    acc = mono(acc)
+    vox = mono(vox)
+
+    acc_blocked = block(acc, rate)
+    vox_blocked = block(vox, rate)
+
+    filter_arr = gate_index(vox_blocked)
+
+    acc_gated = gate(acc_blocked, filter_arr)
+    vox_gated = gate(vox_blocked, filter_arr)
+
+    #vox_balanced = level_process(acc_gated, vox_gated, 10., rate)
+
+    if acc_gated.shape[0] == 0:
+        print("No vocal?")
+        return None
+
+    acc_rms_band = filter_bank(acc_gated, rate)
+    vox_rms_band = filter_bank(vox_gated, rate)
+
+    # the differencce between two tracks' frequency banks
+    rms_band_diff = acc_rms_band - vox_rms_band
+    #ignore the two lowest frequency bands
+    rms_band_diff = rms_band_diff[2:]
+    diff_mean = np.mean(rms_band_diff)
+    rms_band_diff -= diff_mean
+
+    #print(rms_band_diff)
+
+    #rank the large
+    diff_top_rank = np.argsort(-np.abs(rms_band_diff))[:4]
+
+    #print(diff_top_rank)
+
+
+    fcs = [125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+    freq_list = np.zeros(4)
+    gain_list = np.zeros(4)
+    for i, f in np.ndenumerate(diff_top_rank):
+        freq_list[i] = fcs[f]
+        gain_list[i] = rms_band_diff[f]
+
+    #print(freq_list)
+    #print(gain_list)
+
+
+    """
+    #because the essential frequency band analysis is performed over
+    #the full length of the audio, the high frequency bands always have
+    #higher RMS.
+
+    acc_filtered = loudness.K_filter(acc_gated, rate)
+    vox_filtered = loudness.K_filter(vox_gated, rate)
+
+
+    acc_rms_band_filtered = filter_bank(acc_gated, rate)
+    vox_rms_band_filtered = filter_bank(vox_gated, rate)
+
+    #the important frequency ranges
+    acc_rank = np.argsort(acc_rms_band_filtered)
+    vox_rank = np.argsort(vox_rms_band_filtered)
+
+    #the top #rank_threshold bands are essential
+    rank_threshold = 5
+    acc_top_rank = acc_rank[rank_threshold:]
+    vox_top_rank = vox_rank[rank_threshold:]
+
+    """
 
 
     vst_path = "../VST3/"
@@ -22,44 +94,126 @@ def EQ(self):
 
 
     vst.filter_enablement_1 = True
-    vst.filter_type_1 = "HP (24dB/oct)" #'HP (6dB/oct)', 'HP (12dB/oct)', 'HP (24dB/oct)', 'Low-shelf'
+    vst.filter_type_1 = "Low-shelf" #'HP (6dB/oct)', 'HP (12dB/oct)', 'HP (24dB/oct)', 'Low-shelf'
     vst.filter_frequency_1_hz = 100. #[20.0Hz, 20000.0Hz]
     vst.filter_q_1 = 0.75 #[0.05, 8.0]
-    vst.filter_gain_1_db = 0. #[-60.0dB, 15.0dB]
+    vst.filter_gain_1_db = -12. #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_2 = True
     vst.filter_type_2 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_2_hz = 400. #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_2_hz = freq_list[0] #[20.0Hz, 20000.0Hz]
     vst.filter_q_2 = 2. #[0.05, 8.0]
-    vst.filter_gain_2_db = -8. #[-60.0dB, 15.0dB]
+    vst.filter_gain_2_db = gain_list[0] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_3 = True
     vst.filter_type_3 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_3_hz = 1000. #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_3_hz = freq_list[1] #[20.0Hz, 20000.0Hz]
     vst.filter_q_3 = 2. #[0.05, 8.0]
-    vst.filter_gain_3_db = -2. #[-60.0dB, 15.0dB]
+    vst.filter_gain_3_db = gain_list[1] #[-60.0dB, 15.0dB]
+
 
 
     vst.filter_enablement_4 = True
     vst.filter_type_4 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_4_hz = 2000. #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_4_hz = freq_list[2] #[20.0Hz, 20000.0Hz]
     vst.filter_q_4 = 2. #[0.05, 8.0]
-    vst.filter_gain_4_db = -6. #[-60.0dB, 15.0dB]
+    vst.filter_gain_4_db = gain_list[2] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_5 = True
     vst.filter_type_5 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_5_hz = 8000. #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_5_hz = freq_list[3] #[20.0Hz, 20000.0Hz]
     vst.filter_q_5 = 2. #[0.05, 8.0]
-    vst.filter_gain_5_db = -1. #[-60.0dB, 15.0dB]
+    vst.filter_gain_5_db = gain_list[3] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_6 = True
     vst.filter_type_6 = "High-shelf" #'LP (6dB/Oct)', 'LP (12dB/oct)', 'LP (24dB/oct)', 'High-shelf'
     vst.filter_frequency_6_hz = 11000. #[20.0Hz, 20000.0Hz]
     vst.filter_q_6 = 0.71 #[0.05, 8.0]
-    vst.filter_gain_6_db = 7. #[-60.0dB, 15.0dB]
+    vst.filter_gain_6_db = 0. #[-60.0dB, 15.0dB]
 
     output = vst(vox, rate)
+
+    self.vox = output
+
+
+def mono(audio):
+    if len(audio.shape) == 2:
+        return np.mean(audio, axis=1)
+    else:
+        return audio
+
+
+
+
+def block(audio, rate):
+    """
+    return the block the audio as a matrix
+    """
+
+    blockLength = int(0.1 * rate)
+    blockNum = int(audio.shape[0]/blockLength)
+
+    blocked_audio = np.zeros((blockNum, blockLength))
+    for i in range(blockNum):
+        blocked_audio[i] = audio[i*blockLength : (i+1)*blockLength]
+
+    return blocked_audio
+
+
+def gate_index(blocked_audio, threshold_db = -30):
+    """
+    return a boolean filter array for blocks above the threshold
+    """
+
+    squared = blocked_audio**2
+
+    rms = np.sqrt(np.mean(squared, axis=1))
+
+    rms_dB = 20*np.log10(rms+0.0000000001)
+
+    filter_arr = rms_dB > threshold_db
+
+    return filter_arr
+
+
+def gate(blocked_audio, filter_arr):
+    """
+    remove the blocks below the threshold and concatenate the audio
+    """
+    gated_blocked_audio = blocked_audio[filter_arr]
+
+    audio = gated_blocked_audio.flatten()
+
+    return audio
+
+
+
+def filter_bank(audio, rate):
+    """
+    2nd order butterworth bandpass filter
+    return:
+        a numpy array of (10)
+        the value in rms_dB_bank is the rms of each filter bank
+    """
+
+    Nyquist = rate/2
+    fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] #ISO standard octave-band center frequencies
+
+    rms_dB_bank = np.zeros(10)
+
+    for idx, fc in enumerate(fcs):
+
+        sos = signal.butter(2, [fc*2**(-0.5)/Nyquist, fc*2**0.5/Nyquist], 'bp', fs=rate, output='sos') #second order sections
+        filtered = signal.sosfilt(sos, audio)
+
+        squared = filtered**2
+
+        rms = np.sqrt(np.mean(squared))
+        rms_dB = 20*np.log10(rms)
+        rms_dB_bank[idx] = rms_dB
+
+    return rms_dB_bank

@@ -9,10 +9,11 @@ from pydub import AudioSegment
 read_path = "../../DAMP-VSEP/"
 write_path = "../../Output/"
 
+counter = 0
 f_1 = []
 for (dirpath, dirnames, filenames) in walk(read_path):
 
-    if  and "mix.m4a" in filenames \
+    if  "mix.m4a" in filenames \
         and "background.m4a" in filenames \
         and "vocal.ogg" in filenames:
 
@@ -21,6 +22,10 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     else:
         continue
+
+    #print(acc_path)
+    print(vox_path)
+
 
     audio = AudioSegment.from_file(acc_path)
     arrayarray = audio.get_array_of_samples()
@@ -37,18 +42,25 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     mixer_one.set_sampleRate(rate)
 
-    mixer_one.set_target_vox_acc_ratio(0.)
-    mixer_one.set_targetLRA(15)
+    mixer_one.set_target_vox_acc_ratio(-0.5)
+    mixer_one.set_targetLRA(14)
 
     mix = mixer_one.get_mix()
-    sf.write('../audio/output/original.wav', mix, rate)
+
+
+    write_name = dirpath[16:].replace("/", "-")
+    sf.write("../audio/output/" + write_name + "-original.wav", mix, rate)
 
     vox = mixer_one.process()
 
     mix = mixer_one.get_mix()
-    sf.write('../audio/output/output.wav', mix, rate)
+    sf.write("../audio/output/" + write_name + "-mix.wav", mix, rate)
 
-    break
+
+    if counter >= 10:
+        break
+
+    counter += 1
 
 
 
