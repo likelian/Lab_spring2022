@@ -163,10 +163,42 @@ About the rule-based frequency masking model, apply a K-filter or dBA filter bef
 Be aware of overfitting when tuning the rule-based system. Maybe use an iterative process to listen to many audio files and tweak a bit every time. Humans are neural networks and we can be overfitting the problems too.
 
 
-**To-DO:**
+**To-do:**
 
 1. Rule-based reverb model
 2. Rule-based EQ model
 3. Audio example for presentation
 4. revise the presentation
 5. get the plugin
+
+
+
+* * *
+
+#### 3/30/2022
+
+**Done:**
+
+1. Rule-based EQ implemented
+    1. high frequency bands always have higher energy...
+    2. 8 octave bands are considered, top 4 difference are chosen for EQ
+2. Proposal presentation
+3. VAMP dataset has bad quality, needs to manually select usable tracks
+
+
+**Meeting:**
+normalize the band energy with bandwidth
+Octave bands may not have enough resolution, 24? 100?
+read the DAMP dataset paper
+
+objective evaluation of the baseline system, using some audio encoding algorithm to measure the distance between the baseline and the human mix. The expected result should be: no mix < baseline < human mix.
+An alternative is an informal listening test.
+
+
+**To-do:**
+
+1. normalize the band RMS with bandwidth
+2. try higher frequency resolution
+3. Prepare human mix
+3. read DAMP paper
+4. Prepare for data-driven
