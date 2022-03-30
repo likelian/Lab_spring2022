@@ -202,3 +202,22 @@ An alternative is an informal listening test.
 3. Prepare human mix
 3. read DAMP paper
 4. Prepare for data-driven
+
+
+* * *
+
+#### Proposal Presentation Feedback
+
+
+###### Proposal Presentation Feedback
+Scientific communication:
+know the audience, explain some terms. What is knowledge based and data-driven? Baseline, rule-based, mix analysis, what are they??
+
+The final listening example, tell people what to listen for.
+
+Explain the problem of existing systems, how do they Lack of data, and the proposed solution needs to be emphasized.
+
+###### Research Feedback
+More specific question for mixing quality, punchiness? or how good is the EQ?
+
+Evaluated by users, or professionals, or both?
