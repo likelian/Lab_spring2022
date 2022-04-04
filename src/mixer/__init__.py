@@ -38,8 +38,10 @@ class mixer:
         level_balance(self)
         EQ(self)
         compression(self)
-        reverb(self)
         level_balance(self)
+        reverb(self)
+
+
 
 
     def checkShape(self):

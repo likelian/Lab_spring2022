@@ -14,9 +14,9 @@ def level_balance(self, optional_ratio=None):
 
         rate = self.sampleRate
 
-        vox = level_process(acc, vox, target_vox_acc_ratio, rate)
+        output = level_process(acc, vox, target_vox_acc_ratio, rate)
 
-        self.vox = vox
+        self.vox = output
 
 
 def level_process(acc, vox, target_vox_acc_ratio, sampleRate):
@@ -28,6 +28,7 @@ def level_process(acc, vox, target_vox_acc_ratio, sampleRate):
     vox_acc_ratio = vox_loudness - acc_loudness
     dB = target_vox_acc_ratio - vox_acc_ratio
     gain = 10**(dB/20)
+
     vox *= gain
 
     return vox

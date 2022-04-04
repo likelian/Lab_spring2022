@@ -34,34 +34,9 @@ def EQ(self):
     # the differencce between two tracks' frequency banks
     rms_band_diff = acc_rms_band - vox_rms_band
     #ignore the two lowest frequency bands
-    rms_band_diff = rms_band_diff[2:]
+    #rms_band_diff = rms_band_diff[2:]
     diff_mean = np.mean(rms_band_diff)
     rms_band_diff -= diff_mean
-
-    #print(rms_band_diff)
-
-    #rank the large
-    diff_top_rank = np.argsort(-np.abs(rms_band_diff))[:4]
-
-    #print(diff_top_rank)
-
-
-    fcs = [125, 250, 500, 1000, 2000, 4000, 8000, 16000]
-
-    freq_list = np.zeros(4)
-    gain_list = np.zeros(4)
-    for i, f in np.ndenumerate(diff_top_rank):
-        freq_list[i] = fcs[f]
-        gain_list[i] = rms_band_diff[f]
-
-    #print(freq_list)
-    #print(gain_list)
-
-
-    """
-    #because the essential frequency band analysis is performed over
-    #the full length of the audio, the high frequency bands always have
-    #higher RMS.
 
     acc_filtered = loudness.K_filter(acc_gated, rate)
     vox_filtered = loudness.K_filter(vox_gated, rate)
@@ -71,15 +46,46 @@ def EQ(self):
     vox_rms_band_filtered = filter_bank(vox_gated, rate)
 
     #the important frequency ranges
-    acc_rank = np.argsort(acc_rms_band_filtered)
-    vox_rank = np.argsort(vox_rms_band_filtered)
+    acc_rank = np.argsort(-acc_rms_band_filtered)
+    vox_rank = np.argsort(-vox_rms_band_filtered)
 
-    #the top #rank_threshold bands are essential
-    rank_threshold = 5
-    acc_top_rank = acc_rank[rank_threshold:]
-    vox_top_rank = vox_rank[rank_threshold:]
+    rank_threshold = 4
+    acc_top_rank = acc_rank[:rank_threshold]
+    vox_top_rank = vox_rank[:rank_threshold]
 
-    """
+
+    band_list = []
+    for band in acc_top_rank:
+        if band not in vox_top_rank:
+            band_list.append(band)
+
+    for band in vox_top_rank:
+        if band not in acc_top_rank:
+            band_list.append(band)
+
+
+    fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+    freq_list = np.full((10,), 999) #frequencies are initialized with 999
+    gain_list = np.zeros(10)
+
+
+    for i, f in np.ndenumerate(band_list):
+        freq_list[i] = fcs[f]
+        gain_list[i] = rms_band_diff[f]
+
+    gain_list = np.where(gain_list > 10., 10., gain_list)
+    gain_list = np.where(gain_list < -10., -10., gain_list)
+
+
+    gain_order = np.argsort(-np.abs(gain_list)) #deseconding order
+
+    gain_list_ordered = gain_list[gain_order]
+    freq_list_ordered = freq_list[gain_order]
+
+    gain_top_list = gain_list_ordered[:4]
+    freq_top_list = freq_list_ordered[:4]
+
 
 
     vst_path = "../VST3/"
@@ -102,31 +108,31 @@ def EQ(self):
 
     vst.filter_enablement_2 = True
     vst.filter_type_2 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_2_hz = freq_list[0] #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_2_hz = freq_top_list[0] #[20.0Hz, 20000.0Hz]
     vst.filter_q_2 = 2. #[0.05, 8.0]
-    vst.filter_gain_2_db = gain_list[0] #[-60.0dB, 15.0dB]
+    vst.filter_gain_2_db = gain_top_list[0] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_3 = True
     vst.filter_type_3 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_3_hz = freq_list[1] #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_3_hz = freq_top_list[1] #[20.0Hz, 20000.0Hz]
     vst.filter_q_3 = 2. #[0.05, 8.0]
-    vst.filter_gain_3_db = gain_list[1] #[-60.0dB, 15.0dB]
+    vst.filter_gain_3_db = gain_top_list[1] #[-60.0dB, 15.0dB]
 
 
 
     vst.filter_enablement_4 = True
     vst.filter_type_4 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_4_hz = freq_list[2] #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_4_hz = freq_top_list[2] #[20.0Hz, 20000.0Hz]
     vst.filter_q_4 = 2. #[0.05, 8.0]
-    vst.filter_gain_4_db = gain_list[2] #[-60.0dB, 15.0dB]
+    vst.filter_gain_4_db = gain_top_list[2] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_5 = True
     vst.filter_type_5 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
-    vst.filter_frequency_5_hz = freq_list[3] #[20.0Hz, 20000.0Hz]
+    vst.filter_frequency_5_hz = freq_top_list[3] #[20.0Hz, 20000.0Hz]
     vst.filter_q_5 = 2. #[0.05, 8.0]
-    vst.filter_gain_5_db = gain_list[3] #[-60.0dB, 15.0dB]
+    vst.filter_gain_5_db = gain_top_list[3] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_6 = True
@@ -145,7 +151,6 @@ def mono(audio):
         return np.mean(audio, axis=1)
     else:
         return audio
-
 
 
 
@@ -207,12 +212,15 @@ def filter_bank(audio, rate):
 
     for idx, fc in enumerate(fcs):
 
+        bandwidth = fc*2**0.5/Nyquist - fc*2**(-0.5)/Nyquist
+
         sos = signal.butter(2, [fc*2**(-0.5)/Nyquist, fc*2**0.5/Nyquist], 'bp', fs=rate, output='sos') #second order sections
         filtered = signal.sosfilt(sos, audio)
 
         squared = filtered**2
 
         rms = np.sqrt(np.mean(squared))
+        rms /= bandwidth #normalize the energy by filter bandwidth
         rms_dB = 20*np.log10(rms)
         rms_dB_bank[idx] = rms_dB
 

@@ -42,7 +42,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     mixer_one.set_sampleRate(rate)
 
-    mixer_one.set_target_vox_acc_ratio(-0.5)
+    mixer_one.set_target_vox_acc_ratio(0.5)
     mixer_one.set_targetLRA(14)
 
     mix = mixer_one.get_mix()
@@ -59,7 +59,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     if counter >= 10:
         break
-
+    #break
     counter += 1
 
 
