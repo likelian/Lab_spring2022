@@ -1,4 +1,5 @@
 import numpy as np
+import pyloudnorm as pyln
 
 from .level import level_balance
 from .compression import compression
@@ -38,8 +39,8 @@ class mixer:
         level_balance(self)
         EQ(self)
         compression(self)
-        level_balance(self)
         reverb(self)
+        level_balance(self)
 
 
 
@@ -86,4 +87,9 @@ class mixer:
 
 
         mix = acc + vox
+
+        meter = pyln.Meter(self.sampleRate)
+        loudness = meter.integrated_loudness(mix)
+        mix = pyln.normalize.loudness(mix, loudness, -20.0)
+
         return mix

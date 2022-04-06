@@ -57,7 +57,7 @@ def compression(self):
     vst_path = "../VST3/"
     vst_name = "OmniCompressor.vst3"
     vst = load_plugin(vst_path + vst_name)
-    vst.attack_time_ms = 10.
+    vst.attack_time_ms = 30.
     vst.release_time_ms = 200.
 
     iterate_count = 0
@@ -86,7 +86,7 @@ def compression(self):
             ratio_increase = 1.
             threshold_decrease = 0.5
 
-        if threshold_db < -40:
+        if threshold_db < -35:
             print("WARNNING: threshold_db < -40")
             print("threshold_dbs", threshold_db)
             print("Current LRA: ", LRA)

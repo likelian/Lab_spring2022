@@ -42,26 +42,30 @@ def EQ(self):
     vox_filtered = loudness.K_filter(vox_gated, rate)
 
 
-    acc_rms_band_filtered = filter_bank(acc_gated, rate)
-    vox_rms_band_filtered = filter_bank(vox_gated, rate)
+    acc_rms_band_filtered = filter_bank(acc_filtered, rate)
+    vox_rms_band_filtered = filter_bank(vox_filtered, rate)
 
     #the important frequency ranges
     acc_rank = np.argsort(-acc_rms_band_filtered)
     vox_rank = np.argsort(-vox_rms_band_filtered)
 
-    rank_threshold = 4
-    acc_top_rank = acc_rank[:rank_threshold]
-    vox_top_rank = vox_rank[:rank_threshold]
+
+    acc_rank_threshold = 3
+    vox_rank_threshold = 4
+    acc_top_rank = acc_rank[:acc_rank_threshold]
+    vox_top_rank = vox_rank[:vox_rank_threshold]
 
 
     band_list = []
     for band in acc_top_rank:
         if band not in vox_top_rank:
-            band_list.append(band)
+            if rms_band_diff[band] < 0:
+                band_list.append(band)
 
     for band in vox_top_rank:
         if band not in acc_top_rank:
-            band_list.append(band)
+            if rms_band_diff[band] > 0:
+                band_list.append(band)
 
 
     fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
@@ -74,8 +78,8 @@ def EQ(self):
         freq_list[i] = fcs[f]
         gain_list[i] = rms_band_diff[f]
 
-    gain_list = np.where(gain_list > 10., 10., gain_list)
-    gain_list = np.where(gain_list < -10., -10., gain_list)
+    gain_list = np.where(gain_list > 8., 8., gain_list)
+    gain_list = np.where(gain_list < -8., -8., gain_list)
 
 
     gain_order = np.argsort(-np.abs(gain_list)) #deseconding order
@@ -86,6 +90,10 @@ def EQ(self):
     gain_top_list = gain_list_ordered[:4]
     freq_top_list = freq_list_ordered[:4]
 
+    print("rms_band_diff", rms_band_diff)
+
+    print("gain_top_list", gain_top_list)
+    print("freq_top_list", freq_top_list)
 
 
     vst_path = "../VST3/"
