@@ -4,8 +4,6 @@ import json
 import torch
 import torchaudio
 
-
-
 def mel_spec(audio_path, ground_truth_dict):
     """
     create mel_spec tensor and level ratio ground truth
