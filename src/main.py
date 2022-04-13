@@ -2,7 +2,7 @@ import numpy as np
 import soundfile as sf
 from os import walk
 from mixer import mixer
-from pydub import AudioSegment
+#sfrom pydub import AudioSegment
 
 
 
