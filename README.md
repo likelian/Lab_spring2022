@@ -14,7 +14,7 @@ Pitch Correction must be included
 
 To-do:
 
-1. Find dataset
+1. Find the dataset
 2. Read paper (simpler methods?)
 3. Research on the market, app and hardware products
 
@@ -68,7 +68,7 @@ About the project:
 4. Define a rule-based reverb control from an existing tempo-reverbTime relationship in publications. Define it as linear by myself.
 5. (Optional) Implement short-term loudness meter, and loudness range meter
 6. Evaluation: current simple listening tests needs more data, a variety of songs
-7. dynamic distribution as evaluation metric
+7. Dynamic distribution as evaluation metric
 8. A milestone-like progress report every week
 
 
@@ -79,10 +79,10 @@ About the project:
 **Done:**
 
 1. Short-term loudness and loudness range implementation (untested)
-2. rule-based reverb survey
+2. Rule-based reverb survey
     1. tempo/reverb time formula
     2. auto-correlation, spectral flux?
-3. impulse respoonse matching survey
+3. Impulse respoonse matching survey
     1. Genetic algorithm
     2. Hill climbing
 
@@ -91,17 +91,17 @@ About the project:
 1. K-filter coefficient error is acceptable, most likely due to floating point error
 2. In reverb task, two signals as input can be two large for deep learning
     1. consider vocal as mel-spectrogram, and extracted features from backing tracks (tempo, etc.) as condition. More combinations to be considered and experimented. Interview with mixing engineers for opinions, weighting on the vocal or thhe backing track?
-2. barkband and melband as cost function are not very different. But what is the metric to evaluate the impulse response estimation?
+2. Barkband and melband as cost function are not very different. But what is the metric to evaluate the impulse response estimation?
 3. Since the reverb rule is unclear, extract the tempo(spectral flux) and reverb time from the dataset, and do a linearly fit (or other fit).
 
 
 **To-do:**
 
-1. rule-based compression implementation
-2. verify the commercial tool for IR extraction
+1. Rule-based compression implementation
+2. Verify the commercial tool for IR extraction
     1. reverb applied to dry signal, extract IR, comparing with originnal IR
-3. outline the rule-based EQ
-4. download dataset
+3. Outline the rule-based EQ
+4. Download dataset
 
 * * *
 
@@ -111,7 +111,7 @@ About the project:
 
 1. Rule-based compression implemented
 2. Reverb time extracted from MUSDB18 Training set
-3. audio features from mixture fail to correlate with reverb time, including:
+3. Audio features from mixture fail to correlate with reverb time, including:
     1. Tempo
     2. Spectral Centroid Variance
     3. Onset Density
@@ -128,14 +128,14 @@ literature-based reverb rule is still an option.
 
 **To-do:**
 
-1. revisit the code
+1. Revisit the code
 2. Some more features to try out:
     1. vocal onset density
     2. mixture downbeat density
     3. mixture chord change density
  3. If none of the audio features work, use a literature-based reverb rule.
- 4. rule-based EQ
- 5. verify the commercial tool for IR extraction
+ 4. Rule-based EQ
+ 5. Verify the commercial tool for IR extraction
 
 * * *
 
@@ -168,8 +168,8 @@ Be aware of overfitting when tuning the rule-based system. Maybe use an iterativ
 1. Rule-based reverb model
 2. Rule-based EQ model
 3. Audio example for presentation
-4. revise the presentation
-5. get the plugin
+4. Revise the presentation
+5. Get the plugin
 
 
 
@@ -197,10 +197,10 @@ An alternative is an informal listening test.
 
 **To-do:**
 
-1. normalize the band RMS with bandwidth
-2. try higher frequency resolution
+1. Normalize the band RMS with bandwidth
+2. Try higher frequency resolution
 3. Prepare human mix
-3. read DAMP paper
+3. Read DAMP paper
 4. Prepare for data-driven
 
 
@@ -221,3 +221,56 @@ Explain the problem of existing systems, how do they Lack of data, and the propo
 More specific question for mixing quality, punchiness? or how good is the EQ?
 
 Evaluated by users, or professionals, or both?
+
+
+
+
+* * *
+
+#### 4/6/2022
+
+**Done:**
+1. Improve the rule-based EQ
+2. Collect songs with acceptable quality for listening test
+
+
+**Meeting:**
+
+separate data for tuning the system and final listening test
+
+Three options for the rest of the semester:
+
+1. Listening tests preparation
+    * questions, score mechanism, people, test environment, duration, IRB
+2. Extract ground truth data for all 4 mixing processes
+3. Data-driven level balance
+    * pick some simple deep learning model first
+
+
+Let Alex know my decision within two days!!!!
+
+**To-do:**
+
+1. Decide the direction for the rest of the semester
+2. Do something
+
+
+* * *
+
+#### 4/14/2022
+
+**Done:**
+
+1. Extract the ground truth relative loudness on the song level
+2. Slice the audio and turn them into (128,64) mel-spectrogram blocks. There are 2 channels. 128 is the mel-spectrum size. the FFT size is 2048, the hop  size is 1024, and 64 of the spectrum are stacked together. In 44100Hz sample rate, one block is about 3s. Other parameters are as default in [https://pytorch.org/audio/stable/transforms.html](https://pytorch.org/audio/stable/transforms.html)
+
+**Meeting:**
+
+1. Sign up for 4/27 meeting if needed.
+2. Using 3s audio to predict the target relative loudness may not work. Alternatives can be input features of longer time period.
+
+**To-do:**
+
+1. Finish the model
+2. Train
+3. Evaluate
