@@ -4,13 +4,12 @@ import json
 import torch
 import torchaudio
 
-def mel_spec(audio_path, ground_truth_dict):
+def mel_spec(audio_path, output_path, ground_truth_dict):
     """
     create mel_spec tensor and level ratio ground truth
     """
 
     abs_audio_path = os.path.abspath(audio_path)
-    output_path = "/Volumes/mix/Dataset/musdb18hq_mel/train/"
 
     transform = torchaudio.transforms.MelSpectrogram(sample_rate=44100, n_fft=2048)
 
@@ -66,11 +65,19 @@ def mel_spec(audio_path, ground_truth_dict):
 
 
 
-ground_truth_path = "../../data/vox_acc_ratio/train_vox_acc_ratio.json"
+#ground_truth_path = "../../data/vox_acc_ratio/train_vox_acc_ratio.json"
+ground_truth_path = "../../data/vox_acc_ratio/test_vox_acc_ratio.json"
 f = open(ground_truth_path)
 ground_truth_dict = json.load(f)
 
-mel_spec("/Volumes/mix/Dataset/musdb18hq/train", ground_truth_dict)
+
+#output_path = "/Volumes/mix/Dataset/musdb18hq_mel/train/"
+output_path = "/Volumes/mix/Dataset/musdb18hq_mel/test/"
+
+#audio_path = "/Volumes/mix/Dataset/musdb18hq/train"
+audio_path = "/Volumes/mix/Dataset/musdb18hq/test"
+
+mel_spec(audio_path, output_path, ground_truth_dict)
 
 
 

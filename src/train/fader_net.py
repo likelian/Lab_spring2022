@@ -21,32 +21,8 @@ for f in folder_names:
   else:
     os.mkdir(f)
 
-# Loop over all genres.
 
-genres = list(os.listdir(spectrograms_dir))
-for g in genres:
-  # find all images & split in train, test, and validation
-  src_file_paths= []
-  for im in glob.glob(os.path.join(spectrograms_dir, f'{g}',"*.png"), recursive=True):
-    src_file_paths.append(im)
-  random.shuffle(src_file_paths)
-  test_files = src_file_paths[0:10]
-  val_files = src_file_paths[10:20]
-  train_files = src_file_paths[20:]
 
-  #  make destination folders for train and test images
-  for f in folder_names:
-    if not os.path.exists(os.path.join(f + f"{g}")):
-      os.mkdir(os.path.join(f + f"{g}"))
-
-  # copy training and testing images over
-  for f in train_files:
-    shutil.copy(f, os.path.join(os.path.join(train_dir + f"{g}") + '/',os.path.split(f)[1]))
-  for f in test_files:
-    shutil.copy(f, os.path.join(os.path.join(test_dir + f"{g}") + '/',os.path.split(f)[1]))
-  for f in val_files:
-    shutil.copy(f, os.path.join(os.path.join(val_dir + f"{g}") + '/',os.path.split(f)[1]))
-# Data loading.
 
 train_dataset = datasets.ImageFolder(
     train_dir,
@@ -67,10 +43,9 @@ val_loader = torch.utils.data.DataLoader(
     val_dataset, batch_size=25, shuffle=True, num_workers=0)
 
 
-
 # Make a CNN & train it to predict genres.
 
-class music_net(nn.Module):
+class Fader_Net(nn.Module):
   def __init__(self):
     """Intitalize neural net layers"""
     super(music_net, self).__init__()
@@ -131,7 +106,8 @@ class music_net(nn.Module):
 
 
 def train(model, device, train_loader, validation_loader, epochs):
-  criterion =  nn.CrossEntropyLoss()
+  #criterion =  nn.CrossEntropyLoss()
+  loss = nn.MSELoss()
   optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
   train_loss, validation_loss = [], []
   train_acc, validation_acc = [], []
@@ -143,14 +119,14 @@ def train(model, device, train_loader, validation_loader, epochs):
       running_loss = 0.
       correct, total = 0, 0
 
-      for data, target in train_loader:
+      for data_acc, data_vox, target in train_loader:
         # getting the training set
         data, target = data.to(device), target.to(device)
 
-        output = model(data)
+        pred = model(data)
         optimizer.zero_grad()
-        loss  = criterion(output, target)
-        loss.backward()
+        output = loss(pred, target)
+        output.backward()
         optimizer.step()
 
         tepochs.set_postfix(loss=loss.item())
@@ -179,7 +155,7 @@ def train(model, device, train_loader, validation_loader, epochs):
         tepochs.set_postfix(loss=loss.item())
         running_loss += loss.item()
         # get accuracy
-        _, predicted = torch.max(output, 1)
+        _, predicted = torch.max(running_loss, 1)
         total += target.size(0)
         correct += (predicted == target).sum().item()
 
@@ -190,6 +166,6 @@ def train(model, device, train_loader, validation_loader, epochs):
 
 
 
-net = music_net().to(device)
+net = Fader_Net().to(device)
 train_loss, train_acc, validation_loss, validation_acc = train(net, device, train_loader, val_loader, 50)
 plot_loss_accuracy(train_loss, train_acc, validation_loss, validation_acc)
