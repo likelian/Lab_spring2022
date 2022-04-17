@@ -163,28 +163,54 @@ def train(model, device, train_loader, test_loader, epochs):
 
       print("test_loss", running_loss/len(test_loader))
 
-  return train_loss, validation_loss
+  return train_loss, test_loss
 
 
 net = FaderNet().to(device)
-train_loss, test_loss = train(net, device, train_loader, test_loader, 50)
+train_loss, test_loss = train(net, device, train_loader, test_loader, 100)
 
 
 
 
-
-import seaborn as sns
+import pandas as pd
+#import seaborn as sns
 import matplotlib.pyplot as plt
 
 
 
-g = sns.relplot(x="epochs", y="MSE Loss", kind="line", data=train_loss)
-g.fig.suptitle('Train Loss')
+plt.plot(train_loss)
+plt.xlabel('Epochs')
+plt.ylabel("MSE Loss")
+plt.title("Train Loss")
+plt.show()
+plt.savefig('../../results/Train Loss.png')
+
+plt.plot(test_loss)
+plt.xlabel('Epochs')
+plt.ylabel("MSE Loss")
+plt.title('Test Loss')
+plt.show()
+plt.savefig('../../results/Test Loss.png')
+
+
+
+"""
+epochs = np.arange(len(train_loss))
+train_loss = np.asarray(train_loss)
+d = {'epochs': epochs, 'MSE Loss': train_loss}
+dataframe = pd.DataFrame(d)
+g = sns.lineplot(x='epochs', y='MSE Loss', data=dataframe)
+g.set_title('Train Loss')
 plt.show()
 plt.savefig('../../results/Train Loss.png')
 
 
-g = sns.relplot(x="epochs", y="MSE Loss", kind="line", data=test_loss)
-g.fig.suptitle('Test Loss')
+epochs = np.arange(len(test_loss))
+test_loss = np.asarray(test_loss)
+d = {'epochs': epochs, 'MSE Loss': test_loss}
+dataframe = pd.DataFrame(d)
+g = sns.lineplot(x='epochs', y='MSE Loss', data=dataframe)
+g.set_title('Test Loss')
 plt.show()
 plt.savefig('../../results/Test Loss.png')
+"""
