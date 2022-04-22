@@ -274,3 +274,35 @@ Let Alex know my decision within two days!!!!
 1. Finish the model
 2. Train
 3. Evaluate
+
+
+* * *
+
+#### 4/20/2022
+
+**Done:**
+
+1. Run the model, terriable results
+
+
+**Meeting:**
+
+paper presents the baseline. Can talk about the failure, explain why it doesn’t work with evidence.
+
+To verify the DNN model itself, try simple task with simple dataset (change the existing dataset). Generate very simple data for training, and validation. Then we are sure the network is correct.
+
+
+Validation set is what's been used during the development, and test set is for paper writing.
+
+normalization of target dB
+
+MSE?
+
+predict gain values directly?
+
+Three  possibilities of the terrible results: overfit immediately, or it’s a unlearnable task, or a  stupid mistake.
+
+**To-do:**
+
+1. word: validation != test
+2. Paper writing
