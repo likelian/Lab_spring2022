@@ -87,7 +87,7 @@ def compression(self):
             threshold_decrease = 0.5
 
         if threshold_db < -35:
-            print("WARNNING: threshold_db < -40")
+            print("WARNNING: threshold_db < -35")
             print("threshold_dbs", threshold_db)
             print("Current LRA: ", LRA)
             print("target_loudness_range", targetLRA)

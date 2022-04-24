@@ -51,7 +51,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     mixer_one.set_sampleRate(rate)
 
     mixer_one.set_target_vox_acc_ratio(-0.5)
-    mixer_one.set_targetLRA(15)
+    mixer_one.set_targetLRA(15.7)
 
     mix = mixer_one.get_mix()
 

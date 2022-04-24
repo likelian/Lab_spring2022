@@ -99,7 +99,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
 
-  train_loss, test_loss = [], []
+  train_loss, validation_loss = [], []
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
     tepochs.set_description('Training')
@@ -159,16 +159,28 @@ def train(model, device, train_loader, test_loader, epochs):
           #tepochs.set_postfix(loss=loss.item())
           running_loss += test_MSE.item()
 
-      test_loss.append(running_loss/len(test_loader))
+      validation_loss.append(running_loss/len(test_loader))
 
-      print("test_loss", running_loss/len(test_loader))
+      print("validation_loss", running_loss/len(test_loader))
 
-  return train_loss, test_loss
+      #break
+
+  return train_loss, validation_loss
 
 
 net = FaderNet().to(device)
-train_loss, test_loss = train(net, device, train_loader, test_loader, 100)
+train_loss, validation_loss = train(net, device, train_loader, test_loader, 100)
 
+
+textfile = open("../../results/train_loss.txt", "w")
+for element in train_loss:
+    textfile.write(str(element) + "\n")
+textfile.close()
+
+textfile = open("../../results/validation_loss.txt", "w")
+for element in validation_loss:
+    textfile.write(str(element) + "\n")
+textfile.close()
 
 
 
@@ -178,19 +190,19 @@ import matplotlib.pyplot as plt
 
 
 
-plt.plot(train_loss)
+plt.plot(train_loss, color='darkorange', label='train loss')
+plt.plot(validation_loss, color='deepskyblue', label='validation loss')
 plt.xlabel('Epochs')
-plt.ylabel("MSE Loss")
-plt.title("Train Loss")
-plt.show()
-plt.savefig('../../results/Train Loss.png')
+plt.ylabel("MSE Loss (in dB)")
+#plt.title("Loss")
+#plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
+plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
 
-plt.plot(test_loss)
-plt.xlabel('Epochs')
-plt.ylabel("MSE Loss")
-plt.title('Test Loss')
+plt.tight_layout()
+plt.savefig('../../results/Loss.png')
 plt.show()
-plt.savefig('../../results/Test Loss.png')
+plt.close()
+
 
 
 
