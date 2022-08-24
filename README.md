@@ -306,3 +306,29 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
+
+
+* * *
+
+#### 8/23/2022
+
+
+Network wrong?
+Try a different and very simple regression task
+
+The loss plot last semester looks like overfitting immediately
+
+
+Talk to Karn about server
+
+
+
+
+**To-do:**
+
+1. Copy IRB proposal from Ash
+2. Maybe apply for IRB
+3. Make Qualtrics
+4. Prepare a run-through with Alex next week (how long with the test be?)
+
+1. run the experiment again and plot the detailed results of first few epochs
