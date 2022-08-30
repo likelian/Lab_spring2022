@@ -1,3 +1,75 @@
+# Lab_fall2022
+
+* * *
+
+#### 8/30/2022
+
+
+
+**Done:**
+1. subjective Qualtrics test set-up
+2. connect server via VScode
+3. setup Github on server
+
+
+**Meeting:**
+
+modification on the experiment:
+1. text-labeled results
+2. likert scal
+3. compact view
+4. remove unmixed
+5. 10 second audio, or even shorter
+6. 12-15 audio samples
+
+
+
+
+**To-do:**
+
+Training:
+* [ ] move data to server
+* [ ] run the training on server
+* [ ] look at the first epoch
+
+
+Experiment setup:
+* [ ] modify the experiment according to the meeting
+* [ ] try out the experiment and measure the time
+* [ ] IRB training
+* [ ] IRB submission
+
+***
+
+#### 8/23/2022
+
+
+Network wrong?
+Try a different and very simple regression task
+
+The loss plot last semester looks like overfitting immediately
+
+
+Talk to Karn about server
+
+
+
+
+**To-do:**
+
+1. Copy IRB proposal from Ash
+2. Maybe apply for IRB
+3. Make qualtrics
+4. Prepare a run-through with Alex next week (how long with the test be?)
+
+1. run the experiment again and plot the detailed results of first few epochs
+
+
+
+
+
+* * *
+
 # Lab_spring2022
 
 * * *
@@ -306,70 +378,3 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
-
-
-* * *
-
-#### 8/23/2022
-
-
-Network wrong?
-Try a different and very simple regression task
-
-The loss plot last semester looks like overfitting immediately
-
-
-Talk to Karn about server
-
-
-
-
-**To-do:**
-
-1. Copy IRB proposal from Ash
-2. Maybe apply for IRB
-3. Make qualtrics
-4. Prepare a run-through with Alex next week (how long with the test be?)
-
-1. run the experiment again and plot the detailed results of first few epochs
-
-
-
-* * *
-
-#### 8/30/2022
-
-
-
-**Done:**
-1. subjective Qualtrics test set-up
-2. connect server via VScode
-3. setup Github on server
-
-
-**Meeting:**
-
-modification on the experiment:
-1. text-labeled results
-2. likert scal
-3. compact view
-4. remove unmixed
-5. 10 second audio, or even shorter
-6. 12-15 audio samples
-
-
-
-
-**To-do:**
-
-Training:
-* [ ] move data to server
-* [ ] run the training on server
-* [ ] look at the first epoch
-
-
-Experiment setup:
-* [ ] modify the experiment according to the meeting
-* [ ] try out the experiment and measure the time
-* [ ] IRB training
-* [ ] IRB submission
