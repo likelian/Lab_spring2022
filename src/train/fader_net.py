@@ -14,7 +14,7 @@ train_loader = torch.utils.data.DataLoader(
 
 test_dataset = torch.load(data_path+'/test.pt')
 test_loader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=25, shuffle=True, num_workers=0)
+    test_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 
 
@@ -100,6 +100,7 @@ def train(model, device, train_loader, test_loader, epochs):
   optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
 
   train_loss, validation_loss = [], []
+  batch_train_loss, batch_validation_loss = [], []
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
     tepochs.set_description('Training')
@@ -109,26 +110,62 @@ def train(model, device, train_loader, test_loader, epochs):
       running_loss = 0.
 
       for data_acc, data_vox, target in train_loader:
-          # getting the training set
-          data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
+        # getting the training set
+        data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
 
-          data_acc = torch.nn.functional.normalize(data_acc)
-          data_vox = torch.nn.functional.normalize(data_vox)
+        data_acc = torch.nn.functional.normalize(data_acc)
+        data_vox = torch.nn.functional.normalize(data_vox)
 
-          data_acc *= torch.rand(1).cuda()
-          data_vox *= torch.rand(1).cuda()
+        data_acc *= torch.rand(1).cuda()
+        data_vox *= torch.rand(1).cuda()
 
-          data = torch.stack((data_acc, data_vox), dim=0)
-          data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
+        data = torch.stack((data_acc, data_vox), dim=0)
+        data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
 
-          pred = model(data)
+        pred = model(data)
+        optimizer.zero_grad()
+        MSE = loss(pred, target)
+        MSE.backward()
+        optimizer.step()
+
+        #tepochs.set_postfix(loss=loss.item())
+        running_loss += MSE.item()  # add the loss for this batch
+
+
+        #remove the below later
+        #validation loss on each file
+        model.eval()
+        val_loss = 0.
+
+        for test_acc, test_vox, test_target in test_loader:
+          # getting the validation set
+
+
+          test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
+
+          test_acc = torch.nn.functional.normalize(test_acc)
+          test_vox = torch.nn.functional.normalize(test_vox)
+
+          test_data = torch.stack((test_acc, test_vox), dim=0)
+          test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
+
           optimizer.zero_grad()
-          MSE = loss(pred, target)
-          MSE.backward()
-          optimizer.step()
+          test_pred = model(test_data)
 
+          test_MSE = t_loss(test_pred, test_target)
           #tepochs.set_postfix(loss=loss.item())
-          running_loss += MSE.item()  # add the loss for this batch
+          val_loss += test_MSE.item()
+          
+        #print("test_target", test_target)
+        #print("test_pred", test_pred)
+        #print("MSE.item()", MSE.item())
+        #print("val_loss", val_loss/len(test_loader))
+
+        batch_train_loss.append(MSE.item())
+        batch_validation_loss.append(val_loss/len(test_loader))
+
+        #end of removal
+
 
 
       # append the loss for this epoch
@@ -165,11 +202,11 @@ def train(model, device, train_loader, test_loader, epochs):
 
       #break
 
-  return train_loss, validation_loss
+  return train_loss, validation_loss, batch_train_loss, batch_validation_loss
 
 
 net = FaderNet().to(device)
-train_loss, validation_loss = train(net, device, train_loader, test_loader, 100)
+train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 1)
 
 
 textfile = open("../../results/train_loss.txt", "w")
@@ -203,6 +240,23 @@ plt.savefig('../../results/Loss.png')
 plt.show()
 plt.close()
 
+
+#remove
+
+plt.plot(batch_train_loss, color='darkorange', label='batch train loss')
+plt.plot(batch_validation_loss, color='deepskyblue', label='batch validation loss')
+plt.xlabel('batches')
+plt.ylabel("MSE Loss (in dB)")
+#plt.title("Loss")
+#plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
+plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
+
+plt.tight_layout()
+plt.savefig('../../results/batch_Loss.png')
+plt.show()
+plt.close()
+
+#end of remove
 
 
 
