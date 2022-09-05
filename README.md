@@ -1,5 +1,38 @@
 # Lab_fall2022
 
+
+* * *
+
+#### 9/6/2022
+
+
+**Done:**
+1. modified Qualtrics questionnaire
+2. finished IRB training
+3. submitted IRB protocol, wait for IRB feedback
+4. installed server environment
+5. install Demucs
+6. moved more (unorganized) training data to the server
+7. ran the training on the server
+8. ran the training of the first epoch
+
+
+**Results:**
+
+* the original [result](https://github.com/likelian/Lab_spring2022/blob/main/results/Loss.png) of 100 epochs
+* the [result](https://github.com/likelian/Lab_spring2022/blob/main/results/Loss%20LR%3D0.0001.png) of changing learning rate from 0.0005 to 0.0001
+* the [result](https://github.com/likelian/Lab_spring2022/blob/main/results/batch_Loss.png) of every batch in the first epoch
+* a sample of the volume ratio prediction in the first epoch:
+    * [-2.5375, -2.6064, -2.5929, -2.5967, -2.6080, -2.5770, -2.5852, -2.5408,
+        -2.6124, -2.5886, -2.6015, -2.5651, -2.5767, -2.5780, -2.5964, -2.5865,
+        -2.4674, -2.3650, -2.3650]
+    * I think they are moving close to the average(not verified) of the training dataset and stayed there
+
+
+
+
+
+
 * * *
 
 #### 8/30/2022
@@ -354,7 +387,7 @@ Let Alex know my decision within two days!!!!
 
 **Done:**
 
-1. Run the model, terriable results
+1. Run the model, terrible results
 
 
 **Meeting:**
