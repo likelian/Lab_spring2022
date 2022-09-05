@@ -5,7 +5,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-device = torch.device('cpu')
+device = torch.device('cuda')
 
 data_path = "../../../musdb18hq/"
 train_dataset = torch.load(data_path+'/train.pt')
@@ -115,8 +115,8 @@ def train(model, device, train_loader, test_loader, epochs):
           data_acc = torch.nn.functional.normalize(data_acc)
           data_vox = torch.nn.functional.normalize(data_vox)
 
-          data_acc *= torch.rand(1)
-          data_vox *= torch.rand(1)
+          data_acc *= torch.rand(1).cuda()
+          data_vox *= torch.rand(1).cuda()
 
           data = torch.stack((data_acc, data_vox), dim=0)
           data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
