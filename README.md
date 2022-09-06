@@ -5,7 +5,6 @@
 
 #### 9/6/2022
 
-correction on last report: 2nd order Butterworth bandpass filters has a Q value of 0.707.
 
 **Done:**
 1. modified Qualtrics [questionnaire](https://github.com/likelian/Lab_spring2022/blob/main/experiment/survey%20screentshot/screenshot.pdf)
@@ -31,8 +30,27 @@ correction on last report: 2nd order Butterworth bandpass filters has a Q value 
 
 
 
+**Meeting:**
 
+Modifications on Qualtrics:
 
+* [ ] both email address on Introdction page
+* [ ] informed exempt form, find a template
+* [ ] language: "critical listening environment"
+* [ ] headphone vs speaker
+* [ ] wording: "it will be helpful to describe your listening environment, optional..."
+* [ ] ages as group options
+* [ ] skip the question of listening hours
+* [ ] one slide for training:
+* [ ]     examples of very bad and very good mixing, educate about level balance, EQ,,,
+* [ ] question starts with individual ones, ends with overall quality
+* [ ] wording: 4 different mixes
+* [ ] wording: bad vs. good, Qualtrics vocabulary
+
+**To-do:**
+
+1. modify the questioniare
+2. wait for Alex's review on IRB
 
 * * *
 
