@@ -7,7 +7,7 @@
 
 
 **Done:**
-1. modified Qualtrics questionnaire
+1. modified Qualtrics [questionnaire](https://github.com/likelian/Lab_spring2022/blob/main/experiment/survey%20screentshot/screenshot.pdf)
 2. finished IRB training
 3. submitted IRB protocol, wait for IRB feedback
 4. installed server environment
