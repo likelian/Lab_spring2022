@@ -41,15 +41,14 @@ Modifications on Qualtrics:
 * [ ] wording: "it will be helpful to describe your listening environment, optional..."
 * [ ] ages as group options
 * [ ] skip the question of listening hours
-* [ ] one slide for training:
-* [ ]     examples of very bad and very good mixing, educate about level balance, EQ,,,
+* [ ] one slide for training: examples of very bad and very good mixing, educate about level balance,,,,
 * [ ] question starts with individual ones, ends with overall quality
 * [ ] wording: 4 different mixes
 * [ ] wording: bad vs. good, Qualtrics vocabulary
 
 **To-do:**
 
-1. modify the questioniare
+1. modify the questionnaire
 2. wait for Alex's review on IRB
 
 * * *
