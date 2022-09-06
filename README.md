@@ -5,6 +5,7 @@
 
 #### 9/6/2022
 
+correction on last report: 2nd order Butterworth bandpass filters has a Q value of 0.707.
 
 **Done:**
 1. modified Qualtrics [questionnaire](https://github.com/likelian/Lab_spring2022/blob/main/experiment/survey%20screentshot/screenshot.pdf)
