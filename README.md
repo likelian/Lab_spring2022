@@ -6,27 +6,31 @@
 
 #### 9/8/2022
 
-##### **Current state of model training**
+### **Current state of model training**
 The validation loss stables at around MSE 7.6dB after the training of less 100 batches. That is data less than 1h in time. The prediction centered around -2.7dB, assumed to be the average of the training ground truth.
 After training for 100 epochs, the train loss goes stably down from around MSE 7dB to MSE 2dB. The validation loss jumps between MSE 10dB to MSE 20dB. We assume the network “memorized” the training data and the ground truth.
 
-##### **How to make it work:**
+### **How to make it work:**
 
 **Expand the training data**
+
 The current training data is many snippets from 150 songs. The ground truth is 150 data point of relative loudness.
 More training data is available, but time is needed from data loading. They are not much larger than the current training dataset. (MedleyDB, iKala, ccMixter, and Rock band).
 We can create more training data with source separation, get the million song dataset. need to measure the error(loudness, band energy, reverb, loudness range) of the source separated data.
 
 
 **Change the input data**
+
 The current input: "The FFT size is 2048 with the hop size of 1024. The number of mel filterbanks is 128. Each input feature block includes 64 mel-spectrum temporal steps, and each block represents around 1.51 seconds. The size of the input block is (2, 128, 64).”
 We can consider each block to represent longer time.
 
 
 **Change the neural network**
+
 The current rather simple network consists primarily 2d convolution layers. We can borrow a structure that has succeed on other tasks. Is there a room for RNN is this task, or even combine CNN and RNN for long time series input?
 
 **Change the ground truth representation**
+
 Normalization, amplitude scale, gain change needed instead of targeted relative loudness.
 
 
