@@ -35,13 +35,13 @@
 Modifications on Qualtrics:
 
 * [ ] ~~both email address on Introdction page~~
-* [ ] informed exempt form, find a template
+* [ ] ~~informed exempt form, find a template~~
 * [ ] ~~wording: "critical listening environment"~~
 * [ ] ~~headphone vs speaker~~
 * [ ] ~~wording: "it will be helpful to describe your listening environment, optional..."~~
 * [ ] ~~ages as group options~~
 * [ ] ~~skip the question of listening hours~~
-* [ ] one slide for training: examples of very bad and very good mixing, educate about level balance,,,,
+* [ ] ~~one slide for training: examples of very bad and very good mixing, educate about level balance,,,,~~
 * [ ] ~~question starts with individual ones, ends with overall quality~~
 * [ ] ~~wording: 4 different mixes~~
 * [ ] ~~wording: bad vs. good, Qualtrics vocabulary~~
