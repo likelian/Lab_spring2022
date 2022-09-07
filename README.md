@@ -34,22 +34,23 @@
 
 Modifications on Qualtrics:
 
-* [ ] both email address on Introdction page
+* [ ] ~~both email address on Introdction page~~
 * [ ] informed exempt form, find a template
-* [ ] language: "critical listening environment"
-* [ ] headphone vs speaker
-* [ ] wording: "it will be helpful to describe your listening environment, optional..."
-* [ ] ages as group options
-* [ ] skip the question of listening hours
+* [ ] ~~wording: "critical listening environment"~~
+* [ ] ~~headphone vs speaker~~
+* [ ] ~~wording: "it will be helpful to describe your listening environment, optional..."~~
+* [ ] ~~ages as group options~~
+* [ ] ~~skip the question of listening hours~~
 * [ ] one slide for training: examples of very bad and very good mixing, educate about level balance,,,,
-* [ ] question starts with individual ones, ends with overall quality
-* [ ] wording: 4 different mixes
-* [ ] wording: bad vs. good, Qualtrics vocabulary
+* [ ] ~~question starts with individual ones, ends with overall quality~~
+* [ ] ~~wording: 4 different mixes~~
+* [ ] ~~wording: bad vs. good, Qualtrics vocabulary~~
 
 **To-do:**
 
 1. modify the questionnaire
 2. wait for Alex's review on IRB
+3. change rule-based EQ Q factor to 1
 
 * * *
 

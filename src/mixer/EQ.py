@@ -110,21 +110,21 @@ def EQ(self):
     vst.filter_enablement_1 = True
     vst.filter_type_1 = "Low-shelf" #'HP (6dB/oct)', 'HP (12dB/oct)', 'HP (24dB/oct)', 'Low-shelf'
     vst.filter_frequency_1_hz = 100. #[20.0Hz, 20000.0Hz]
-    vst.filter_q_1 = 0.75 #[0.05, 8.0]
+    vst.filter_q_1 = 1. #[0.05, 8.0]
     vst.filter_gain_1_db = -12. #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_2 = True
     vst.filter_type_2 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
     vst.filter_frequency_2_hz = freq_top_list[0] #[20.0Hz, 20000.0Hz]
-    vst.filter_q_2 = 2. #[0.05, 8.0]
+    vst.filter_q_2 = 1. #[0.05, 8.0]
     vst.filter_gain_2_db = gain_top_list[0] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_3 = True
     vst.filter_type_3 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
     vst.filter_frequency_3_hz = freq_top_list[1] #[20.0Hz, 20000.0Hz]
-    vst.filter_q_3 = 2. #[0.05, 8.0]
+    vst.filter_q_3 = 1. #[0.05, 8.0]
     vst.filter_gain_3_db = gain_top_list[1] #[-60.0dB, 15.0dB]
 
 
@@ -132,21 +132,21 @@ def EQ(self):
     vst.filter_enablement_4 = True
     vst.filter_type_4 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
     vst.filter_frequency_4_hz = freq_top_list[2] #[20.0Hz, 20000.0Hz]
-    vst.filter_q_4 = 2. #[0.05, 8.0]
+    vst.filter_q_4 = 1. #[0.05, 8.0]
     vst.filter_gain_4_db = gain_top_list[2] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_5 = True
     vst.filter_type_5 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
     vst.filter_frequency_5_hz = freq_top_list[3] #[20.0Hz, 20000.0Hz]
-    vst.filter_q_5 = 2. #[0.05, 8.0]
+    vst.filter_q_5 = 1. #[0.05, 8.0]
     vst.filter_gain_5_db = gain_top_list[3] #[-60.0dB, 15.0dB]
 
 
     vst.filter_enablement_6 = True
     vst.filter_type_6 = "High-shelf" #'LP (6dB/Oct)', 'LP (12dB/oct)', 'LP (24dB/oct)', 'High-shelf'
     vst.filter_frequency_6_hz = 11000. #[20.0Hz, 20000.0Hz]
-    vst.filter_q_6 = 0.71 #[0.05, 8.0]
+    vst.filter_q_6 = 1. #[0.05, 8.0]
     vst.filter_gain_6_db = 0. #[-60.0dB, 15.0dB]
 
     output = vst(vox, rate)
