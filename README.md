@@ -53,6 +53,7 @@ Normalization, amplitude scale, gain change needed instead of targeted relative 
 **Results:**
 
 * the original [result](https://github.com/likelian/Lab_spring2022/blob/main/results/9:6_Loss.png) of 100 epochs
+* the [result](https://github.com/likelian/Lab_spring2022/blob/main/results/9:7_Loss.png) of 1000 epochs
 * the [result](https://github.com/likelian/Lab_spring2022/blob/main/results/9:6_Loss%20LR%3D0.0001.png) of changing learning rate from 0.0005 to 0.0001
 * the [result](https://github.com/likelian/Lab_spring2022/blob/main/results/9:6_batch_Loss.png) of every batch in the first epoch
 * a sample of the volume ratio prediction in the first epoch:
