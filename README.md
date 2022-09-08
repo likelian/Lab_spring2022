@@ -6,11 +6,16 @@
 
 #### 9/8/2022
 
+
+done:
+1. survey update
+
+
 ### **Current state of model training**
 The validation loss stables at around MSE 7.6dB after the training of less 100 batches. That is data less than 1h in time. The prediction centered around -2.7dB, assumed to be the average of the training ground truth.
 After training for 100 epochs, the train loss goes stably down from around MSE 7dB to MSE 2dB. The validation loss jumps between MSE 10dB to MSE 20dB. We assume the network “memorized” the training data and the ground truth.
 
-### **How to make it work:**
+### **Possible Solutions:**
 
 **Expand the training data**
 
@@ -33,6 +38,16 @@ The current rather simple network consists primarily 2d convolution layers. We c
 
 Normalization, amplitude scale, gain change needed instead of targeted relative loudness.
 
+
+### **What to do next**
+
+1. check model hyper-parameters
+2. make a list of ways to counter overfitting (dropout, regularizations)
+3. plot the ground truth, see the distribution
+4. plot in dB scale, not MSE
+5. **relative loudness for each snippets, not the entire song**
+6. **plan ahead for source separation**
+7. **change training data size to see the impact**
 
 * * *
 
