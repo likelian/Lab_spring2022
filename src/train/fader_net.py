@@ -134,6 +134,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
         #remove the below later
         #validation loss on each file
+        """
         model.eval()
         val_loss = 0.
 
@@ -163,7 +164,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
         batch_train_loss.append(MSE.item())
         batch_validation_loss.append(val_loss/len(test_loader))
-
+        """
         #end of removal
 
 
@@ -206,7 +207,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
 
 net = FaderNet().to(device)
-train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 1)
+train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 1000)
 
 
 textfile = open("../../results/train_loss.txt", "w")
@@ -242,7 +243,7 @@ plt.close()
 
 
 #remove
-
+"""
 plt.plot(batch_train_loss, color='darkorange', label='batch train loss')
 plt.plot(batch_validation_loss, color='deepskyblue', label='batch validation loss')
 plt.xlabel('batches')
@@ -255,7 +256,7 @@ plt.tight_layout()
 plt.savefig('../../results/batch_Loss.png')
 plt.show()
 plt.close()
-
+"""
 #end of remove
 
 
