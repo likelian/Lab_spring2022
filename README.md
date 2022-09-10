@@ -16,8 +16,7 @@ done:
     2. current version:
         1. Mike: 1.5min
         2. Shi: 2min
-
-1. change the audio length to 5s
+    3. no change of the audio length for current version
 
 
 ### **Current state of model training**
