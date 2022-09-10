@@ -9,6 +9,15 @@
 
 done:
 1. survey update
+2. experiment time cost:
+    1. previous version:
+        1. Mike: 2min
+        2. Shi: 5min
+    2. current version:
+        1. Mike: 1.5min
+        2. Shi: 2min
+
+1. change the audio length to 5s
 
 
 ### **Current state of model training**
