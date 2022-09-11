@@ -5,21 +5,6 @@ import numpy as np
 from tqdm import tqdm
 
 
-device = torch.device('cuda')
-
-data_path = "../../../musdb18hq/"
-train_dataset = torch.load(data_path+'/train.pt')
-train_loader = torch.utils.data.DataLoader(
-    train_dataset, batch_size=25, shuffle=True, num_workers=0)
-
-test_dataset = torch.load(data_path+'/test.pt')
-test_loader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=25, shuffle=False, num_workers=0)
-
-
-
-# Make a CNN & train it to predict genres.
-
 class FaderNet(nn.Module):
   def __init__(self):
     """Intitalize neural net layers"""
@@ -109,7 +94,17 @@ def train(model, device, train_loader, test_loader, epochs):
       # keep track of the running loss
       running_loss = 0.
 
+      batch_count = 0
+
       for data_acc, data_vox, target in train_loader:
+
+        #batch_count += 1
+
+        #train with half of the data
+        #if batch_count >= 300:
+          #print("batch_count", batch_count)
+          #break
+
         # getting the training set
         data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
 
@@ -206,9 +201,30 @@ def train(model, device, train_loader, test_loader, epochs):
   return train_loss, validation_loss, batch_train_loss, batch_validation_loss
 
 
-net = FaderNet().to(device)
-train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 1000)
 
+
+###############################################################################
+
+device = torch.device('cuda')
+
+data_path = "../../../musdb18hq/"
+train_dataset = torch.load(data_path+'/train.pt')
+train_loader = torch.utils.data.DataLoader(
+    train_dataset, batch_size=25, shuffle=False, num_workers=0)
+
+test_dataset = torch.load(data_path+'/test.pt')
+test_loader = torch.utils.data.DataLoader(
+    test_dataset, batch_size=25, shuffle=False, num_workers=0)
+
+
+###############################################################################
+
+net = FaderNet().to(device)
+train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 100)
+
+
+
+###############################################################################
 
 textfile = open("../../results/train_loss.txt", "w")
 for element in train_loss:
@@ -222,10 +238,11 @@ textfile.close()
 
 
 
+###############################################################################
+
 import pandas as pd
 #import seaborn as sns
 import matplotlib.pyplot as plt
-
 
 
 plt.plot(train_loss, color='darkorange', label='train loss')
