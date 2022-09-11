@@ -94,16 +94,16 @@ def train(model, device, train_loader, test_loader, epochs):
       # keep track of the running loss
       running_loss = 0.
 
-      batch_count = 0
+      #batch_count = 0
 
       for data_acc, data_vox, target in train_loader:
 
-        batch_count += 1
+        #batch_count += 1
 
         #train with half of the data
-        if batch_count >= 300:
-          print("batch_count", batch_count)
-          break
+        #if batch_count >= 300:
+        #  print("batch_count", batch_count)
+        #  break
 
         # getting the training set
         data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
@@ -130,6 +130,7 @@ def train(model, device, train_loader, test_loader, epochs):
         #remove the below later
         #validation loss on each file
         """
+        
         model.eval()
         val_loss = 0.
 
@@ -159,6 +160,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
         batch_train_loss.append(MSE.item())
         batch_validation_loss.append(val_loss/len(test_loader))
+        
         """
         #end of removal
 
@@ -210,7 +212,7 @@ device = torch.device('cuda')
 data_path = "../../../musdb18hq/"
 train_dataset = torch.load(data_path+'/train.pt')
 train_loader = torch.utils.data.DataLoader(
-    train_dataset, batch_size=25, shuffle=True, num_workers=0)
+    train_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 test_dataset = torch.load(data_path+'/test.pt')
 test_loader = torch.utils.data.DataLoader(
@@ -255,7 +257,7 @@ plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
 
 plt.tight_layout()
 plt.savefig('../../results/Loss.png')
-plt.show()
+#plt.show()
 plt.close()
 
 
@@ -271,7 +273,7 @@ plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
 
 plt.tight_layout()
 plt.savefig('../../results/batch_Loss.png')
-plt.show()
+#plt.show()
 plt.close()
 """
 #end of remove
