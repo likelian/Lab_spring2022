@@ -98,12 +98,12 @@ def train(model, device, train_loader, test_loader, epochs):
 
       for data_acc, data_vox, target in train_loader:
 
-        #batch_count += 1
+        batch_count += 1
 
         #train with half of the data
-        #if batch_count >= 300:
-          #print("batch_count", batch_count)
-          #break
+        if batch_count >= 300:
+          print("batch_count", batch_count)
+          break
 
         # getting the training set
         data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
@@ -210,7 +210,7 @@ device = torch.device('cuda')
 data_path = "../../../musdb18hq/"
 train_dataset = torch.load(data_path+'/train.pt')
 train_loader = torch.utils.data.DataLoader(
-    train_dataset, batch_size=25, shuffle=False, num_workers=0)
+    train_dataset, batch_size=25, shuffle=True, num_workers=0)
 
 test_dataset = torch.load(data_path+'/test.pt')
 test_loader = torch.utils.data.DataLoader(
