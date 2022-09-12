@@ -98,12 +98,11 @@ def train(model, device, train_loader, test_loader, epochs):
 
       for data_acc, data_vox, target in train_loader:
 
-        batch_count += 1
+        #batch_count += 1
 
         #train with 1/4 of the data
-        if batch_count >= 150:
-          print("batch_count", batch_count)
-          break
+        #if batch_count >= 37:
+        #  break
 
 
         # getting the training set
