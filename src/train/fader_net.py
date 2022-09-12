@@ -124,7 +124,7 @@ def train(model, device, train_loader, test_loader, epochs):
         optimizer.step()
 
         #tepochs.set_postfix(loss=loss.item())
-        running_loss += MSE.item()  # add the loss for this batch
+        running_loss += MSE.item()**0.5  # add the loss for this batch
 
 
         #remove the below later
@@ -192,7 +192,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
           test_MSE = t_loss(test_pred, test_target)
           #tepochs.set_postfix(loss=loss.item())
-          running_loss += test_MSE.item()
+          running_loss += test_MSE.item()**0.5
 
       validation_loss.append(running_loss/len(test_loader))
 
@@ -222,7 +222,7 @@ test_loader = torch.utils.data.DataLoader(
 ###############################################################################
 
 net = FaderNet().to(device)
-train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 100)
+train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 10)
 
 
 
@@ -250,7 +250,7 @@ import matplotlib.pyplot as plt
 plt.plot(train_loss, color='darkorange', label='train loss')
 plt.plot(validation_loss, color='deepskyblue', label='validation loss')
 plt.xlabel('Epochs')
-plt.ylabel("MSE Loss (in dB)")
+plt.ylabel("L1s Loss (in dB)")
 #plt.title("Loss")
 #plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
 plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
