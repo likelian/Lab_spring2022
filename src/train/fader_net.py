@@ -94,12 +94,10 @@ def train(model, device, train_loader, test_loader, epochs):
       # keep track of the running loss
       running_loss = 0.
 
-      batch_count = 0
-
+      #batch_count = 0
       for data_acc, data_vox, target in train_loader:
 
         #batch_count += 1
-
         #train with 1/4 of the data
         #if batch_count >= 37:
         #  break
