@@ -5,6 +5,20 @@
 
 #### 9/13/2022
 
+
+**To-do:**
+
+1. snippet relative loudness
+2. source separation
+3. a list of solutions for overfitting, pros and cons
+
+
+**Meeting:**
+Be sure to plot everything on one plot
+Be sure to scale plots
+
+
+
 **Done:**
 subjective experiment setup:
 1. survey update
@@ -36,7 +50,7 @@ relative loudness for each snippets:
 
 1. check model hyper-parameters
 2. make a list of ways to counter overfitting (dropout, regularizations)
-3. plot the ground truth, see the distribution
+3. ~~plot the ground truth, see the distribution~~
 4. ~~plot in dB scale, not MSE~~
 5. **relative loudness for each snippets, not the entire song**
 6. **plan ahead for source separation**
