@@ -11,6 +11,8 @@ def mel_spec(audio_path, output_path, ground_truth_dict):
 
     abs_audio_path = os.path.abspath(audio_path)
 
+    #win_length = n_fft
+    #hop_length = win_length // 2
     transform = torchaudio.transforms.MelSpectrogram(sample_rate=44100, n_fft=2048)
 
 
