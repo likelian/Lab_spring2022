@@ -1,13 +1,12 @@
 # Lab_fall2022
 
 
-
 * * *
 
-#### 9/8/2022
+#### 9/13/2022
 
-
-done:
+**Done:**
+subjective experiment setup:
 1. survey update
 2. experiment time cost:
     1. previous version:
@@ -17,6 +16,31 @@ done:
         1. Mike: 1.5min
         2. Shi: 2min
     3. no change of the audio length for current version
+
+Because my training data is [organized](https://stackoverflow.com/questions/54354465/impact-of-using-data-shuffling-in-pytorch-dataloader) (audio snnippets are ordered by songs), <u>data loader shuffle</u> on and off makes big differences on validation loss plot. See results/archive_half_data/ folder. The plots of one epoch batch loss are also very differnt. Even though, I think shuffle off only makes the training slower, and overfits later. The low point of the first epoch validation loss is at MSE 7.6 dB, so not better than However, shuffle songs instead of snippets may not be a bad idea.
+
+
+Training on <u>different portions of the data</u> (full, 1/2, 1/4, 1/8, 1/16). See the plots [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/training_data_portion/shuffleFalse). The larger the training data, the train loss is slower (understandably). There best validation loss is about the same, but the plot of the full data is very different, **worth investigation**.
+
+See the relative loudness distribution (ground truth) [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/loudness_distribution).
+
+relative loudness for each snippets:
+1. Uplaod raw audio from musdb18hq to the server
+
+
+* * *
+
+#### 9/8/2022
+
+### **What to do next**
+
+1. check model hyper-parameters
+2. make a list of ways to counter overfitting (dropout, regularizations)
+3. plot the ground truth, see the distribution
+4. ~~plot in dB scale, not MSE~~
+5. **relative loudness for each snippets, not the entire song**
+6. **plan ahead for source separation**
+7. **~~change training data size to see the impact~~**
 
 
 ### **Current state of model training**
@@ -46,16 +70,6 @@ The current rather simple network consists primarily 2d convolution layers. We c
 
 Normalization, amplitude scale, gain change needed instead of targeted relative loudness.
 
-
-### **What to do next**
-
-1. check model hyper-parameters
-2. make a list of ways to counter overfitting (dropout, regularizations)
-3. plot the ground truth, see the distribution
-4. plot in dB scale, not MSE
-5. **relative loudness for each snippets, not the entire song**
-6. **plan ahead for source separation**
-7. **change training data size to see the impact**
 
 * * *
 
