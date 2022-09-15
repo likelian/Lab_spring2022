@@ -38,10 +38,10 @@ def relative_loundness_MUSDB(abs_audio_path):
 
         print("mxiture_path", mxiture_path)
         #print("vox_path", vox_path)
-        if mxiture.size > vox.size:
-            mxiture = mxiture[:vox.size]
-        if vox.size > mxiture.size:
-            vox = vox[:mxiture.size]
+        #if mxiture.size > vox.size:
+        #    mxiture = mxiture[:vox.size]
+        #if vox.size > mxiture.size:
+        #    vox = vox[:mxiture.size]
 
         #ignore the ones than don't match in length
         #if mxiture.size != vox.size:

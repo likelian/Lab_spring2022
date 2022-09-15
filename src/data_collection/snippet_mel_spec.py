@@ -3,17 +3,24 @@ from os import walk
 import json
 import torch
 import torchaudio
+import soundfile as sf
+import numpy as np
+import sys
+import pyloudnorm as pyln
 
-def mel_spec(audio_path, output_path, ground_truth_dict):
+def mel_spec(audio_path, output_path):
     """
     create mel_spec tensor and level ratio ground truth
     """
 
-    abs_audio_path = os.path.abspath(audio_path)
+    #abs_audio_path = os.path.abspath(audio_path)
+    abs_audio_path = audio_path
 
     #win_length = n_fft
     #hop_length = win_length // 2
     transform = torchaudio.transforms.MelSpectrogram(sample_rate=44100, n_fft=2048)
+
+    
 
 
     for (dirpath, dirnames, filenames) in walk(abs_audio_path):
@@ -29,8 +36,6 @@ def mel_spec(audio_path, output_path, ground_truth_dict):
             filename = path_str[index+1:]
             print(filename)
 
-            ground_truth = ground_truth_dict[filename+"--vox_acc_ratio"]
-
 
         else:
             continue
@@ -40,16 +45,38 @@ def mel_spec(audio_path, output_path, ground_truth_dict):
 
         acc = mxiture - vox
 
+        #mono
         acc = torch.mean(acc, 0)
         vox = torch.mean(vox, 0)
 
         acc_mel_spec = transform(acc)
         vox_mel_spec = transform(vox)
 
+        meter = pyln.Meter(44100)
+
+
+        acc = acc.detach().numpy()
+        vox = vox.detach().numpy()
+
+        #extract snippet relative loudness
+        vox_acc_ratio_list = []
+        for i in range(int(acc.shape[0] / 65536)):
+            acc_loudness = meter.integrated_loudness(acc[i * 65536 : i*65536+65536])
+            vox_loudness = meter.integrated_loudness(vox[i * 65536 : i*65536+65536])
+
+            if not np.isfinite(acc_loudness) or not np.isfinite(vox_loudness):
+                vox_acc_ratio = np.asarray(np.nan)
+            else:
+                vox_acc_ratio = vox_loudness - acc_loudness
+        
+            vox_acc_ratio_list.append(vox_acc_ratio)
+
+
+
 
         def reshape(mel_spec):
             frameNum = mel_spec.shape[1]
-            blockNum = int(frameNum / 64) #(63*1024+2048)/44100 = 1.501s
+            blockNum = int(frameNum / 64) #64*1024/44100 = 1.48s
             mel_spec = mel_spec.T[:-(frameNum - blockNum*64)].T
             mel_spec_matrix = torch.reshape(mel_spec, (128, blockNum, 64))
             mel_spec_matrix = mel_spec_matrix.permute(1, 2, 0) #blocks, time frame, freq frame
@@ -58,7 +85,14 @@ def mel_spec(audio_path, output_path, ground_truth_dict):
         acc_mel_spec = reshape(acc_mel_spec)
         vox_mel_spec = reshape(vox_mel_spec)
 
-        gt_tensor = torch.full((acc_mel_spec.shape[0],), ground_truth)
+
+        if len(vox_acc_ratio_list) != acc_mel_spec.shape[0]:
+            print("ground truth and input data size not match")
+            print(len(vox_acc_ratio_list))
+            print(acc_mel_spec.shape[0])
+
+
+        gt_tensor = torch.tensor(np.asarray(vox_acc_ratio_list))
 
         dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
 
@@ -73,22 +107,12 @@ f = open(ground_truth_path)
 ground_truth_dict = json.load(f)
 
 
-#output_path = "/Volumes/mix/Dataset/musdb18hq_mel/train/"
-output_path = "/Volumes/mix/Dataset/musdb18hq_mel/test/"
+output_path = "/home/kli421/dir1/musdb18hq_mel/train_snippet/"
+#output_path = "/home/kli421/dir1/musdb18hq_mel/test_snippet/"
 
-#audio_path = "/Volumes/mix/Dataset/musdb18hq/train"
-audio_path = "/Volumes/mix/Dataset/musdb18hq/test"
-
-mel_spec(audio_path, output_path, ground_truth_dict)
+audio_path = "/home/kli421/dir1/musdb18hq/train"
+#audio_path = "/home/kli421/dir1/musdb18hq/test"
 
 
 
-"""
-batch_size = 16
-train_dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
-
-for X_1, X_2, y in train_dataloader:
-    print(X_1.shape)
-    print(X_2.shape)
-    print(y.shape)
-"""
+mel_spec(audio_path, output_path)
