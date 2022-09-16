@@ -135,7 +135,6 @@ def train(model, device, train_loader, test_loader, epochs):
         for test_acc, test_vox, test_target in test_loader:
           # getting the validation set
 
-
           test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
 
           test_acc = torch.nn.functional.normalize(test_acc)
@@ -151,10 +150,6 @@ def train(model, device, train_loader, test_loader, epochs):
           #tepochs.set_postfix(loss=loss.item())
           val_loss += test_MSE.item()
           
-        #print("test_target", test_target)
-        #print("test_pred", test_pred)
-        #print("MSE.item()", MSE.item())
-        #print("val_loss", val_loss/len(test_loader))
 
         batch_train_loss.append(MSE.item())
         batch_validation_loss.append(val_loss/len(test_loader))
@@ -252,7 +247,7 @@ import matplotlib.pyplot as plt
 plt.plot(train_loss, color='darkorange', label='train loss')
 plt.plot(validation_loss, color='deepskyblue', label='validation loss')
 plt.xlabel('Epochs')
-plt.ylabel("L1s Loss (in dB)")
+plt.ylabel("L1 Loss (in dB)")
 #plt.title("Loss")
 #plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
 plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
