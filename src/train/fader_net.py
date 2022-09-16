@@ -224,7 +224,7 @@ test_loader = torch.utils.data.DataLoader(
 ###############################################################################
 
 net = FaderNet().to(device)
-train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 10)
+train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 100)
 
 
 
@@ -279,26 +279,3 @@ plt.savefig('../../results/batch_Loss.png')
 plt.close()
 """
 #end of remove
-
-
-
-"""
-epochs = np.arange(len(train_loss))
-train_loss = np.asarray(train_loss)
-d = {'epochs': epochs, 'MSE Loss': train_loss}
-dataframe = pd.DataFrame(d)
-g = sns.lineplot(x='epochs', y='MSE Loss', data=dataframe)
-g.set_title('Train Loss')
-plt.show()
-plt.savefig('../../results/Train Loss.png')
-
-
-epochs = np.arange(len(test_loss))
-test_loss = np.asarray(test_loss)
-d = {'epochs': epochs, 'MSE Loss': test_loss}
-dataframe = pd.DataFrame(d)
-g = sns.lineplot(x='epochs', y='MSE Loss', data=dataframe)
-g.set_title('Test Loss')
-plt.show()
-plt.savefig('../../results/Test Loss.png')
-"""
