@@ -92,19 +92,23 @@ def mel_spec(audio_path, output_path):
             print(acc_mel_spec.shape[0])
 
 
-        gt_tensor = torch.tensor(np.asarray(vox_acc_ratio_list))
+        gt_tensor = torch.tensor(np.asarray(vox_acc_ratio_list)).float()
+
 
         dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
 
         torch.save(dataset, output_path+filename+'.pt')
 
 
+#output_path = "/home/kli421/dir1/musdb18hq_mel/train_snippet/"
+output_path = "/home/kli421/dir1/musdb18hq_mel/test_snippet/"
+
+#audio_path = "/home/kli421/dir1/musdb18hq/train"
+audio_path = "/home/kli421/dir1/musdb18hq/test"
+
+mel_spec(audio_path, output_path)
 
 
-#ground_truth_path = "../../data/vox_acc_ratio/train_vox_acc_ratio.json"
-ground_truth_path = "../../data/vox_acc_ratio/test_vox_acc_ratio.json"
-f = open(ground_truth_path)
-ground_truth_dict = json.load(f)
 
 
 output_path = "/home/kli421/dir1/musdb18hq_mel/train_snippet/"
@@ -112,7 +116,5 @@ output_path = "/home/kli421/dir1/musdb18hq_mel/train_snippet/"
 
 audio_path = "/home/kli421/dir1/musdb18hq/train"
 #audio_path = "/home/kli421/dir1/musdb18hq/test"
-
-
 
 mel_spec(audio_path, output_path)

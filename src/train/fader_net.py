@@ -209,13 +209,13 @@ device = torch.device('cuda')
 
 data_path = "../../../musdb18hq/"
 #train_dataset = torch.load(data_path+'/train.pt')
-train_dataset = torch.load(data_path+'/train_snippet.pt')
+train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
 
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 #test_dataset = torch.load(data_path+'/test.pt')
-test_dataset = torch.load(data_path+'/test_snippet.pt')
+test_dataset = torch.load(data_path+'/test_snippet_clean.pt')
 
 test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=25, shuffle=False, num_workers=0)
