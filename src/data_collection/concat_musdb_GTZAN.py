@@ -9,7 +9,7 @@ data = torch.load(dataset_path)
 datasets.append(data)
 
 
-dataset_path = "/home/kli421/dir1/GTZAN/GTZAN.pt"
+dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
 data = torch.load(dataset_path)
 datasets.append(data)
 

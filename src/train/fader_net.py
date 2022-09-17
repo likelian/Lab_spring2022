@@ -117,7 +117,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
         pred = model(data)
         optimizer.zero_grad()
-        MSE = loss(pred, target)
+        MSE = loss(pred, target)        
         MSE.backward()
         optimizer.step()
 
@@ -208,7 +208,8 @@ device = torch.device('cuda')
 
 #data_path = "/home/kli421/dir1/training_set/musdb_GTZAN.pt"
 #data_path = "/home/kli421/dir1/musdb18hq/train.pt"
-data_path = "/home/kli421/dir1/GTZAN/GTZAN.pt"
+#data_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
+data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
 train_dataset = torch.load(data_path)
 
 train_loader = torch.utils.data.DataLoader(
