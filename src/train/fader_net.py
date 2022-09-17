@@ -116,6 +116,13 @@ def train(model, device, train_loader, test_loader, epochs):
         data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
 
         pred = model(data)
+
+        #delete
+        #pred = pred.fill_(-2.56)
+        pred = pred.fill_(-1.77)
+        #quit()
+        #delete
+
         optimizer.zero_grad()
         MSE = loss(pred, target)        
         MSE.backward()
@@ -164,7 +171,7 @@ def train(model, device, train_loader, test_loader, epochs):
 
       print("epoch", epoch)
       print("train_loss", running_loss/len(train_loader))
-
+      
 
       # evaluate on test data
       model.eval()
@@ -182,6 +189,11 @@ def train(model, device, train_loader, test_loader, epochs):
 
           optimizer.zero_grad()
           test_pred = model(test_data)
+
+          #delete
+          #test_pred = test_pred.fill_(-2.56)
+          test_pred = test_pred.fill_(-1.77)
+          #delete
 
           test_MSE = t_loss(test_pred, test_target)
           #tepochs.set_postfix(loss=loss.item())
@@ -206,14 +218,14 @@ device = torch.device('cuda')
 #train_dataset = torch.load(data_path+'/train.pt')
 #train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
 
-data_path = "/home/kli421/dir1/training_set/musdb_GTZAN.pt"
+#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN.pt"
 #data_path = "/home/kli421/dir1/musdb18hq/train.pt"
-#data_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
+data_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
 #data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
 train_dataset = torch.load(data_path)
 
 train_loader = torch.utils.data.DataLoader(
-    train_dataset, batch_size=25, shuffle=True, num_workers=0)
+    train_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 #test_dataset = torch.load(data_path+'/test.pt')
 #test_dataset = torch.load(data_path+'/test_snippet_clean.pt')
