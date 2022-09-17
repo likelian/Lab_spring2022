@@ -202,9 +202,11 @@ def train(model, device, train_loader, test_loader, epochs):
 
 device = torch.device('cuda')
 
-data_path = "../../../musdb18hq/"
+#data_path = "../../../musdb18hq/"
 #train_dataset = torch.load(data_path+'/train.pt')
-train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
+#train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
+
+data_path = "/home/kli421/dir1/training_set/musdb_GTZAN.pt"
 
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=25, shuffle=False, num_workers=0)

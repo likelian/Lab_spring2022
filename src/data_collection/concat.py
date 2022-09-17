@@ -14,10 +14,13 @@ def concat(dataset_path, otuput_path):
             datasets.append(data)
 
     dataset = torch.utils.data.ConcatDataset(datasets)
-    torch.save(dataset, otuput_path+'/test.pt')
+    torch.save(dataset, otuput_path)
 
 
-dataset_path = "/Volumes/mix/Dataset/musdb18hq_mel/test"
-otuput_path = "../../../musdb18hq/"
+#dataset_path = "/Volumes/mix/Dataset/musdb18hq_mel/test"
+#otuput_path = "../../../musdb18hq/"
+
+dataset_path = "/home/kli421/dir1/GTZAN_mel/"
+otuput_path = "../../../GTZAN/GTZAN.pt"
 
 concat(dataset_path, otuput_path)
