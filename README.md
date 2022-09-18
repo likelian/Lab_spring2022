@@ -6,7 +6,7 @@
 ### 9/20/2022
 
 
-**Done:**
+#### **Done:**
 
 1. snippet relative loudness training
 2. separate and train on GTZAN dataset
@@ -14,14 +14,14 @@
 
 
 
-###### **Results:**
+#### **Results:**
 
-###### Extract the snippet relative loudness as the ground truth
+##### Extract the snippet relative loudness as the ground truth
 
 The result is [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/snippet_loss). Because the training data size and the validation data size are different, we cannot directly compare it with the previous [results](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/training_data_portion). Even though, it doesn't show obvious improvement. Under the same scale, the snippet method is much worse. But again, we cannot make direct comparison. Please note one version has the Y axis updated to L1 absolute loss (training is still MSE loss as before).
 
 
-###### Train on the source separated GTZAN + original MUSDB18 dataset
+##### Train on the source separated GTZAN + original MUSDB18 dataset
 
 The results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN). Sadly in this case more data with the same condition makes the result worse. 
 
@@ -35,7 +35,7 @@ With shuffle on, the plots look similar with immediate overfitting.
 
 
 
-###### Analyze the "ground truth" loudness distribution of GTZAN dataset
+##### Analyze the "ground truth" loudness distribution of GTZAN dataset
 
 * The average is **-1.77dB**. 
 * The average of MUSDB training set is **-2.56dB**. 
@@ -44,7 +44,7 @@ With shuffle on, the plots look similar with immediate overfitting.
 
 The error of source separation is not yet measured. If we will do so, we need to find data that's not in the training of DEMUCS.
 
-###### Measure the error when prediction a const value
+##### Measure the error when prediction a const value
 
 predict **-2.56dB**, average of training set of musdb18:
 * train_loss (on training set of musdb18): **1.98858dB**
@@ -60,7 +60,7 @@ predict **-2.24dB**, average of [musdb18 + GTZAN]:
 
 
 
-###### **Thoughts:**
+#### **Thoughts:**
 1. we haven't measure the error on the song level, when the snippet predictions are averaged. The individual errors may be minimized over averaging, to a level not significant to the human perception.
 2. Is the validation set big enough?
 3. when is the point to declare failure on the level balance task and move on?
