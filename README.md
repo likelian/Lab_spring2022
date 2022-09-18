@@ -127,10 +127,17 @@ test_pred tensor([-3.5198, -1.7534, -2.8902, -1.3237, -2.1851,  1.2402, -2.4298,
 
 ### **Overfit, what to do**
 
-* data argumentation:
+* more data
+* data argumentation
     * DSP methods (filter, pitch shift, reverb, gain, noise, distortion, polarity, etc.)
 * dropout
-* 
+* early-stoping
+* regularization
+    * L1
+    * L2
+* reducing the model complexity
+
+
 
 * * *
 
@@ -139,9 +146,9 @@ test_pred tensor([-3.5198, -1.7534, -2.8902, -1.3237, -2.1851,  1.2402, -2.4298,
 
 **To-do:**
 
-1. snippet relative loudness
-2. source separation
-3. a list of solutions for overfitting, pros and cons
+1. ~~snippet relative loudness~~
+2. ~~source separation~~
+3. ~~a list of solutions for overfitting, pros and cons~~
 
 
 **Meeting:**
@@ -180,11 +187,11 @@ relative loudness for each snippets:
 ### **What to do next**
 
 1. check model hyper-parameters
-2. make a list of ways to counter overfitting (dropout, regularizations)
+2. ~~make a list of ways to counter overfitting (dropout, regularizations)~~
 3. ~~plot the ground truth, see the distribution~~
 4. ~~plot in dB scale, not MSE~~
-5. **relative loudness for each snippets, not the entire song**
-6. **plan ahead for source separation**
+5. **~~relative loudness for each snippets, not the entire song~~**
+6. **~~plan ahead for source separation~~**
 7. **~~change training data size to see the impact~~**
 
 
