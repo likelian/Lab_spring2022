@@ -127,32 +127,22 @@ def train(model, device, train_loader, test_loader, epochs):
         #remove the below later
         #validation loss on each file
         """
-        
         model.eval()
         val_loss = 0.
-
         for test_acc, test_vox, test_target in test_loader:
           # getting the validation set
-
           test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
-
           test_acc = torch.nn.functional.normalize(test_acc)
           test_vox = torch.nn.functional.normalize(test_vox)
-
           test_data = torch.stack((test_acc, test_vox), dim=0)
           test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
-
           optimizer.zero_grad()
           test_pred = model(test_data)
-
           test_MSE = t_loss(test_pred, test_target)
           #tepochs.set_postfix(loss=loss.item())
           val_loss += test_MSE.item()
-          
-
         batch_train_loss.append(MSE.item())
         batch_validation_loss.append(val_loss/len(test_loader))
-        
         """
         #end of removal
 
@@ -182,7 +172,6 @@ def train(model, device, train_loader, test_loader, epochs):
           optimizer.zero_grad()
           test_pred = model(test_data)
           test_MSE = t_loss(test_pred, test_target)
-          #tepochs.set_postfix(loss=loss.item())
           running_loss += test_MSE.item()**0.5
 
       validation_loss.append(running_loss/len(test_loader))
