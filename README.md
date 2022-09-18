@@ -58,12 +58,79 @@ predict **-2.24dB**, average of [musdb18 + GTZAN]:
 * train_loss (on [musdb18 + GTZAN]): **3.46623dB**
 * validation_loss: **2.06969dB**
 
+#### Take a look at the prediction
+
+around 50 epochs, many **outliners**. Not even move towards the average of the training set.
+
+
+```
+test_target tensor([-0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822,
+        -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822,
+        -0.9822, -0.9822, -0.9822])
+```
+        
+```
+train_loss 3.133647832124737
+validation_loss 6.302189766815538
+test_pred tensor([ -2.3132,   3.6210,  -1.3594,   3.0669, -16.4016,  -9.2550,  -3.3789,
+         -1.2425,  -2.4893,   0.9137,   6.4405, -10.5467,  -0.4910, -14.4599,
+          1.8968,  -2.7692,  -6.6549,  -2.6803,  -2.6803])
+```
+
+
+around 100 epochs. However the average is not too bad.
+
+```
+train_loss 2.577969419920116
+validation_loss 6.361862780013492
+test_pred tensor([ -0.7363,   1.1263,  18.5542,  -1.4983, -10.8369,  -2.6429,  -6.5198,
+         -0.7239,  -5.4357,   3.8212,   6.5138,  -7.8792,  -7.6208,  -4.1977,
+          5.7325,  -6.6041,  -1.6016,  -2.2640,  -2.2640], device='cuda:0',
+       grad_fn=<SqueezeBackward0>)
+Training: 100%|█| 100/100 [09:02<00:00,  5.42s/epoch
+```
+
+
+##### **after filtering out the outliners in the training set (<-10 or >6):**
+
+See the loss plots [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN/outliner).
+
+
+The first a few epochs:
+
+```
+train_loss 2.2590598103469146
+validation_loss 2.6185671439177676
+test_pred tensor([-1.2246, -1.1045, -1.5075, -1.0640, -1.3079, -2.0863, -2.5538, -2.2044,
+        -3.1282, -1.0851, -1.1146, -2.4352, -1.8540, -2.5390, -1.3282, -3.2159,
+        -1.1520, -0.8380, -0.8380]
+```
+
+
+starts to overfit after many epochs
+```
+train_loss 1.7438088122341218
+validation_loss 3.7056478913730597
+test_pred tensor([-3.5198, -1.7534, -2.8902, -1.3237, -2.1851,  1.2402, -2.4298, -2.3742,
+        -2.3687, -0.7646, -1.4960, -0.9523, -1.2265, -3.5147, -2.3176, -0.5670,
+         0.7430, -1.9325, -1.9325], device='cuda:0',
+       grad_fn=<SqueezeBackward0>)
+```
 
 
 ### **Thoughts:**
 1. we haven't measure the error on the song level, when the snippet predictions are averaged. The individual errors may be minimized over averaging, to a level not significant to the human perception.
 2. Is the validation set big enough?
 3. when is the point to declare failure on the level balance task and move on?
+
+
+
+### **Overfit, what to do**
+
+* data argumentation:
+    * DSP methods (filter, pitch shift, reverb, gain, noise, distortion, polarity, etc.)
+* dropout
+* 
 
 * * *
 
