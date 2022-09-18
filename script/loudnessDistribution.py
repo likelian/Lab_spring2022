@@ -8,7 +8,8 @@ device = torch.device('cuda')
 
 #data_path = "../../musdb18hq/"
 #train_dataset = torch.load(data_path+'/train.pt')
-train_dataset = torch.load("/home/kli421/dir1/GTZAN/GTZAN_clean.pt")
+#train_dataset = torch.load("/home/kli421/dir1/GTZAN/GTZAN_clean.pt")
+train_dataset = torch.load("/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt")
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 #test_dataset = torch.load(data_path+'/test.pt')
