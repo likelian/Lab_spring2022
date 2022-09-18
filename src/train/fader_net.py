@@ -120,11 +120,9 @@ def train(model, device, train_loader, test_loader, epochs):
         MSE.backward()
         optimizer.step()
 
-        #tepochs.set_postfix(loss=loss.item())
         running_loss += MSE.item()**0.5  # add the loss for this batch
 
 
-        #remove the below later
         #validation loss on each file
         """
         model.eval()
@@ -144,8 +142,6 @@ def train(model, device, train_loader, test_loader, epochs):
         batch_train_loss.append(MSE.item())
         batch_validation_loss.append(val_loss/len(test_loader))
         """
-        #end of removal
-
 
 
       # append the loss for this epoch
@@ -178,9 +174,12 @@ def train(model, device, train_loader, test_loader, epochs):
 
       print("validation_loss", running_loss/len(test_loader))
 
+      print("test_pred", test_pred)
+      print("test_target", test_target)
+
       #break
 
-  return train_loss, validation_loss, batch_train_loss, batch_validation_loss
+  return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
 
 
 
@@ -212,7 +211,8 @@ test_loader = torch.utils.data.DataLoader(
 ###############################################################################
 
 net = FaderNet().to(device)
-train_loss, validation_loss, batch_train_loss, batch_validation_loss = train(net, device, train_loader, test_loader, 300)
+
+train_loss, validation_loss = train(net, device, train_loader, test_loader, 1)
 
 
 
@@ -232,38 +232,24 @@ textfile.close()
 
 ###############################################################################
 
-import pandas as pd
-#import seaborn as sns
+
 import matplotlib.pyplot as plt
 
 
-plt.plot(train_loss, color='darkorange', label='train loss')
-plt.plot(validation_loss, color='deepskyblue', label='validation loss')
-plt.xlabel('Epochs')
-plt.ylabel("L1 Loss (in dB)")
-#plt.title("Loss")
-#plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
-plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
 
-plt.tight_layout()
-plt.savefig('../../results/Loss.png')
-#plt.show()
-plt.close()
+def plot(train_loss, validation_loss, plot_output_path):
 
+  plt.plot(train_loss, color='darkorange', label='train loss')
+  plt.plot(validation_loss, color='deepskyblue', label='validation loss')
+  plt.xlabel('Epochs')
+  plt.ylabel("L1 Loss (in dB)")
+  plt.ylim([0., 10.])
+  #plt.title("Loss")
+  plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
+  plt.tight_layout()
+  plt.savefig(plot_output_path)
+  plt.close()
 
-#remove
-"""
-plt.plot(batch_train_loss, color='darkorange', label='batch train loss')
-plt.plot(batch_validation_loss, color='deepskyblue', label='batch validation loss')
-plt.xlabel('batches')
-plt.ylabel("MSE Loss (in dB)")
-#plt.title("Loss")
-#plt.legend(bbox_to_anchor=(1.04,1), borderaxespad=0)
-plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
+plot_output_path = '../../results/Loss.png'
 
-plt.tight_layout()
-plt.savefig('../../results/batch_Loss.png')
-#plt.show()
-plt.close()
-"""
-#end of remove
+plot(train_loss, validation_loss, plot_output_path)
