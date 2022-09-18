@@ -174,9 +174,6 @@ def train(model, device, train_loader, test_loader, epochs):
 
       print("validation_loss", running_loss/len(test_loader))
 
-      print("test_pred", test_pred)
-      print("test_target", test_target)
-
       #break
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
@@ -193,12 +190,14 @@ device = torch.device('cuda')
 #train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
 
 #data_path = "/home/kli421/dir1/musdb18hq/train.pt"
+#data_path = "/home/kli421/dir1/musdb18hq/train_cleaner.pt"
 #data_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
-data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
+#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
+data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_cleaner.pt"
 train_dataset = torch.load(data_path)
 
 train_loader = torch.utils.data.DataLoader(
-    train_dataset, batch_size=25, shuffle=False, num_workers=0)
+    train_dataset, batch_size=25, shuffle=True, num_workers=0)
 
 #test_dataset = torch.load(data_path+'/test.pt')
 #test_dataset = torch.load(data_path+'/test_snippet_clean.pt')
@@ -212,7 +211,7 @@ test_loader = torch.utils.data.DataLoader(
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, train_loader, test_loader, 1)
+train_loss, validation_loss = train(net, device, train_loader, test_loader, 100)
 
 
 

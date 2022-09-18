@@ -28,7 +28,10 @@ def remove_outliner(data_path, output_path):
 
 
 
-data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
-output_path = "/home/kli421/dir1/training_set/musdb_GTZAN_cleaner.pt"
+#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
+#output_path = "/home/kli421/dir1/training_set/musdb_GTZAN_cleaner.pt"
+
+data_path = "/home/kli421/dir1/musdb18hq/train.pt"
+output_path = "/home/kli421/dir1/musdb18hq/train_cleaner.pt"
 
 remove_outliner(data_path, output_path)
