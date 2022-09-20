@@ -6,6 +6,11 @@
 ## 9/20/2022
 
 
+### **To-do:**
+
+1. Get the Million Song Datsset in the lab drive
+2. source separation
+
 ### **Done:**
 
 1. snippet relative loudness training
