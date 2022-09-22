@@ -6,6 +6,17 @@
 ## 9/20/2022
 
 
+### **To-do:**
+
+
+1. normalize to -23dB dbU
+2. remove the normalization in the network
+3. predict the gain change
+4. add more data from Million Song Dataset (already mounted in the servers)
+5. increase the validation data size
+6. error at song level
+
+
 ### **Done:**
 
 1. snippet relative loudness training
@@ -23,9 +34,9 @@ The result is [here](https://github.com/likelian/Lab_spring2022/tree/main/result
 
 #### Train on the source separated GTZAN + original MUSDB18 dataset
 
-The results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN). Sadly in this case more data with the same condition makes the result worse. 
+The results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN). Sadly in this case more data with the same condition makes the result worse.
 
-With shuffle off, 
+With shuffle off,
 * musdb+GTZAN reaches below **5dB** mean absolute error,
 * musdb reaches below **2.25dB** mean absolute error.
 
@@ -37,9 +48,9 @@ With shuffle on, the plots look similar with immediate overfitting.
 
 #### Analyze the "ground truth" loudness distribution of GTZAN dataset
 
-* The average is **-1.77dB**. 
-* The average of MUSDB training set is **-2.56dB**. 
-* The average of MUSDB testing set is **-2.57dB**. 
+* The average is **-1.77dB**.
+* The average of MUSDB training set is **-2.56dB**.
+* The average of MUSDB testing set is **-2.57dB**.
 * The average of [MUSDB train + GTZAN] is **-2.24dB**
 
 The error of source separation is not yet measured. If we will do so, we need to find data that's not in the training of DEMUCS.
@@ -68,7 +79,7 @@ test_target tensor([-0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.982
         -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822,
         -0.9822, -0.9822, -0.9822])
 ```
-        
+
 ```
 train_loss 3.133647832124737
 validation_loss 6.302189766815538
@@ -653,3 +664,4 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
+s
