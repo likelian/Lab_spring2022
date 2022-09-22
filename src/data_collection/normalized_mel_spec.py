@@ -133,16 +133,16 @@ def mel_spec(audio_path, output_path):
 
 
 #output_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized/"
-#output_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized/"
+output_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized/"
 
 
 #audio_path = "/home/kli421/dir1/musdb18hq/train"
-#audio_path = "/home/kli421/dir1/musdb18hq/test"
-
-#mel_spec(audio_path, output_path)
-
-
-output_path = "/home/kli421/dir1/GTZAN_mel/normalized/"
-audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+audio_path = "/home/kli421/dir1/musdb18hq/test"
 
 mel_spec(audio_path, output_path)
+
+
+#output_path = "/home/kli421/dir1/GTZAN_mel/normalized/"
+#audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+
+#mel_spec(audio_path, output_path)
