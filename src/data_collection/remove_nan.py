@@ -48,13 +48,18 @@ def remove_nan(data_path, output_path):
 #output_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
 
 
-
-dataset_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
-otuput_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
-
-remove_nan(dataset_path, otuput_path)
-
-dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
-otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
+dataset_path = "/home/kli421/dir1/musdb18hq/test_normalized.pt"
+otuput_path = "/home/kli421/dir1/musdb18hq/test_normalized.pt"
 
 remove_nan(dataset_path, otuput_path)
+
+#dataset_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
+#otuput_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
+
+#remove_nan(dataset_path, otuput_path)
+
+#dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
+#otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
+
+#remove_nan(dataset_path, otuput_path)
+

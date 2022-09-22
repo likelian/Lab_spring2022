@@ -106,11 +106,11 @@ def train(model, device, train_loader, test_loader, epochs):
         # getting the training set
         data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
 
-        data_acc = torch.nn.functional.normalize(data_acc)
-        data_vox = torch.nn.functional.normalize(data_vox)
+        #data_acc = torch.nn.functional.normalize(data_acc)
+        #data_vox = torch.nn.functional.normalize(data_vox)
 
-        data_acc *= torch.rand(1).cuda()
-        data_vox *= torch.rand(1).cuda()
+        #data_acc *= torch.rand(1).cuda()
+        #data_vox *= torch.rand(1).cuda()
 
         data = torch.stack((data_acc, data_vox), dim=0)
         data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -159,8 +159,8 @@ def train(model, device, train_loader, test_loader, epochs):
           # getting the validation set
           test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
 
-          test_acc = torch.nn.functional.normalize(test_acc)
-          test_vox = torch.nn.functional.normalize(test_vox)
+          #test_acc = torch.nn.functional.normalize(test_acc)
+          #test_vox = torch.nn.functional.normalize(test_vox)
 
           test_data = torch.stack((test_acc, test_vox), dim=0)
           test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -185,15 +185,9 @@ def train(model, device, train_loader, test_loader, epochs):
 
 device = torch.device('cuda')
 
-#data_path = "../../../musdb18hq/"
-#train_dataset = torch.load(data_path+'/train.pt')
-#train_dataset = torch.load(data_path+'/train_snippet_clean.pt')
 
-#data_path = "/home/kli421/dir1/musdb18hq/train.pt"
-#data_path = "/home/kli421/dir1/musdb18hq/train_cleaner.pt"
-#data_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
-#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
-data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_cleaner.pt"
+data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_normalized.pt"
+#data_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
 train_dataset = torch.load(data_path)
 
 train_loader = torch.utils.data.DataLoader(
@@ -201,7 +195,7 @@ train_loader = torch.utils.data.DataLoader(
 
 #test_dataset = torch.load(data_path+'/test.pt')
 #test_dataset = torch.load(data_path+'/test_snippet_clean.pt')
-test_dataset = torch.load("../../../musdb18hq/test.pt")
+test_dataset = torch.load("../../../musdb18hq/test_normalized.pt")
 
 test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=25, shuffle=False, num_workers=0)
