@@ -60,7 +60,7 @@ def separate_from_flie_list(file_list, output_path):
 
     for file in file_list:
         if ".wav" or ".mp3" in file:
-            print(file)
+            #print(file)
             each_cmd = cmd + ["-o", str(output_path)]
             each_cmd += [file]
             subprocess.run(each_cmd)
