@@ -25,17 +25,17 @@ def mel_spec(audio_path, output_path):
 
 
         #musdb18hq dataset
-        if "mixture.wav" in filenames \
-            and "vocals.wav" in filenames:
-            mixture_path = dirpath+"/mixture.wav"
-            vox_path = dirpath+"/vocals.wav"
+        #if "mixture.wav" in filenames \
+        #    and "vocals.wav" in filenames:
+        #    mixture_path = dirpath+"/mixture.wav"
+        #    vox_path = dirpath+"/vocals.wav"
 
 
         #GTZAN dataset
-        #if "no_vocals.wav" in filenames \
-        #    and "vocals.wav" in filenames:
-        #    acc_path = dirpath+"/no_vocals.wav"
-        #    vox_path = dirpath+"/vocals.wav"
+        if "no_vocals.wav" in filenames \
+            and "vocals.wav" in filenames:
+            acc_path = dirpath+"/no_vocals.wav"
+            vox_path = dirpath+"/vocals.wav"
 
             path_str = str(dirpath)
             index = path_str.rfind('/')
@@ -46,11 +46,11 @@ def mel_spec(audio_path, output_path):
         else:
             continue
 
-        mxiture, sample_rate = torchaudio.load(mixture_path)
-        #acc, sample_rate = torchaudio.load(acc_path)
+        #mxiture, sample_rate = torchaudio.load(mixture_path)
+        acc, sample_rate = torchaudio.load(acc_path)
         vox, sample_rate = torchaudio.load(vox_path)
 
-        acc = mxiture - vox
+        #acc = mxiture - vox
 
         #mono
         acc = torch.mean(acc, 0)
@@ -130,21 +130,19 @@ def mel_spec(audio_path, output_path):
 
 
 
-output_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized_overall/"
-audio_path = "/home/kli421/dir1/musdb18hq/test"
-
-mel_spec(audio_path, output_path)
-
-
-
-output_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized_overall/"
-audio_path = "/home/kli421/dir1/musdb18hq/train"
-
-mel_spec(audio_path, output_path)
-
-
-
-#output_path = "/home/kli421/dir1/GTZAN_mel/normalized/"
-#audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+#output_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized_overall/"
+#audio_path = "/home/kli421/dir1/musdb18hq/test"
 
 #mel_spec(audio_path, output_path)
+
+
+#output_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized_overall/"
+#audio_path = "/home/kli421/dir1/musdb18hq/train"
+
+#mel_spec(audio_path, output_path)
+
+
+output_path = "/home/kli421/dir1/GTZAN_mel/normalized_overall/"
+audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+
+mel_spec(audio_path, output_path)
