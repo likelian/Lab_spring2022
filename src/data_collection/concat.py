@@ -24,17 +24,33 @@ def concat(dataset_path, otuput_path):
 #otuput_path = "../../../GTZAN/GTZAN.pt"
 
 
-dataset_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized"
-otuput_path = "../../../musdb18hq/test_normalized.pt"
+#dataset_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized"
+#otuput_path = "../../../musdb18hq/test_normalized.pt"
+
+#concat(dataset_path, otuput_path)
+
+#dataset_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized"
+#otuput_path = "../../../musdb18hq/train_normalized.pt"
+
+#concat(dataset_path, otuput_path)
+
+#dataset_path = "/home/kli421/dir1/GTZAN_mel/normalized"
+#otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
+
+#concat(dataset_path, otuput_path)
+
+
+dataset_path = "/home/kli421/dir1/musdb18hq_mel/test_normalized_overall"
+otuput_path = "../../../musdb18hq/test_normalized_overall.pt"
 
 concat(dataset_path, otuput_path)
 
-dataset_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized"
-otuput_path = "../../../musdb18hq/train_normalized.pt"
+dataset_path = "/home/kli421/dir1/musdb18hq_mel/train_normalized_overall"
+otuput_path = "../../../musdb18hq/train_normalized_overall.pt"
 
 concat(dataset_path, otuput_path)
 
-dataset_path = "/home/kli421/dir1/GTZAN_mel/normalized"
-otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
+dataset_path = "/home/kli421/dir1/GTZAN_mel/normalized_overall"
+otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized_overall.pt"
 
 concat(dataset_path, otuput_path)
