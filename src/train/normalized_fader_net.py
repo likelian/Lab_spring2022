@@ -169,7 +169,9 @@ device = torch.device('cuda')
 
 
 #data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_normalized.pt"
-data_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
+#data_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
+#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN_normalized_overall.pt"
+data_path = "/home/kli421/dir1/musdb18hq/train_normalized_overall.pt"
 train_dataset = torch.load(data_path)
 
 train_loader = torch.utils.data.DataLoader(
@@ -177,7 +179,8 @@ train_loader = torch.utils.data.DataLoader(
 
 #test_dataset = torch.load(data_path+'/test.pt')
 #test_dataset = torch.load(data_path+'/test_snippet_clean.pt')
-test_dataset = torch.load("../../../musdb18hq/test_normalized.pt")
+#test_dataset = torch.load("../../../musdb18hq/test_normalized.pt")
+test_dataset = torch.load("../../../musdb18hq/test_normalized_overall.pt")
 
 test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=25, shuffle=False, num_workers=0)
