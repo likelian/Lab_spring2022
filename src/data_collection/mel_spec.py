@@ -101,8 +101,17 @@ def mel_spec(audio_path, output_path):
             mel_spec_matrix = mel_spec_matrix.permute(1, 2, 0) #blocks, time frame, freq frame
             return mel_spec_matrix
 
-        acc_mel_spec = reshape(acc_mel_spec)
-        vox_mel_spec = reshape(vox_mel_spec)
+        try:
+            acc_mel_spec = reshape(acc_mel_spec)
+        except:
+            print("reshape(acc_mel_spec)")
+            continue
+        
+        try:
+            vox_mel_spec = reshape(vox_mel_spec)
+        except:
+            print("reshape(vox_mel_spec)")
+            continue
 
 
         if len(vox_acc_ratio_list) != acc_mel_spec.shape[0]:
@@ -129,7 +138,14 @@ def mel_spec(audio_path, output_path):
 
 
 
-output_path = "/home/kli421/dir1/GTZAN_mel/"
-audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+#output_path = "/home/kli421/dir1/GTZAN_mel/"
+#audio_path = "/home/kli421/dir1/GTZAN/separated/mdx_extra/"
+
+#mel_spec(audio_path, output_path)
+
+
+
+output_path = "/home/kli421/dir1/MSD_mel/"
+audio_path = "/home/kli421/dir1/MSD/separated/mdx_extra/"
 
 mel_spec(audio_path, output_path)
