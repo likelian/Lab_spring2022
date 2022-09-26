@@ -3,6 +3,95 @@
 
 * * *
 
+## 9/27/2022
+
+### **Thoughts:**
+
+1. read a paper, [Automatic music mixing with deep learning and out-of-domain data](https://marco-martinez-sony.github.io/FxNorm-automix/).
+2. [Mean absolute percentage error](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error)
+3. The result of the paper may not be so good as it seems. The reults are averaged over the song (0.5s window). The loudness measure is LUFS, and it is absolute. So abs((-18dB-(-19dB))/(-19dB)) = 0.05, while I am using relative loudness. The audio is good, but not that close to the reference mix. The dry stems are pretty good by themselves.
+
+
+
+
+
+### **Done:**
+
+1. move partial MSD
+2. separate partial MSD
+
+Running out of storage space on DeepNet1 while moving MSD. This is the current MSD on DeepNet1.
+
+I decided to delete [/1/, /4/, /5/, /7/, /8/, /9/], in order to allocate space for source separation.
+
+```
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/sda2                     1.8T  1.7T   91G  95%
+
+
+du --summarize --human-readable *
+
+539G    songs/
+140K    songs/0/
+50G     songs/1/
+
+66G     songs/2/
+83G     songs/3/
+
+66G     songs/4/
+
+97G     songs/5/
+91G     songs/6/
+44K     songs/7/
+74G     songs/8/
+15G     songs/9/
+
+
+4.9G    ccmixter_corpus
+391M    DAMP-VSEP
+14G     GTZAN
+3.0G    GTZAN_mel
+1.3G    iKala
+174M    Lab_spring2022
+1.2G    MIR-1K
+541G    MSD
+19G     MSD_mel
+38G     musdb18hq
+5.9G    musdb18hq_mel
+1.1G    Rock Band Multitracks
+9.7G    training_set
+
+
+3.0G    GTZAN_mel
+2.0G    original
+7.9G    separated
+
+
+ls | wc -l
+
+MSD/3/  
+21936 files separated
+11295 mel_spec extracted
+
+```
+
+show progress when removing files
+```
+rm -rfv LargeDirectory | tqdm --total $(du -a LargeDirectory | wc -l)
+```
+
+
+
+
+
+1. audio snippet loudness normalization to -23 LUFS
+2. remove the normalization in the neural network 
+3. train with individual relative snippet loudness. the results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/loudness_normalization/snippet_shuffleOff). No learning. Validation loss surprisedly flat, can't find an explaniation.
+4. train with overall relative loudness. the results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/loudness_normalization/overall_shuffleOff). No improvements comparing with the previous [results](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN/outliner/shuffleOff) in the same condition.
+
+
+* * *
+
 ## 9/20/2022
 
 
@@ -34,9 +123,9 @@ The result is [here](https://github.com/likelian/Lab_spring2022/tree/main/result
 
 #### Train on the source separated GTZAN + original MUSDB18 dataset
 
-The results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN). Sadly in this case more data with the same condition makes the result worse.
+The results are [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/musdb_GTZAN). Sadly in this case more data with the same condition makes the result worse. 
 
-With shuffle off,
+With shuffle off, 
 * musdb+GTZAN reaches below **5dB** mean absolute error,
 * musdb reaches below **2.25dB** mean absolute error.
 
@@ -48,9 +137,9 @@ With shuffle on, the plots look similar with immediate overfitting.
 
 #### Analyze the "ground truth" loudness distribution of GTZAN dataset
 
-* The average is **-1.77dB**.
-* The average of MUSDB training set is **-2.56dB**.
-* The average of MUSDB testing set is **-2.57dB**.
+* The average is **-1.77dB**. 
+* The average of MUSDB training set is **-2.56dB**. 
+* The average of MUSDB testing set is **-2.57dB**. 
 * The average of [MUSDB train + GTZAN] is **-2.24dB**
 
 The error of source separation is not yet measured. If we will do so, we need to find data that's not in the training of DEMUCS.
@@ -79,7 +168,7 @@ test_target tensor([-0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.982
         -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822, -0.9822,
         -0.9822, -0.9822, -0.9822])
 ```
-
+        
 ```
 train_loss 3.133647832124737
 validation_loss 6.302189766815538
@@ -664,4 +753,3 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
-s
