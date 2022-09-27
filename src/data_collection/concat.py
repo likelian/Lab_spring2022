@@ -12,6 +12,7 @@ def concat(dataset_path, otuput_path):
             data = torch.load(dataset_path+"/"+file)
             print(dataset_path+"/"+file)
             datasets.append(data)
+            
 
     dataset = torch.utils.data.ConcatDataset(datasets)
     torch.save(dataset, otuput_path)
