@@ -5,6 +5,14 @@
 
 ## 9/27/2022
 
+
+### **To-do:**
+
+1. finish up MSD
+2. increase learning rate
+3. move on to other tasks (reverb)
+
+
 ### **Thoughts:**
 
 1. read a paper, [Automatic music mixing with deep learning and out-of-domain data](https://marco-martinez-sony.github.io/FxNorm-automix/).
@@ -19,6 +27,7 @@
 
 1. move partial MSD
 2. separate partial MSD
+3. rebooting server helps the VS code connection problem
 
 Running out of storage space on DeepNet1 while moving MSD. This is the current MSD on DeepNet1.
 
