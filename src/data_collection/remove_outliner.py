@@ -54,12 +54,25 @@ def remove_outliner(data_path, output_path):
 
 
 
-dataset_path = "/home/kli421/dir1/musdb18hq/train_normalized_overall.pt"
-otuput_path = "/home/kli421/dir1/musdb18hq/train_normalized_overall.pt"
+#dataset_path = "/home/kli421/dir1/musdb18hq/train_normalized_overall.pt"
+#otuput_path = "/home/kli421/dir1/musdb18hq/train_normalized_overall.pt"
 
-remove_outliner(dataset_path, otuput_path)
+#remove_outliner(dataset_path, otuput_path)
 
-dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized_overall.pt"
-otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized_overall.pt"
+#dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized_overall.pt"
+#otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized_overall.pt"
 
-remove_outliner(dataset_path, otuput_path)
+#remove_outliner(dataset_path, otuput_path)
+
+
+
+dataset_path = "/home/kli421/dir1/MSD_pt"
+
+
+for file in os.listdir(dataset_path):
+
+        if ".pt" in file:
+            data_path = dataset_path+"/"+file
+            otuput_path = dataset_path+"/"+file
+
+            remove_outliner(data_path, otuput_path)

@@ -28,38 +28,19 @@ def remove_nan(data_path, output_path):
 
 
 
-#data_path = "../../../musdb18hq/test_snippet.pt"
-#output_path = "../../../musdb18hq/test_snippet_clean.pt"
-
-#remove_nan(data_path, output_path)
-
-
-
-#data_path = "../../../musdb18hq/train_snippet.pt"
-#output_path = "../../../musdb18hq/train_snippet_clean.pt"
-
-#remove_nan(data_path, output_path)
-
-
-#data_path = "/home/kli421/dir1/GTZAN/GTZAN.pt"
-#output_path = "/home/kli421/dir1/GTZAN/GTZAN_clean.pt"
-
-#data_path = "/home/kli421/dir1/training_set/musdb_GTZAN.pt"
-#output_path = "/home/kli421/dir1/training_set/musdb_GTZAN_clean.pt"
-
-
-dataset_path = "/home/kli421/dir1/musdb18hq/test_normalized.pt"
-otuput_path = "/home/kli421/dir1/musdb18hq/test_normalized.pt"
-
-remove_nan(dataset_path, otuput_path)
-
-#dataset_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
-#otuput_path = "/home/kli421/dir1/musdb18hq/train_normalized.pt"
-
-#remove_nan(dataset_path, otuput_path)
-
 #dataset_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
 #otuput_path = "/home/kli421/dir1/GTZAN/GTZAN_normalized.pt"
 
 #remove_nan(dataset_path, otuput_path)
 
+
+dataset_path = "/home/kli421/dir1/MSD_pt"
+
+
+for file in os.listdir(dataset_path):
+
+        if ".pt" in file:
+            data_path = dataset_path+"/"+file
+            otuput_path = dataset_path+"/"+file
+
+            remove_nan(data_path, otuput_path)

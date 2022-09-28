@@ -78,7 +78,7 @@ class FaderNet(nn.Module):
     return x
 
 
-def train(model, device, train_loader, test_loader, epochs):
+def train(model, device, dataset_path, test_loader, epochs):
 
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
@@ -89,10 +89,6 @@ def train(model, device, train_loader, test_loader, epochs):
   batch_train_loss, batch_validation_loss = [], []
 
 
-  
-
-
-
   with tqdm(range(epochs), unit='epoch') as tepochs:
     tepochs.set_description('Training')
     for epoch in tepochs:
@@ -100,11 +96,15 @@ def train(model, device, train_loader, test_loader, epochs):
       # keep track of the running loss
       running_loss = 0.
 
+      train_length = 0
+
       for file in os.listdir(dataset_path):
 
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
+
+            train_length += len(train_loader)
 
 
             for data_acc, data_vox, target in train_loader:
@@ -135,10 +135,10 @@ def train(model, device, train_loader, test_loader, epochs):
 
 
       # append the loss for this epoch
-      train_loss.append(running_loss/len(train_loader))
+      train_loss.append(running_loss/train_length)
 
       print("epoch", epoch)
-      print("train_loss", running_loss/len(train_loader))
+      print("train_loss", running_loss/train_length)
       
 
       # evaluate on test data
@@ -175,14 +175,7 @@ def train(model, device, train_loader, test_loader, epochs):
 device = torch.device('cuda')
 
 
-data_path = "/home/kli421/dir1/MSD_pt/"
-
-
-
-
-
-
-
+dataset_path = "/home/kli421/dir1/MSD_pt/"
 
 
 test_dataset = torch.load("../../../musdb18hq/test.pt")
@@ -190,12 +183,11 @@ test_dataset = torch.load("../../../musdb18hq/test.pt")
 test_loader = torch.utils.data.DataLoader(
     test_dataset, batch_size=25, shuffle=False, num_workers=0)
 
-
 ###############################################################################
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, train_loader, test_loader, 100)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader, 100)
 
 
 
