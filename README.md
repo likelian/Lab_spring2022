@@ -10,6 +10,7 @@
 
 1. finish up MSD
 2. increase learning rate
+3. report song level error
 3. move on to other tasks (reverb)
 
 
