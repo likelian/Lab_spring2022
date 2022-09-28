@@ -83,7 +83,7 @@ def train(model, device, dataset_path, test_loader, epochs):
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
@@ -106,6 +106,8 @@ def train(model, device, dataset_path, test_loader, epochs):
 
             train_length += len(train_loader)
 
+            print(train_length)
+
 
             for data_acc, data_vox, target in train_loader:
                 
@@ -121,16 +123,19 @@ def train(model, device, dataset_path, test_loader, epochs):
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
                 pred = model(data)
                 optimizer.zero_grad()
-                MSE = loss(pred, target)        
+                MSE = loss(pred, target)
                 MSE.backward()
                 optimizer.step()
 
                 running_loss += MSE.item()**0.5  # add the loss for this batch
 
+        print("train_loss", running_loss/train_length)
 
         del data
         del train_loader
         gc.collect()
+
+        
 
 
 
@@ -187,7 +192,7 @@ test_loader = torch.utils.data.DataLoader(
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader, 100)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader, 50)
 
 
 
