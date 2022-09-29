@@ -192,7 +192,7 @@ test_loader = torch.utils.data.DataLoader(
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader, 50)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader, 100)
 
 
 
