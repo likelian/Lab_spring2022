@@ -83,7 +83,7 @@ def train(model, device, dataset_path, test_loader, epochs):
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.1)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
