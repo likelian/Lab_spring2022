@@ -189,13 +189,13 @@ dataset_path = "/home/kli421/dir1/MSD_pt/"
 test_dataset = torch.load("../../../musdb18hq/test.pt")
 
 test_loader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=25, shuffle=False, num_workers=0)
+    test_dataset, batch_size=25, shuffle=True, num_workers=0)
 
 ###############################################################################
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader,100)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader,50)
 
 
 
