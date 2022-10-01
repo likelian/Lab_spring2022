@@ -116,8 +116,8 @@ def train(model, device, dataset_path, test_loader, epochs):
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
 
-                data_acc *= torch.rand(1).cuda()
-                data_vox *= torch.rand(1).cuda()
+                #data_acc *= torch.rand(1).cuda()
+                #data_vox *= torch.rand(1).cuda()
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -189,7 +189,7 @@ dataset_path = "/home/kli421/dir1/MSD_pt/"
 test_dataset = torch.load("../../../musdb18hq/test.pt")
 
 test_loader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=25, shuffle=True, num_workers=0)
+    test_dataset, batch_size=25, shuffle=False, num_workers=0)
 
 ###############################################################################
 
