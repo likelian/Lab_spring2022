@@ -71,7 +71,7 @@ class FaderNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    #x = self.dropout(x)
+    x = self.dropout(x)
     x = self.fc1(x)
     x = torch.squeeze(x)
 
@@ -129,7 +129,7 @@ def train(model, device, dataset_path, test_loader, epochs):
 
                 running_loss += MSE.item()**0.5  # add the loss for this batch
 
-        print("train_loss", running_loss/train_length)
+        #print("train_loss", running_loss/train_length)
 
         del data
         del train_loader
@@ -165,6 +165,9 @@ def train(model, device, dataset_path, test_loader, epochs):
           test_MSE = t_loss(test_pred, test_target)
           running_loss += test_MSE.item()**0.5
 
+      print("test_target", test_target)
+      print("test_pred", test_pred)
+
       validation_loss.append(running_loss/len(test_loader))
 
       print("validation_loss", running_loss/len(test_loader))
@@ -192,7 +195,7 @@ test_loader = torch.utils.data.DataLoader(
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader, 50)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader,100)
 
 
 
