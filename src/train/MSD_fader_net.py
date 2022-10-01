@@ -71,7 +71,7 @@ class FaderNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    x = self.dropout(x)
+    #x = self.dropout(x)
     x = self.fc1(x)
     x = torch.squeeze(x)
 
