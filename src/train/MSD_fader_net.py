@@ -129,13 +129,23 @@ def train(model, device, dataset_path, test_loader, epochs):
 
                 running_loss += MSE.item()**0.5  # add the loss for this batch
 
+                
+
         #print("train_loss", running_loss/train_length)
 
         del data
         del train_loader
         gc.collect()
 
-        
+
+      #save the checkpoint for each epoch
+      torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': MSE
+            }, 
+            "/home/kli421/dir1/Lab_spring2022/results/check_point.pt")    
 
 
 
@@ -173,6 +183,7 @@ def train(model, device, dataset_path, test_loader, epochs):
       print("validation_loss", running_loss/len(test_loader))
 
 
+  
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
 
