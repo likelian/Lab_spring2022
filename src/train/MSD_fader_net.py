@@ -175,12 +175,14 @@ def train(model, device, dataset_path, test_loader, epochs):
           test_MSE = t_loss(test_pred, test_target)
           running_loss += test_MSE.item()**0.5
 
-      print("test_target", test_target)
-      print("test_pred", test_pred)
+      
 
       validation_loss.append(running_loss/len(test_loader))
 
       print("validation_loss", running_loss/len(test_loader))
+
+      print("test_target", test_target)
+      print("test_pred", test_pred)
 
 
   
@@ -206,7 +208,7 @@ test_loader = torch.utils.data.DataLoader(
 
 net = FaderNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader,50)
+train_loss, validation_loss = train(net, device, dataset_path, test_loader,100)
 
 
 
