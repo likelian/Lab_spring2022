@@ -128,8 +128,7 @@ def train(model, device, dataset_path, test_loader, epochs):
                 optimizer.step()
 
                 running_loss += MSE.item()**0.5  # add the loss for this batch
-
-                
+                     
 
         #print("train_loss", running_loss/train_length)
 
@@ -145,7 +144,7 @@ def train(model, device, dataset_path, test_loader, epochs):
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': MSE
             }, 
-            "/home/kli421/dir1/Lab_spring2022/results/check_point.pt")    
+            "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
 
 
 
