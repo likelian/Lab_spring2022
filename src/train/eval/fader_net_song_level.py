@@ -151,7 +151,7 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
 test_folder = "/home/kli421/dir1/musdb18hq_mel/test"
 
-model_path = "/home/kli421/dir1/Lab_spring2022/results/check_point.pt"
+model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD/withModel/4.pt"
 checkpoint = torch.load(model_path)
 
 device = torch.device('cuda')
