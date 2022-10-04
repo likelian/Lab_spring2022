@@ -5,6 +5,9 @@ import loudness
 from .level import level_process
 
 
+
+
+
 def EQ(self):
 
     rate = self.sampleRate
@@ -107,11 +110,36 @@ def EQ(self):
         vst.number_of_input_channels = 1
 
 
+    output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
+    
+    self.vox = output
+
+
+
+
+def applyEQ(vst, vox, rate, freq_top_list, gain_top_list):
+    """
+    apply EQ to vox from given parameters
+
+    vst: MultiEQ.vst3 loaded by Pedalboard
+    vox: numpy array of the mono signal
+    rate: sample rate of the signal
+    freq_top_list: numpy array of 4 center freqency values
+        [20.0, 20000.0]
+    gain_top_list: numpy array of 4 gain values matched to the freq_top_list
+        [-60.0, 15.0]
+
+    all Q values are 1.
+
+    return: processed signals
+    """
+
     vst.filter_enablement_1 = True
     vst.filter_type_1 = "Low-shelf" #'HP (6dB/oct)', 'HP (12dB/oct)', 'HP (24dB/oct)', 'Low-shelf'
     vst.filter_frequency_1_hz = 100. #[20.0Hz, 20000.0Hz]
     vst.filter_q_1 = 1. #[0.05, 8.0]
-    vst.filter_gain_1_db = -12. #[-60.0dB, 15.0dB]
+    #vst.filter_gain_1_db = -12. #[-60.0dB, 15.0dB]
+    vst.filter_gain_1_db = 0. #[-60.0dB, 15.0dB]s
 
 
     vst.filter_enablement_2 = True
@@ -126,8 +154,6 @@ def EQ(self):
     vst.filter_frequency_3_hz = freq_top_list[1] #[20.0Hz, 20000.0Hz]
     vst.filter_q_3 = 1. #[0.05, 8.0]
     vst.filter_gain_3_db = gain_top_list[1] #[-60.0dB, 15.0dB]
-
-
 
     vst.filter_enablement_4 = True
     vst.filter_type_4 = "Peak" #'Low-shelf', 'Peak', 'High-shelf'
@@ -150,8 +176,7 @@ def EQ(self):
     vst.filter_gain_6_db = 0. #[-60.0dB, 15.0dB]
 
     output = vst(vox, rate)
-
-    self.vox = output
+    return output
 
 
 def mono(audio):

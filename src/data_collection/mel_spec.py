@@ -25,7 +25,7 @@ def mel_spec(audio_path, output_path):
 
     for (dirpath, dirnames, filenames) in walk(abs_audio_path):
 
-        #musdb19hq dataset
+        #musdb18hq dataset
         #if "mixture.wav" in filenames \
         #    and "vocals.wav" in filenames:
 
