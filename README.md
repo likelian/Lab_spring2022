@@ -3,6 +3,53 @@
 
 * * *
 
+## 10/4/2022
+
+
+### **Thoughts:**
+
+###### De-reverbration options:
+* An open-source de-reverbration [toolkit](https://distantspeechrecognition.sourceforge.io/btk20_documentation/user_docs/dereverberation.html) 
+* [iZotope RX](https://www.izotope.com/en/products/rx/features/de-reverb.html)
+* [DeRoom Pro](https://www.accentize.com/deroom/), Only Reverb Listening
+* [DeVerberate](https://acondigital.com/products/deverberate/)
+* [UNVEIL](https://www.zynaptiq.com/unveil/)
+* Ask Sile
+
+
+###### EQ:
+The EqNet will predict the gains of 10 bands (fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]). The Q factor will be fixed, the same as in the rule-based system. The post-processing will select the highest 4 absolute gain values and apply to the EQ. The training and validation should also reflect the final error in a metric different from the raw error.
+
+
+###### GAN?
+
+###### remove outliner from test set?
+Should I remove two songs without vocal from the test folder?
+* PR - Happy Daze
+* PR - Oh No
+and one with phased vocal
+* Little Chicago's Finest - My Own
+
+
+### **Done:**
+
+
+1. trained on MSD with different learning rate, see the [results](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/MSD/50epoch)
+2. tried removing dropout
+3. choose a [model](https://github.com/likelian/Lab_spring2022/blob/main/results/archive/MSD/withModel/lr%3D0.001_withModel_Loss.png) at validation loss error on datapoint level of **2.456 dB**, and run the song level validation, getting absolute error of **2.086 dB** over 50 test songs. Removing 2 songs without vocals from the test set, absolute error down to **1.840 dB**.
+4. My SOTA is **2.179 dB** validation  absolute error so far ([link](https://github.com/likelian/Lab_spring2022/blob/main/results/archive/MSD/50epoch/lr%3D0.001_validation_loss.txt) and [link](https://github.com/likelian/Lab_spring2022/blob/main/results/archive/MSD/50epoch/lr%3D0.001_Loss.png)), but I didn't recreate that with the same setup. I can keep trying on that.
+5. Unable to run the plugin(.so) on Linux.
+6. On mac, collected EQed mel spec on MUSDB18. 10x on the test folder,  50x on the train folder.
+
+
+
+How to deal with dataset larger than memory [Zhihu link](https://www.zhihu.com/question/386743819). It looks like Pytorch is loading an entire dataset file to memory.
+
+
+
+
+* * *
+
 ## 9/27/2022
 
 
