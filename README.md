@@ -1,9 +1,24 @@
 # Lab_fall2022
 
 
+
+
+
+
 * * *
 
 ## 10/4/2022
+
+### **To-do:**
+
+Fader:
+
+1. comparison with a mean baseline
+2. remove the non-vocal part prediction in post-processing
+3. remove outliners from the test set
+
+No GAN
+
 
 
 ### **Thoughts:**
