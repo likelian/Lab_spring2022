@@ -10,11 +10,18 @@ import sys
 
 
 
+vst_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/"
+vst_name = "MultiEQ.vst3"
+vst = load_plugin(vst_path + vst_name)
+
+
+
 def mono(audio):
     if len(audio.shape) == 2:
         return np.mean(audio, axis=1)
     else:
         return audio
+
 
 def applyEQ(vst, vox, rate, freq_top_list, gain_top_list):
     """
@@ -79,42 +86,42 @@ def applyEQ(vst, vox, rate, freq_top_list, gain_top_list):
 
 
 
-vst_path = "/home/kli421/dir1/Lab_spring2022/VST3/Linux/"
-vst_name = "MultiEQ.so"
-vst = load_plugin(vst_path + vst_name)
+def rand_freq_gain():
+    """
+    return:
+        gain_arr (numpy array):
+        [ -1.05, -9.28, -14.9, 0., 1.56315401, 0., 0., 0., 0.]
+        freq_top_list (list):
+        [63, 125, 250, 1000]
+        gain_top_list (list):
+        [-1.05, -9.28, -14.92, 1.56]
+    """
+
+    #fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+    fcs = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+    #uniform random floating number from [-15., 15).
+    gain_arr = (np.random.rand(len(fcs),) - 0.5) * 30. 
+
+    rng = np.random.default_rng()
+    unselected_freq_idx = rng.choice(len(fcs), len(fcs)-4, replace=False)
+
+    #set unselected gain values to 0.
+    for idx in unselected_freq_idx:
+        gain_arr[idx] = 0.
+
+    freq_top_list = []
+    gain_top_list = []
+
+    for idx, val in enumerate(gain_arr):
+        if val != 0.:
+            freq_top_list.append(fcs[idx])
+            gain_top_list.append(val)
+
+    return gain_arr, freq_top_list, gain_top_list
 
 
 
-
-
-fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
-
-
-#create random gain values
-#convert to gain_top_list
-#randomly select from fcs to freq_top_list
-
-
-gain_top_list = (np.random.rand(4,) - 0.5) * 30. #uniform random floating number from [-15., 15).
-
-
-rng = np.random.default_rng()
-freq_top_list = rng.choice(fcs, 4, replace=False)
-
-
-print("gain_top_list", gain_top_list)
-print("freq_top_list", freq_top_list)
-
-quit()
-
-
-output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
-
-
-
-
-
-"""
 
 def EQ_mel_spec(abs_audio_path, output_path):
 
@@ -125,15 +132,15 @@ def EQ_mel_spec(abs_audio_path, output_path):
     for (dirpath, dirnames, filenames) in walk(abs_audio_path):
 
         #musdb18hq dataset
-        #if "mixture.wav" in filenames \
-        #    and "vocals.wav" in filenames:
-
-        #GTZAN dataset
-        if "no_vocals.wav" in filenames \
+        if "mixture.wav" in filenames \
             and "vocals.wav" in filenames:
 
-            #mixture_path = dirpath+"/mixture.wav"
-            acc_path = dirpath+"/no_vocals.wav"
+        #GTZAN dataset
+        #if "no_vocals.wav" in filenames \
+         #   and "vocals.wav" in filenames:
+
+            mixture_path = dirpath+"/mixture.wav"
+            #acc_path = dirpath+"/no_vocals.wav"
             vox_path = dirpath+"/vocals.wav"
 
             path_str = str(dirpath)
@@ -145,33 +152,41 @@ def EQ_mel_spec(abs_audio_path, output_path):
         else:
             continue
 
-        #mxiture, sample_rate = torchaudio.load(mxiture_path)
-        acc, sample_rate = torchaudio.load(acc_path)
+        mxiture, sample_rate = torchaudio.load(mixture_path)
+        #acc, sample_rate = torchaudio.load(acc_path)
         vox, sample_rate = torchaudio.load(vox_path)
 
-        #acc = mxiture - vox
+        acc = mxiture - vox
 
         #mono
         acc = torch.mean(acc, 0)
         vox = torch.mean(vox, 0)
 
+
+        #meter = pyln.Meter(44100)
+
         acc_mel_spec = transform(acc)
+
         vox_mel_spec = transform(vox)
 
-        meter = pyln.Meter(44100)
-
-
-        acc = acc.detach().numpy()
+        #acc = acc.detach().numpy()
         vox = vox.detach().numpy()
 
-        #extract the overall integrated loudness
-        acc_loudness = meter.integrated_loudness(acc)
-        vox_loudness = meter.integrated_loudness(vox)
-        vox_acc_ratio = vox_loudness - acc_loudness
+        gain_arr, freq_top_list, gain_top_list = rand_freq_gain()
 
-        vox_acc_ratio_list = []
-        for i in range(int(acc.shape[0] / 65536)):
-            vox_acc_ratio_list.append(vox_acc_ratio)
+        new_vox = applyEQ(vst, vox, sample_rate, freq_top_list, gain_top_list)
+
+        new_vox = torch.from_numpy(new_vox)
+
+        new_vox_mel_spec = transform(new_vox)
+
+
+        gain_matrix = np.zeros((int(acc.shape[0] / 65536), gain_arr.size))
+
+        idx = 0
+        for i in gain_matrix:
+            gain_matrix[idx] = gain_arr
+            idx += 1
 
 
         def reshape(mel_spec):
@@ -181,6 +196,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
             mel_spec_matrix = torch.reshape(mel_spec, (128, blockNum, 64))
             mel_spec_matrix = mel_spec_matrix.permute(1, 2, 0) #blocks, time frame, freq frame
             return mel_spec_matrix
+
 
         try:
             acc_mel_spec = reshape(acc_mel_spec)
@@ -195,22 +211,44 @@ def EQ_mel_spec(abs_audio_path, output_path):
             continue
 
 
-        if len(vox_acc_ratio_list) != acc_mel_spec.shape[0]:
+        if gain_matrix.shape[0] != acc_mel_spec.shape[0]:
             print("ground truth and input data size not match")
             print(len(vox_acc_ratio_list))
             print(acc_mel_spec.shape[0])
 
 
-        gt_tensor = torch.tensor(np.asarray(vox_acc_ratio_list)).float()
+        
+
+        gt_tensor = torch.tensor(gain_matrix).float()
 
 
         dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
 
-        torch.save(dataset, output_path+filename+'.pt')
+
+        print(str(freq_top_list))
+        gain_top_list_rounded = np.around(gain_top_list, decimals=2)
+        print(str(gain_top_list_rounded))
+
+        torch.save(dataset, output_path+filename+"_"+str(freq_top_list)+str(gain_top_list_rounded)+'.pt')
 
 
-output_path = "/home/kli421/dir1/MSD_mel/"
-audio_path = "/home/kli421/dir1/MSD/separated/mdx_extra/"
 
-mel_spec(audio_path, output_path)
-"""
+
+
+
+#about 10MB for each file
+#48 songs
+
+output_path = "/Volumes/mix/Dataset/EQ_mel/musdb18hq/test/"
+audio_path = "/Volumes/mix/Dataset/musdb18hq/test"
+
+for i in range(20):
+    EQ_mel_spec(audio_path, output_path)
+
+
+
+output_path = "/Volumes/mix/Dataset/EQ_mel/musdb18hq/train/"
+audio_path = "/Volumes/mix/Dataset/musdb18hq/train"
+
+for i in range(50):
+    EQ_mel_spec(audio_path, output_path)
