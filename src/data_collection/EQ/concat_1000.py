@@ -29,7 +29,7 @@ def concat(dataset_path, otuput_path):
         
         #the last group is not dumped......
         #should be fixed, but not necessary
-        if counter >= 1000:
+        if counter >= 100:
             dataset = torch.utils.data.ConcatDataset(datasets)
             torch.save(dataset, otuput_path+str(dataset_counter)+".pt")
             del datasets[:]
@@ -42,18 +42,18 @@ def concat(dataset_path, otuput_path):
             
     
     dataset = torch.utils.data.ConcatDataset(datasets)
-            torch.save(dataset, otuput_path+str(dataset_counter)+".pt")
-            del datasets[:]
-            del datasets
-            datasets = []
-            del dataset
+    torch.save(dataset, otuput_path+str(dataset_counter)+".pt")
+    del datasets[:]
+    del datasets
+    datasets = []
+    del dataset
 
 
 
 dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/test"
 otuput_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/"
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq"
+
 concat(dataset_path, otuput_path)
 
 
