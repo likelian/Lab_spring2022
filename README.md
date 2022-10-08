@@ -12,6 +12,9 @@
 
 
 
+instruct nvidia-smi to refresh every 10 seconds.
+`nvidia-smi -l 10`
+
 
 * * *
 
