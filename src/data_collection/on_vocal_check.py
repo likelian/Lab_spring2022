@@ -18,8 +18,9 @@ def reshape(mel_spec):
     mel_spec_matrix = mel_spec_matrix.permute(1, 2, 0) #blocks, time frame, freq frame
     return mel_spec_matrix
 
-def remove_non_vocal(audio_path):
+def non_vocal_check(audio_path):
     """
+    compare LUFS and mel spec mean
     remove vocal loudness below -40LUFS
     similar to mean of the mel specrogram below 0.4
     """
