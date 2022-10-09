@@ -17,6 +17,7 @@ def reshape(mel_spec):
     mel_spec_matrix = torch.reshape(mel_spec, (128, blockNum, 64))
     mel_spec_matrix = mel_spec_matrix.permute(1, 2, 0) #blocks, time frame, freq frame
     return mel_spec_matrix
+    
 
 def non_vocal_check(audio_path):
     """

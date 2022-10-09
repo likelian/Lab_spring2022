@@ -8,12 +8,74 @@
 ### **Done:**
 
 1. data uploaded
-2. 
+2. data not uploaded properly
 
+
+refresh a command every 2 seconds
+`watch -n 2 free -h
+`
 
 
 instruct nvidia-smi to refresh every 10 seconds.
 `nvidia-smi -l 10`
+
+
+Uploading files through rsync doesn't seem to eat memory
+`
+rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/test kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
+`
+
+`
+rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/train kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
+`
+
+### **Thoughts:**
+
+Eample of how the error will look like with the given prediction:
+
+```
+#a very good prediction
+pred = [8.5, 6.5, -5.5, 4.5, 1., 1., 1., 1., 1.]
+target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+
+MAE == 1.333
+```
+
+```
+#a "good" predction
+pred = [6., 4., -3., 4., 2., 1., 2., 1., 1.]
+target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+MAE = L1_loss(pred, target)
+
+MAE == 2.222
+```
+
+
+```
+pred = [8.5, -2, -5.5, 0, 1., 1., 4., 5., 1.]
+target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+
+MAE == 3.5555
+```
+
+
+```
+# no prediction
+pred = [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+
+MAE == 3.333
+```
+
+```
+# a bad predction
+pred = [-6., -4., 3., -4., -2., 1., 2., 1., 1.]
+target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+
+MAE == 6.0
+```
+
+
 
 
 * * *
