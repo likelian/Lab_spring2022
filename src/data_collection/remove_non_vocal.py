@@ -27,6 +27,7 @@ def remove_non_vocal(data_path, output_path):
     #del dataset[:]
     del clean_dataset
     del dataset
+    gc.collect()
 
 
 
