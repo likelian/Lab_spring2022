@@ -7,27 +7,74 @@
 
 ### **Done:**
 
+##### EQ:
 1. data uploaded
 2. data not uploaded properly
+3. reupload data
+4. EqNet learns to output values close to 0, no learning
+5. change the loss functino to MAE
+6. change the EqNet loss function to penalize predicting small numbers.
+    1. easily pushing the predictions to very large numbers
+    2. make more changes
+    3. `if mean(abs(pred)) > 5: MAE loss - mean(abs(pred)) + 3.3`
+7. can at least overfit the trainning set. See the [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data). Final results:
+    1. train_loss MAE: 3.41
+    2. validation_loss MAE: 7.19
+
+```
+# an example of the overfitted training prediction. better than nothing.
+
+target tensor[ -6.3742,   0.0000, -11.1773,   0.0000,   0.0000,   0.0000,   0.0000,         14.0051,   8.8575]
+
+pred tensor([ -6.0622,   1.4130, -10.0605,   0.0551,  -2.0980,   1.7691,   0.6323,         15.1772,   9.8771]
+```
+
+```
+# even overfitting doesn't always work
+target [ -9.1802,   0.5901,   0.0000, -14.4014,   0.0000,   0.0000,   0.0000,          4.0516,   0.0000]
+
+pred [-7.2501, -0.5912, -9.9931,  1.2807,  5.0818,  3.8273, -0.1980, -5.7588, -4.9655]
+```
 
 
-refresh a command every 2 seconds
-`watch -n 2 free -h
-`
+```
+# of course the validation prediction is nonsense 
+test_pred [-15.7506,  -6.8320,   3.7919,  13.9364,  -1.5909,  13.8916,  -1.8911,          5.2701,   4.8515]
+
+test_target [  9.6043,   0.0000,   0.0000,  13.6226,   0.0000,  -4.1448, -13.6420,          0.0000,   0.0000]
+```
 
 
-instruct nvidia-smi to refresh every 10 seconds.
-`nvidia-smi -l 10`
+##### Level:
+Not yet done:
+
+1. remove non-vocal parts from the validation set
+2. get the averge of MSD
+2. predict average and compare
+2. (remove non-vocal parts from the training set)
+3. (retrain)
 
 
-Uploading files through rsync doesn't seem to eat memory
-`
-rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/test kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
-`
 
-`
-rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/train kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
-`
+
+Train and validation a model on the cleaned non-vocal dataset. See it [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/MSD_remove_non_vocal/1)
+
+Absolute error on the data point level of the validation set is **2.209415026897028 dB**.
+
+getting absolute error of **1.86784694970188 dB** over 50 test songs.
+Removing 2 songs without vocals from the test set, absolute error down to **1.6441102914 dB**.
+
+
+averge relative loudness of cleaned MSD containing non-vocal is:  -3.425692845827129 dB
+
+
+predict mean (-3.425692845827129) on the song level in the validation set:
+error over 50 songs **2.386900276409575 dB**
+error over 48 songs **2.131985919 dB**
+
+
+
+
 
 ### **Thoughts:**
 
@@ -75,6 +122,30 @@ target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
 
 MAE == 6.0
 ```
+
+
+
+### **Tricks:**
+
+refresh a command every 2 seconds
+`watch -n 2 free -h
+`
+
+
+instruct nvidia-smi to refresh every 10 seconds.
+`nvidia-smi -l 10`
+
+
+Uploading files through rsync doesn't seem to eat memory
+`
+rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/test kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
+`
+
+`
+rsync -r -ahp -p  /Volumes/mix/Dataset/EQ_mel/musdb18hq/train kli421@deepnet1.music.gatech.edu:/home/kli421/dir1/EQ_mel/musdb18hq
+`
+
+
 
 
 
