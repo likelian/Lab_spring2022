@@ -37,6 +37,7 @@ Eample of how the error will look like with the given prediction:
 #a very good prediction
 pred = [8.5, 6.5, -5.5, 4.5, 1., 1., 1., 1., 1.]
 target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
+MAE = L1_loss(pred, target)
 
 MAE == 1.333
 ```
@@ -45,13 +46,13 @@ MAE == 1.333
 #a "good" predction
 pred = [6., 4., -3., 4., 2., 1., 2., 1., 1.]
 target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
-MAE = L1_loss(pred, target)
 
 MAE == 2.222
 ```
 
 
 ```
+#some good, some bad
 pred = [8.5, -2, -5.5, 0, 1., 1., 4., 5., 1.]
 target = [7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]
 

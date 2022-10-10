@@ -75,8 +75,8 @@ class EqNet(nn.Module):
 
 def train(model, device, dataset_path, test_path, epochs):
 
-  loss = nn.MSELoss()
-  t_loss = nn.MSELoss()
+  loss = nn.L1Loss()
+  t_loss = nn.L1Loss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
@@ -93,15 +93,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
       train_length = 0
 
-      """
-      remove!!!!!!!!!!!!!!
-      """
-      L1_loss = nn.L1Loss()
-      pred = torch.tensor([[8.5, -2, -5.5, 0, 1., 1., 4., 5., 1.]])
-      target = torch.tensor([[7.5, 7.5, -7.5, 7.5, 0., 0., 0., 0., 0.]])
-      MAE = L1_loss(pred, target)
-      print(MAE.item())
-      quit()
 
 
 
@@ -127,15 +118,34 @@ def train(model, device, dataset_path, test_path, epochs):
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
                 pred = model(data)
                 optimizer.zero_grad()
-                MSE = loss(pred, target)
+                #if torch.mean(torch.abs(pred)) < 3.:
+                #    MSE = loss(pred, target) - 0.4 * torch.mean(torch.abs(pred))
+                #elif torch.mean(torch.abs(pred)) > 5.:
+                #    MSE = loss(pred, target) + 0.4 * torch.mean(torch.abs(pred))
+                #else:
+                #    MSE = loss(pred, target)
+
+                if torch.mean(torch.abs(pred)) < 5.:
+                    MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
+                else:
+                    MSE = loss(pred, target)
+
                 MSE.backward()
                 optimizer.step()
 
-                running_loss += MSE.item()**0.5  # add the loss for this batch
+                running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
 
-        print('pred', pred[0])
+        print("--------------------")
+        print("    ")
         print('target', target[0])
+        print('pred', pred[0])
+        
 
+        #remove!!!!!!!!!!!!!!!
+        #only train on the first .pt file
+        break
+
+        
 
 
         #print("train_loss", running_loss/train_length)
@@ -172,7 +182,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=30, shuffle=False, num_workers=0)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -187,7 +197,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
                 test_pred = model(test_data)
                 test_MSE = t_loss(test_pred, test_target)
-                running_loss += test_MSE.item()**0.5
+                running_loss += test_MSE.item()#**0.5
 
             length += len(test_loader)
 
@@ -198,6 +208,9 @@ def train(model, device, dataset_path, test_path, epochs):
    
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
+
+      print('test_pred', test_pred[0])
+      print('test_target', test_target[0])
 
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
@@ -217,7 +230,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 50)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 1000)
 
 
 
