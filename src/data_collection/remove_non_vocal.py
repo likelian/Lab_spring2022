@@ -32,8 +32,10 @@ def remove_non_vocal(data_path, output_path):
 
 
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
+
+dataset_path = "/home/kli421/dir1/musdb18hq_mel/test"
 
 for file in os.listdir(dataset_path):
 
@@ -48,7 +50,10 @@ for file in os.listdir(dataset_path):
 
 
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train"
+
+
+dataset_path = "/home/kli421/dir1/MSD_pt"
 
 for file in os.listdir(dataset_path):
 
