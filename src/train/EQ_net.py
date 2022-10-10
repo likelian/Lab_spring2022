@@ -156,13 +156,14 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
       #save the checkpoint for each epoch
-      torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': MSE
-            }, 
-            "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
+
+      #torch.save({
+      #      'epoch': epoch,
+      #      'model_state_dict': model.state_dict(),
+      #      'optimizer_state_dict': optimizer.state_dict(),
+      #      'loss': MSE
+      #      }, 
+      #      "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
 
 
 
