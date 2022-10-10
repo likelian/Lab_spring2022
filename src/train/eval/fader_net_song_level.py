@@ -127,8 +127,12 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
                 test_target_list.append(test_target.cpu().detach().item())
 
 
-            test_pred_mean = np.mean(np.array(test_pred_list))            
+            test_pred_mean = np.mean(np.array(test_pred_list))
+            
             test_target_mean = np.mean(np.array(test_target_list))
+
+            #test_pred_mean = -3.425692845827129
+            #test_pred_mean = -2.7
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
 
@@ -151,7 +155,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
 test_folder = "/home/kli421/dir1/musdb18hq_mel/test"
 
-model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD/withModel/4.pt"
+#model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD/withModel/4.pt"
+model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD_remove_non_vocal/1/lr=0.001_0.pt"
 checkpoint = torch.load(model_path)
 
 device = torch.device('cuda')
