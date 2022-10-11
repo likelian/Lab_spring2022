@@ -94,7 +94,7 @@ def train(model, device, dataset_path, test_path, epochs):
       train_length = 0
 
 
-
+      counter = 0
 
       for file in os.listdir(dataset_path):
 
@@ -102,10 +102,20 @@ def train(model, device, dataset_path, test_path, epochs):
             data = torch.load(dataset_path+"/"+file)
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0)
 
-            train_length += len(train_loader)
+            #train_length += len(train_loader)
+
+            train_loader_count = 0
 
             for data_acc, data_vox, target in train_loader:
+
+                #remove!!!!!
+                #only train on 1/300 of the data
+                train_loader_count += 1
+                if train_loader_count % 300 != 0:
+                  continue
                 
+                train_length += 1
+
                 data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
 
                 data_acc = torch.nn.functional.normalize(data_acc)
@@ -134,25 +144,35 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.step()
 
                 running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
+      
 
-        print("--------------------")
-        print("    ")
-        print('target', target[0])
-        print('pred', pred[0])
+        #print("--------------------")
+        #print("    ")
+        #print('target', target[0])
+        #print('pred', pred[0])
         
-
-        #remove!!!!!!!!!!!!!!!
-        #only train on the first .pt file
-        break
-
-        
-
-
-        #print("train_loss", running_loss/train_length)
-
         del data
         del train_loader
         gc.collect()
+
+        #remove!!!!!!!!!!!!!!!
+        #only train on the first 25 .pt file, half of all
+        counter += 1
+        if counter >= 25:
+          break
+        
+
+      # append the loss for this epoch
+      train_loss.append(running_loss/train_length)
+
+      
+      print("--------------------")
+      print("    ")
+      print("epoch", epoch)
+      print('pred', pred[0])
+      print('target', target[0])
+      print("train_loss", running_loss/train_length)
+
 
 
       #save the checkpoint for each epoch
@@ -164,14 +184,6 @@ def train(model, device, dataset_path, test_path, epochs):
       #      'loss': MSE
       #      }, 
       #      "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
-
-
-
-      # append the loss for this epoch
-      train_loss.append(running_loss/train_length)
-
-      print("epoch", epoch)
-      print("train_loss", running_loss/train_length)
       
 
       # evaluate on test data
@@ -183,7 +195,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=30, shuffle=False, num_workers=0)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=1, shuffle=False, num_workers=0)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -231,7 +243,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 1000)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 100)
 
 
 
