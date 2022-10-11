@@ -158,7 +158,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 25 .pt file, half of all
         counter += 1
-        if counter >= 25:
+        if counter >= 10:
           break
         
 
