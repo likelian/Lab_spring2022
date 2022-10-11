@@ -5,6 +5,19 @@
 
 ## 10/11/2022
 
+### **To-do:**
+
+
+Because the training data is imbalanced, the model will surely output zeros.
+
+
+1. change the loss function ignore zeros, or include one zero (or just do what will be done in the post-processing?)
+2. normalization on ground truth
+3. squared error instead of aboslute error
+4. just focus on MUSDB for now
+
+
+
 ### **Done:**
 
 ##### EQ:
@@ -21,7 +34,7 @@
     1. train_loss MAE: 3.41
     2. validation_loss MAE: 7.19
 
-7. train on 1/300 of the first 25(half) of the .pt files. Bad [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/first_half%2825pt%29). Somehow the output of in inference is 1. not 9 values.
+7. train on 1/300 of the first 25(half) of the .pt files. Bad [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/first_half%2825pt%29). ~~Somehow the output of in inference is 1. not 9 values.~~ fixed
 
 ```
 # an example of the overfitted training prediction. better than nothing.
@@ -973,4 +986,3 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
-c

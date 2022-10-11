@@ -195,7 +195,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=1, shuffle=False, num_workers=0)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
