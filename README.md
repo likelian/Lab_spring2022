@@ -17,9 +17,11 @@
     1. easily pushing the predictions to very large numbers
     2. make more changes
     3. `if mean(abs(pred)) > 5: MAE loss - mean(abs(pred)) + 3.3`
-7. can at least overfit the trainning set. See the [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data). Final results:
+7. can at least overfit the trainning set. Train on only the first .pt file. See the [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data). Final results:
     1. train_loss MAE: 3.41
     2. validation_loss MAE: 7.19
+
+7. train on 1/300 of the first 25(half) of the .pt files. Bad [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/first_half%2825pt%29). Somehow the output of in inference is 1. not 9 values.
 
 ```
 # an example of the overfitted training prediction. better than nothing.
@@ -45,15 +47,11 @@ test_target [9.60,    0.00, 0.00, 13.62, 0.00, -4.14, -13.64, 0.00, 0.00]
 
 
 ##### Level:
-Not yet done:
-
 1. remove non-vocal parts from the validation set
 2. get the averge of MSD
 2. predict average and compare
-2. (remove non-vocal parts from the training set)
-3. (retrain)
-
-
+2. remove non-vocal parts from the training set
+3. retrain
 
 
 Train and validation a model on the cleaned non-vocal dataset. See it [here](https://github.com/likelian/Lab_spring2022/tree/main/results/archive/MSD_remove_non_vocal/1)
@@ -975,3 +973,4 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
+c
