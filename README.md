@@ -60,16 +60,17 @@ Train and validation a model on the cleaned non-vocal dataset. See it [here](htt
 
 Absolute error on the data point level of the validation set is **2.209415026897028 dB**.
 
-getting absolute error of **1.86784694970188 dB** over 50 test songs.
-Removing 2 songs without vocals from the test set, absolute error down to **1.6441102914 dB**.
+* error over 50 songs **1.87 dB** (1.86784694970188)
+* error over 48 songs **1.64 dB** (1.6441102914) (removing the two non-vocal songs)
 
 
 averge relative loudness of cleaned MSD containing non-vocal is:  -3.425692845827129 dB
 
 
 predict mean (-3.425692845827129) on the song level in the validation set:
-error over 50 songs **2.386900276409575 dB**
-error over 48 songs **2.131985919 dB**
+
+* error over 50 songs **2.39 dB** (2.386900276409575)
+* error over 48 songs **2.13 dB** (2.131985919)
 
 
 
