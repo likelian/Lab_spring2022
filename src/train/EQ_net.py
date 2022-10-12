@@ -75,8 +75,8 @@ class EqNet(nn.Module):
 
 def train(model, device, dataset_path, test_path, epochs):
 
-  loss = nn.MSELoss()
-  t_loss = nn.MSELoss()
+  loss = nn.L1Loss()
+  t_loss = nn.L1Loss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
@@ -110,13 +110,15 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 #remove!!!!!
                 #only train on 1/300 of the data
-                train_loader_count += 1
-                if train_loader_count % 300 != 0:
-                  continue
+                #train_loader_count += 1
+                #if train_loader_count % 300 != 0:
+                #  continue
                 
                 train_length += 1
 
                 data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
+              
+                target = (target + 15.)/30. #normalize the target from (-15.0, 15.0) to (0., 1.)
 
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
@@ -139,11 +141,13 @@ def train(model, device, dataset_path, test_path, epochs):
                     MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
                 else:
                     MSE = loss(pred, target)
+                #MSE = loss(pred, target)
 
                 MSE.backward()
                 optimizer.step()
 
                 running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
+                
       
 
         #print("--------------------")
@@ -156,9 +160,9 @@ def train(model, device, dataset_path, test_path, epochs):
         gc.collect()
 
         #remove!!!!!!!!!!!!!!!
-        #only train on the first 25 .pt file, half of all
+        #only train on the first 1 .pt file, half of all
         counter += 1
-        if counter >= 10:
+        if counter >= 1:
           break
         
 
@@ -200,6 +204,8 @@ def train(model, device, dataset_path, test_path, epochs):
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
                 test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
+
+                test_target = test_target * 30. - 15.
 
                 test_acc = torch.nn.functional.normalize(test_acc)
                 test_vox = torch.nn.functional.normalize(test_vox)
