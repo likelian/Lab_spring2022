@@ -75,8 +75,8 @@ class EqNet(nn.Module):
 
 def train(model, device, dataset_path, test_path, epochs):
 
-  loss = nn.L1Loss()
-  t_loss = nn.L1Loss()
+  loss = nn.MSELoss()
+  t_loss = nn.MSELoss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
