@@ -145,8 +145,12 @@ def train(model, device, dataset_path, test_path, epochs):
                 filtered_target = filter_idx * target
                 filtered_pred = filter_idx * pred
 
+                zeros_idx = torch.where(target == 0.5, ones, zeros)
+                zeros_target = zeros_idx * target
+                zeros_pred = zeros_idx * pred
 
-                MSE = loss(filtered_pred, filtered_target)
+                #add weighted loss of non-changed gains
+                MSE = loss(filtered_pred, filtered_target) + 0.01 * loss(zeros_target, zeros_pred)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
@@ -184,9 +188,12 @@ def train(model, device, dataset_path, test_path, epochs):
       print("--------------------")
       print("    ")
       print("epoch", epoch)
-      print('pred', pred[0])
-      print('target', target[0])
+      print("    ")
+      print('pred', pred_dB[0])
+      print('target', target_dB[0])
+      print("    ")
       print("train_loss", running_loss/train_length)
+      
 
 
 
@@ -241,7 +248,7 @@ def train(model, device, dataset_path, test_path, epochs):
    
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
-
+      print("    ")
       print('test_pred', test_pred[0])
       print('test_target', test_target[0])
 
