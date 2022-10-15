@@ -80,6 +80,8 @@ def train(model, device, dataset_path, test_path, epochs):
 
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
+  MAE_train_loss = nn.L1Loss()
+  MAE_validation_loss = nn.L1Loss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
@@ -133,42 +135,29 @@ def train(model, device, dataset_path, test_path, epochs):
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
                 pred = model(data)
                 optimizer.zero_grad()
-                #if torch.mean(torch.abs(pred)) < 3.:
-                #    MSE = loss(pred, target) - 0.4 * torch.mean(torch.abs(pred))
-                #elif torch.mean(torch.abs(pred)) > 5.:
-                #    MSE = loss(pred, target) + 0.4 * torch.mean(torch.abs(pred))
-                #else:
-                #    MSE = loss(pred, target)
 
-                #if torch.mean(torch.abs(pred)) < 5.:
-                #    MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
-                #else:
-                #    MSE = loss(pred, target)
-
-                
-                
-                
                 #loss function only concerns about where the targeted ground truth has gain changes
                 #in other words, the values in target that are 0dB or normalized 0. are ingored
                 #so as the corresponding values in prediction
                 ones = torch.ones(target.shape).to(device)
                 zeros = torch.zeros(target.shape).to(device)
                 filter_idx = torch.where(target != 0.5, ones, zeros)
-
                 filtered_target = filter_idx * target
                 filtered_pred = filter_idx * pred
 
 
                 MSE = loss(filtered_pred, filtered_target)
 
+                pred_dB = pred * 30. - 15.
+                target_dB = target * 30. - 15.
 
-
-                #MSE = loss(pred, target)
+                MAE_train = MAE_train_loss(pred_dB, target_dB)
 
                 MSE.backward()
                 optimizer.step()
 
-                running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
+                #running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
+                running_loss += MAE_train.item()
                 
       
 
@@ -240,7 +229,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 test_pred = test_pred * 30. - 15.
 
-                test_MSE = t_loss(test_pred, test_target)
+                test_MSE = MAE_validation_loss(test_pred, test_target)
                 running_loss += test_MSE.item()#**0.5
 
             length += len(test_loader)
