@@ -1,5 +1,19 @@
 # Lab_fall2022
 
+* * *
+
+## 10/??/2022
+
+### **Done:**
+
+
+
+### **Tricks:**
+
+enter copy mode and scroll in tmux
+`ctrl + B`, then `[`
+`esc` to exit
+
 
 * * *
 

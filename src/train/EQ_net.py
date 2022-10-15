@@ -137,11 +137,11 @@ def train(model, device, dataset_path, test_path, epochs):
                 #else:
                 #    MSE = loss(pred, target)
 
-                if torch.mean(torch.abs(pred)) < 5.:
-                    MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
-                else:
-                    MSE = loss(pred, target)
-                #MSE = loss(pred, target)
+                #if torch.mean(torch.abs(pred)) < 5.:
+                #    MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
+                #else:
+                #    MSE = loss(pred, target)
+                MSE = loss(pred, target)
 
                 MSE.backward()
                 optimizer.step()
@@ -205,7 +205,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 # getting the validation set
                 test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
 
-                test_target = test_target * 30. - 15.
+                
 
                 test_acc = torch.nn.functional.normalize(test_acc)
                 test_vox = torch.nn.functional.normalize(test_vox)
@@ -215,6 +215,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 optimizer.zero_grad()
                 test_pred = model(test_data)
+
+                test_pred = test_pred * 30. - 15.
+
                 test_MSE = t_loss(test_pred, test_target)
                 running_loss += test_MSE.item()#**0.5
 
