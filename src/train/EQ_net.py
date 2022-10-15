@@ -75,8 +75,11 @@ class EqNet(nn.Module):
 
 def train(model, device, dataset_path, test_path, epochs):
 
-  loss = nn.L1Loss()
-  t_loss = nn.L1Loss()
+  #loss = nn.L1Loss()
+  #t_loss = nn.L1Loss()
+
+  loss = nn.MSELoss()
+  t_loss = nn.MSELoss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
@@ -141,7 +144,26 @@ def train(model, device, dataset_path, test_path, epochs):
                 #    MSE = loss(pred, target) - torch.mean(torch.abs(pred)) + 3.3
                 #else:
                 #    MSE = loss(pred, target)
-                MSE = loss(pred, target)
+
+                
+                
+                
+                #loss function only concerns about where the targeted ground truth has gain changes
+                #in other words, the values in target that are 0dB or normalized 0. are ingored
+                #so as the corresponding values in prediction
+                ones = torch.ones(target.shape).to(device)
+                zeros = torch.zeros(target.shape).to(device)
+                filter_idx = torch.where(target != 0.5, ones, zeros)
+
+                filtered_target = filter_idx * target
+                filtered_pred = filter_idx * pred
+
+
+                MSE = loss(filtered_pred, filtered_target)
+
+
+
+                #MSE = loss(pred, target)
 
                 MSE.backward()
                 optimizer.step()
@@ -274,7 +296,6 @@ textfile.close()
 
 
 import matplotlib.pyplot as plt
-
 
 
 def plot(train_loss, validation_loss, plot_output_path):
