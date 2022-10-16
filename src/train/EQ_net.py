@@ -95,7 +95,15 @@ def select_top_predction(pred, target):
   #map prediction from [0., 1.] to [-0.5, 0.5] and get the absolute value
   mapped = torch.abs(pred-0.5) 
   #sort aescendingly and return indics
-  idx = torch.argsort(mapped, dim=1).T 
+  
+  
+  #print("mapped.size()", mapped.size())
+  try:
+    idx = torch.argsort(mapped, dim=1).T
+  except:
+    print("mapped.size()", mapped.size())
+
+
   #get the mapped values of the fifth largest mapped absoluted value
   border_val = mapped.gather(1, idx[4].long().unsqueeze(1)) 
   border_val.expand(border_val.size()[0], target.size()[0]) #expand into a matrix
@@ -152,7 +160,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
@@ -206,8 +214,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
                 #add weighted loss of non-changed gains
-                #MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
-                MSE = loss(processed_pred, target)
+                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
+                #MSE = loss(processed_pred, target)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
@@ -275,7 +283,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
