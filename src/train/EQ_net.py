@@ -17,17 +17,14 @@ class EqNet(nn.Module):
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
 
     
-    #self.fc1 = nn.Linear(in_features=768, out_features=9)
+    self.fc1 = nn.Linear(in_features=768, out_features=9)
 
-    self.fc1 = nn.Linear(in_features=768, out_features=768)
-    self.fc2 = nn.Linear(in_features=768, out_features=768)
-    self.fc3 = nn.Linear(in_features=768, out_features=9)
+    #self.fc1 = nn.Linear(in_features=768, out_features=768)
+    #self.fc2 = nn.Linear(in_features=768, out_features=768)
+    #self.fc3 = nn.Linear(in_features=768, out_features=9)
 
-    self.sig1 = nn.Sigmoid()
-    self.sig2 = nn.Sigmoid()
-
-
-
+    #self.sig1 = nn.Sigmoid()
+    #self.sig2 = nn.Sigmoid()
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -91,10 +88,10 @@ class EqNet(nn.Module):
     x = torch.flatten(x, 1)
     #x = self.dropout(x)
     x = self.fc1(x)
-    x = self.sig1(x)
-    x = self.fc2(x)
-    x = self.sig2(x)
-    x = self.fc3(x)
+    #x = self.sig1(x)
+    #x = self.fc2(x)
+    #x = self.sig2(x)
+    #x = self.fc3(x)
     x = torch.squeeze(x)
 
     return x
