@@ -17,7 +17,7 @@ class EqNet(nn.Module):
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
 
     
-    self.fc1 = nn.Linear(in_features=768, out_features=9)
+    self.fc1 = nn.Linear(in_features=768, out_features=9, bias=False)
 
     #self.fc1 = nn.Linear(in_features=768, out_features=768)
     #self.fc2 = nn.Linear(in_features=768, out_features=768)
