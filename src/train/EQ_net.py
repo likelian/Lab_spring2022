@@ -312,6 +312,7 @@ def train(model, device, dataset_path, test_path, epochs):
       running_loss = 0.
       processed_loss = 0.
       length = 0
+      abs_mean = 0.
 
       for file in os.listdir(test_path):
 
@@ -350,6 +351,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
                 processed_loss += processed_test_MAE.item()
 
+                abs_mean += torch.mean(torch.abs(processed_test_pred_dB)).item()
+
             length += len(test_loader)
 
             del data
@@ -370,9 +373,11 @@ def train(model, device, dataset_path, test_path, epochs):
       print('test_pred', test_pred[0])
       print('test_targ', test_target[0])
 
-      print("pred mean", torch.mean(processed_test_pred_dB).item())
-
-      output_mean.append(torch.mean(processed_test_pred_dB).item())
+      abs_mean /= length
+      print(" ")
+      print("pred mean", abs_mean)
+      print(" ")
+      output_mean.append(abs_mean)
 
       
 
@@ -397,7 +402,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 50)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 100)
 
 
 
