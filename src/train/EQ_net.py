@@ -213,8 +213,14 @@ def train(model, device, dataset_path, test_path, epochs):
                 #small values are set to 0.5
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
+                #print(torch.mean(torch.abs(processed_pred - 0.5)))
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) #+ 0.5 * loss(zeros_target, zeros_pred) - 0.1 * torch.mean(torch.abs(pred - 0.5))
+                if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
+                  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
+
+                else:
+                  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+
                 #MSE = loss(processed_pred, target)
 
                 pred_dB = pred * 30. - 15.
@@ -238,9 +244,9 @@ def train(model, device, dataset_path, test_path, epochs):
         gc.collect()
 
         #remove!!!!!!!!!!!!!!!
-        #only train on the first 10 .pt file, half of all
+        #only train on the first 2 .pt file, half of all
         counter += 1
-        if counter >= 10:
+        if counter >= 2:
           break
         
 
