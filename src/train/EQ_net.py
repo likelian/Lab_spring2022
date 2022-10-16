@@ -190,7 +190,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
 
 
-                """
+                
                 #loss function only concerns about where the targeted ground truth has gain changes
                 #in other words, the values in target that are 0dB or normalized 0. are ingored
                 #so as the corresponding values in prediction
@@ -206,9 +206,9 @@ def train(model, device, dataset_path, test_path, epochs):
                 zeros_pred = zeros_idx * pred
 
                 filter_idx = torch.where(target != 0.5, ones, zeros)
-                """
+                
 
-                filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
+                #filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
 
                 #small values are set to 0.5
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
@@ -221,7 +221,9 @@ def train(model, device, dataset_path, test_path, epochs):
                 #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
 
 
-                MSE = loss(processed_pred, target)
+                #MSE = loss(processed_pred, target)
+                MSE = loss(filtered_pred, filtered_target)
+
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
@@ -246,7 +248,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 2 .pt file, half of all
         counter += 1
-        if counter >= 2:
+        if counter >= 25:
           break
         
 
