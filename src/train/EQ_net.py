@@ -15,7 +15,19 @@ class EqNet(nn.Module):
     self.conv3 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=0)
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
-    self.fc1 = nn.Linear(in_features=768, out_features=9)
+
+    
+    #self.fc1 = nn.Linear(in_features=768, out_features=9)
+
+    self.fc1 = nn.Linear(in_features=768, out_features=768)
+    self.fc2 = nn.Linear(in_features=768, out_features=768)
+    self.fc3 = nn.Linear(in_features=768, out_features=9)
+
+    self.sig1 = nn.Sigmoid()
+    self.sig2 = nn.Sigmoid()
+
+
+
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -79,6 +91,10 @@ class EqNet(nn.Module):
     x = torch.flatten(x, 1)
     #x = self.dropout(x)
     x = self.fc1(x)
+    x = self.sig1(x)
+    x = self.fc2(x)
+    x = self.sig2(x)
+    x = self.fc3(x)
     x = torch.squeeze(x)
 
     return x
@@ -257,7 +273,7 @@ def train(model, device, dataset_path, test_path, epochs):
         gc.collect()
 
         #remove!!!!!!!!!!!!!!!
-        #only train on the first 2 .pt file, half of all
+        #only train on the first 1 .pt file, half of all
         counter += 1
         if counter >= 1:
           break
