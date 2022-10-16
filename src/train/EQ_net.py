@@ -29,6 +29,13 @@ class EqNet(nn.Module):
     self.relu4 = nn.ReLU()
     self.relu5 = nn.ReLU()
 
+
+    self.tanh1 = nn.Tanh()
+    self.tanh2 = nn.Tanh()
+    self.tanh3 = nn.Tanh()
+    self.tanh4 = nn.Tanh()
+    self.tanh5 = nn.Tanh()
+
     self.max_pool2d1 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d2 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d3 = nn.MaxPool2d(kernel_size=2)
@@ -42,31 +49,35 @@ class EqNet(nn.Module):
     # Conv layer 1.
     x = self.conv1(x)
     x = self.batchnorm1(x)
-    x = self.relu1(x)
+    #x = self.relu1(x)
+    x = self.tanh1(x)
     x = self.max_pool2d1(x)
 
     # Conv layer 2.
     x = self.conv2(x)
     x = self.batchnorm2(x)
-    x = self.relu2(x)
+    #x = self.relu2(x)
+    x = self.tanh2(x)
     x = self.max_pool2d2(x)
 
     # Conv layer 3.
     x = self.conv3(x)
     x = self.batchnorm3(x)
-    x = self.relu3(x)
+    #x = self.relu3(x)
+    x = self.tanh3(x)
     x = self.max_pool2d3(x)
 
     # Conv layer 4.
     x = self.conv4(x)
     x = self.batchnorm4(x)
-    x = self.relu4(x)
+    #x = self.relu4(x)
+    x = self.tanh4(x)
     x = self.max_pool2d4(x)
 
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    x = self.dropout(x)
+    #x = self.dropout(x)
     x = self.fc1(x)
     x = torch.squeeze(x)
 
@@ -248,7 +259,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 2 .pt file, half of all
         counter += 1
-        if counter >= 25:
+        if counter >= 1:
           break
         
 
