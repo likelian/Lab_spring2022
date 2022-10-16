@@ -141,6 +141,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 #so as the corresponding values in prediction
                 ones = torch.ones(target.shape).to(device)
                 zeros = torch.zeros(target.shape).to(device)
+
                 filter_idx = torch.where(target != 0.5, ones, zeros)
                 filtered_target = filter_idx * target
                 filtered_pred = filter_idx * pred
@@ -150,7 +151,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 zeros_pred = zeros_idx * pred
 
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.3 * loss(zeros_target, zeros_pred)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
