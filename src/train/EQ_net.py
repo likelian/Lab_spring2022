@@ -152,7 +152,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0)
 
             train_loader_count = 0
 
@@ -307,9 +307,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
                 processed_loss += processed_test_MAE.item()
-
-                
-      
 
             length += len(test_loader)
 
