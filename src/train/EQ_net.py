@@ -136,6 +136,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 pred = model(data)
                 optimizer.zero_grad()
 
+
+                """
                 #loss function only concerns about where the targeted ground truth has gain changes
                 #in other words, the values in target that are 0dB or normalized 0. are ingored
                 #so as the corresponding values in prediction
@@ -150,8 +152,36 @@ def train(model, device, dataset_path, test_path, epochs):
                 zeros_target = zeros_idx * target
                 zeros_pred = zeros_idx * pred
 
+                filter_idx = torch.where(target != 0.5, ones, zeros)
+                """
+
+
+                #map prediction from [0., 1.] to [-0.5, 0.5] and get the absolute value
+                mapped = torch.abs(pred-0.5) 
+                #sort aescendingly and return indics
+                idx = torch.argsort(mapped, dim=1).T 
+                #get the mapped values of the fifth largest mapped absoluted value
+                border_val = mapped.gather(1, idx[4].long().unsqueeze(1)) 
+                border_val.expand(border_val.size()[0], pred.size()[0]) #expand into a matrix
+
+                ones = torch.ones(target.shape).to(device)
+                zeros = torch.zeros(target.shape).to(device)
+
+                #1 if the top 4 largest mapped absoluted value, else 0
+                filter_map = torch.where(mapped > border_val, ones, zeros)
+                #change small values to 0
+                filtered_target = filter_map * target
+                filtered_pred = filter_map * pred
+                #0 if the top 4 largest mapped absoluted value, else 1
+                zeros_map = torch.where(mapped > border_val, zeros, ones)
+                #change large values to 0
+                zeros_target = zeros_map * target
+                zeros_pred = zeros_map * pred
+
+
+
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) + 0.3 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
@@ -191,7 +221,7 @@ def train(model, device, dataset_path, test_path, epochs):
       print("epoch", epoch)
       print("    ")
       print('pred', pred_dB[0])
-      print('target', target_dB[0])
+      print('targ', target_dB[0])
       print("    ")
       print("train_loss", running_loss/train_length)
       
@@ -251,7 +281,7 @@ def train(model, device, dataset_path, test_path, epochs):
       print("validation_loss", running_loss/length)
       print("    ")
       print('test_pred', test_pred[0])
-      print('test_target', test_target[0])
+      print('test_targ', test_target[0])
 
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
