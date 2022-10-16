@@ -117,18 +117,19 @@ def select_top_predction(pred, target):
 
 def train(model, device, dataset_path, test_path, epochs):
 
-  #loss = nn.L1Loss()
-  #t_loss = nn.L1Loss()
-
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
   MAE_train_loss = nn.L1Loss()
   MAE_validation_loss = nn.L1Loss()
+  L1_train_loss = nn.L1Loss()
+  L1_validation_loss = nn.L1Loss()
 
   optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
   train_loss, validation_loss = [], []
-  batch_train_loss, batch_validation_loss = [], []
+  #batch_train_loss, batch_validation_loss = [], []
+
+  processed_train_loss, processed_validation_loss = [], []
 
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
@@ -138,18 +139,16 @@ def train(model, device, dataset_path, test_path, epochs):
       # keep track of the running loss
       running_loss = 0.
 
+      processed_loss = 0.
+
       train_length = 0
       
-
       counter = 0
 
       for file in os.listdir(dataset_path):
-
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0)
-
-            #train_length += len(train_loader)
 
             train_loader_count = 0
 
@@ -199,21 +198,26 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
 
-
+                #small values are set to 0.5
+                processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
+                #MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
+                MSE = loss(processed_pred, target)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
 
                 MAE_train = MAE_train_loss(pred_dB, target_dB)
 
+                processed_MAE = L1_train_loss(pred_dB, target_dB)
+
                 MSE.backward()
                 optimizer.step()
 
                 #running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
                 running_loss += MAE_train.item()
+                processed_loss += processed_MAE.item()
 
         
         del data
@@ -229,6 +233,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
       # append the loss for this epoch
       train_loss.append(running_loss/train_length)
+      processed_train_loss.append(processed_loss/train_length)
 
       
       print("--------------------")
@@ -239,6 +244,7 @@ def train(model, device, dataset_path, test_path, epochs):
       print('targ', target_dB[0])
       print("    ")
       print("train_loss", running_loss/train_length)
+      print("processed_train_loss", processed_train_loss/train_length)
       
 
 
@@ -257,6 +263,7 @@ def train(model, device, dataset_path, test_path, epochs):
       # evaluate on test data
       model.eval()
       running_loss = 0.
+      processed_loss = 0.
       length = 0
 
       for file in os.listdir(test_path):
@@ -280,10 +287,20 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
                 test_pred = model(test_data)
 
+
+
+                mapped_target = (test_pred + 15.)/30.
+
+                filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(pred, mapped_target)
+
                 test_pred = test_pred * 30. - 15.
 
                 test_MSE = MAE_validation_loss(test_pred, test_target)
-                running_loss += test_MSE.item()#**0.5
+                running_loss += test_MSE.item()
+
+                processed_test_MAE = L1_validation_loss(test_pred, test_target)
+                processed_loss += processed_test_MAE.item()
+      
 
             length += len(test_loader)
 
@@ -291,17 +308,23 @@ def train(model, device, dataset_path, test_path, epochs):
             del test_loader
             gc.collect()
       
-   
+
+      
+
+
+
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
+
+      processed_validation_loss.append(processed_loss/length)
+      print("processed_validation_loss", processed_loss/length)
+
       print("    ")
       print('test_pred', test_pred[0])
       print('test_targ', test_target[0])
 
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
-
-
 
 
 
@@ -338,6 +361,17 @@ for element in validation_loss:
 textfile.close()
 
 
+textfile = open("../../results/processed_train_loss.txt", "w")
+for element in processed_train_loss:
+    textfile.write(str(element) + "\n")
+textfile.close()
+
+textfile = open("../../results/rocessed_validation_loss.txt", "w")
+for element in processed_validation_loss:
+    textfile.write(str(element) + "\n")
+textfile.close()
+
+
 
 ###############################################################################
 
@@ -361,3 +395,8 @@ def plot(train_loss, validation_loss, plot_output_path):
 plot_output_path = '../../results/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
+
+
+plot_output_path = '../../results/Processed_Loss.png'
+
+plot(processed_train_loss, processed_validation_loss, plot_output_path)
