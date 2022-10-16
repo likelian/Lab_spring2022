@@ -167,6 +167,8 @@ def train(model, device, dataset_path, test_path, epochs):
 
   processed_train_loss, processed_validation_loss = [], []
 
+  output_mean = []
+
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
     tepochs.set_description('Training')
@@ -368,11 +370,14 @@ def train(model, device, dataset_path, test_path, epochs):
       print('test_pred', test_pred[0])
       print('test_targ', test_target[0])
 
-      print("pred abs mean", torch.mean(torch.abs(test_pred)).item())
+      print("pred mean", torch.mean(processed_test_pred_dB).item())
+
+      output_mean.append(torch.mean(processed_test_pred_dB).item())
+
       
 
 
-  return train_loss, validation_loss, processed_train_loss, processed_validation_loss
+  return train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean
 
 
 
@@ -392,7 +397,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss = train(net, device, dataset_path, test_path, 50)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 50)
 
 
 
@@ -416,6 +421,12 @@ textfile.close()
 
 textfile = open("../../results/rocessed_validation_loss.txt", "w")
 for element in processed_validation_loss:
+    textfile.write(str(element) + "\n")
+textfile.close()
+
+
+textfile = open("../../results/output_mean.txt", "w")
+for element in output_mean:
     textfile.write(str(element) + "\n")
 textfile.close()
 
@@ -444,7 +455,11 @@ plot_output_path = '../../results/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
 
-
 plot_output_path = '../../results/Processed_Loss.png'
 
 plot(processed_train_loss, processed_validation_loss, plot_output_path)
+
+
+plot_output_path = '../../results/output_mean.png'
+
+plot(output_mean, output_mean, plot_output_path)
