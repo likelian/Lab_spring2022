@@ -66,7 +66,7 @@ class EqNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    #x = self.dropout(x)
+    x = self.dropout(x)
     x = self.fc1(x)
     x = torch.squeeze(x)
 
@@ -215,13 +215,13 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 #print(torch.mean(torch.abs(processed_pred - 0.5)))
                 #add weighted loss of non-changed gains
-                if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
-                  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
+                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
+                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
+                #else:
+                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
 
-                else:
-                  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
 
-                #MSE = loss(processed_pred, target)
+                MSE = loss(processed_pred, target)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
