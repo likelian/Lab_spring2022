@@ -73,6 +73,48 @@ class EqNet(nn.Module):
     return x
 
 
+def select_top_predction(pred, target):
+  """
+  select the top 4 prections with largest absolute gain change from 0dB
+
+  input: 
+    pred (tensor matrix)
+    target (tensor matrix)
+
+  return:
+    filtered_target (unselected values set to 0.)
+    filtered_pred (unselected values set to 0.)
+    zeros_target (selected values set to 0.)
+    zeros_pred (selected values set to 0.)
+  """
+
+  #map prediction from [0., 1.] to [-0.5, 0.5] and get the absolute value
+  mapped = torch.abs(pred-0.5) 
+  #sort aescendingly and return indics
+  idx = torch.argsort(mapped, dim=1).T 
+  #get the mapped values of the fifth largest mapped absoluted value
+  border_val = mapped.gather(1, idx[4].long().unsqueeze(1)) 
+  border_val.expand(border_val.size()[0], pred.size()[0]) #expand into a matrix
+
+  ones = torch.ones(target.shape).to(device)
+  zeros = torch.zeros(target.shape).to(device)
+
+  #1 if the top 4 largest mapped absoluted value, else 0
+  filter_map = torch.where(mapped > border_val, ones, zeros)
+  #change small values to 0
+  filtered_target = filter_map * target
+  filtered_pred = filter_map * pred
+  #0 if the top 4 largest mapped absoluted value, else 1
+  zeros_map = torch.where(mapped > border_val, zeros, ones)
+  #change large values to 0
+  zeros_target = zeros_map * target
+  zeros_pred = zeros_map * pred
+
+  return filtered_target, filtered_pred, zeros_target, zeros_pred
+
+
+
+
 def train(model, device, dataset_path, test_path, epochs):
 
   #loss = nn.L1Loss()
@@ -155,33 +197,12 @@ def train(model, device, dataset_path, test_path, epochs):
                 filter_idx = torch.where(target != 0.5, ones, zeros)
                 """
 
-
-                #map prediction from [0., 1.] to [-0.5, 0.5] and get the absolute value
-                mapped = torch.abs(pred-0.5) 
-                #sort aescendingly and return indics
-                idx = torch.argsort(mapped, dim=1).T 
-                #get the mapped values of the fifth largest mapped absoluted value
-                border_val = mapped.gather(1, idx[4].long().unsqueeze(1)) 
-                border_val.expand(border_val.size()[0], pred.size()[0]) #expand into a matrix
-
-                ones = torch.ones(target.shape).to(device)
-                zeros = torch.zeros(target.shape).to(device)
-
-                #1 if the top 4 largest mapped absoluted value, else 0
-                filter_map = torch.where(mapped > border_val, ones, zeros)
-                #change small values to 0
-                filtered_target = filter_map * target
-                filtered_pred = filter_map * pred
-                #0 if the top 4 largest mapped absoluted value, else 1
-                zeros_map = torch.where(mapped > border_val, zeros, ones)
-                #change large values to 0
-                zeros_target = zeros_map * target
-                zeros_pred = zeros_map * pred
+                filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
 
 
 
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
@@ -193,13 +214,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 #running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
                 running_loss += MAE_train.item()
-                
-      
 
-        #print("--------------------")
-        #print("    ")
-        #print('target', target[0])
-        #print('pred', pred[0])
         
         del data
         del train_loader
@@ -285,6 +300,11 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
   return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
+
+
+
+
+
 
 
 
