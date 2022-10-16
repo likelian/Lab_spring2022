@@ -214,7 +214,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
                 #add weighted loss of non-changed gains
-                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred) - torch.mean(torch.abs(pred - 0.5))
                 #MSE = loss(processed_pred, target)
 
                 pred_dB = pred * 30. - 15.
