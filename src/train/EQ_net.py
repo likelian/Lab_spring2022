@@ -88,16 +88,20 @@ def select_top_predction(pred, target):
     zeros_pred (selected values set to 0.)
   """
 
+  if target.size() != pred.size():
+    target = target[:pred.size()[0]]
+    pred = pred[:target.size()[0]]
+
   #map prediction from [0., 1.] to [-0.5, 0.5] and get the absolute value
   mapped = torch.abs(pred-0.5) 
   #sort aescendingly and return indics
   idx = torch.argsort(mapped, dim=1).T 
   #get the mapped values of the fifth largest mapped absoluted value
   border_val = mapped.gather(1, idx[4].long().unsqueeze(1)) 
-  border_val.expand(border_val.size()[0], pred.size()[0]) #expand into a matrix
+  border_val.expand(border_val.size()[0], target.size()[0]) #expand into a matrix
 
-  ones = torch.ones(target.shape).to(device)
-  zeros = torch.zeros(target.shape).to(device)
+  ones = torch.ones(pred.size()).to(device)
+  zeros = torch.zeros(pred.size()).to(device)
 
   #1 if the top 4 largest mapped absoluted value, else 0
   filter_map = torch.where(mapped > border_val, ones, zeros)
@@ -207,10 +211,11 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
+                processed_pred_dB = processed_pred * 30. - 15.
 
                 MAE_train = MAE_train_loss(pred_dB, target_dB)
 
-                processed_MAE = L1_train_loss(pred_dB, target_dB)
+                processed_MAE = L1_train_loss(processed_pred_dB, target_dB)
 
                 MSE.backward()
                 optimizer.step()
@@ -244,7 +249,7 @@ def train(model, device, dataset_path, test_path, epochs):
       print('targ', target_dB[0])
       print("    ")
       print("train_loss", running_loss/train_length)
-      print("processed_train_loss", processed_train_loss/train_length)
+      print("processed_train_loss", processed_loss/train_length)
       
 
 
@@ -288,18 +293,22 @@ def train(model, device, dataset_path, test_path, epochs):
                 test_pred = model(test_data)
 
 
+                mapped_target = (test_target + 15.)/30.
 
-                mapped_target = (test_pred + 15.)/30.
-
-                filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(pred, mapped_target)
+                filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
+                
+                processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
 
                 test_pred = test_pred * 30. - 15.
+                processed_test_pred_dB = processed_test_pred * 30. - 15.
 
                 test_MSE = MAE_validation_loss(test_pred, test_target)
                 running_loss += test_MSE.item()
 
-                processed_test_MAE = L1_validation_loss(test_pred, test_target)
+                processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
                 processed_loss += processed_test_MAE.item()
+
+                
       
 
             length += len(test_loader)
@@ -309,9 +318,6 @@ def train(model, device, dataset_path, test_path, epochs):
             gc.collect()
       
 
-      
-
-
 
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
@@ -319,12 +325,17 @@ def train(model, device, dataset_path, test_path, epochs):
       processed_validation_loss.append(processed_loss/length)
       print("processed_validation_loss", processed_loss/length)
 
+      
+
       print("    ")
       print('test_pred', test_pred[0])
       print('test_targ', test_target[0])
 
+      print("pred abs mean", torch.mean(torch.abs(test_pred)).item())
+      
 
-  return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
+
+  return train_loss, validation_loss, processed_train_loss, processed_validation_loss
 
 
 
@@ -344,7 +355,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 100)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss = train(net, device, dataset_path, test_path, 100)
 
 
 
