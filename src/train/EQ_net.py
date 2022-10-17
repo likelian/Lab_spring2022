@@ -193,10 +193,10 @@ def train(model, device, dataset_path, test_path, epochs):
             for data_acc, data_vox, target in train_loader:
 
                 #remove!!!!!
-                #only train on 1/2 of the data
-                train_loader_count += 1
-                if train_loader_count % 10 != 0:
-                  continue
+                #only train on 1/5 of the data
+                #train_loader_count += 1
+                #if train_loader_count % 2 != 0:
+                #  continue
                 
                 train_length += 1
 
@@ -274,7 +274,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
         counter += 1
-        if counter >= 20:
+        if counter >= 50:
           break
         
 
