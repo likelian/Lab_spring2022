@@ -193,10 +193,10 @@ def train(model, device, dataset_path, test_path, epochs):
             for data_acc, data_vox, target in train_loader:
 
                 #remove!!!!!
-                #only train on 1/300 of the data
-                #train_loader_count += 1
-                #if train_loader_count % 300 != 0:
-                #  continue
+                #only train on 1/2 of the data
+                train_loader_count += 1
+                if train_loader_count % 10 != 0:
+                  continue
                 
                 train_length += 1
 
@@ -274,7 +274,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
         counter += 1
-        if counter >= 10:
+        if counter >= 20:
           break
         
 
@@ -334,7 +334,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 optimizer.zero_grad()
                 test_pred = model(test_data)
-
 
                 mapped_target = (test_target + 15.)/30.
 
