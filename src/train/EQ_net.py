@@ -275,7 +275,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
         counter += 1
-        if counter >= 2:
+        if counter >= 1:
           break
         
 
@@ -299,13 +299,13 @@ def train(model, device, dataset_path, test_path, epochs):
 
       #save the checkpoint for each epoch
 
-      #torch.save({
-      #      'epoch': epoch,
-      #      'model_state_dict': model.state_dict(),
-      #      'optimizer_state_dict': optimizer.state_dict(),
-      #      'loss': MSE
-      #      }, 
-      #      "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
+      torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': MSE
+            }, 
+            "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
       
 
       # evaluate on test data
@@ -402,7 +402,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 100)
 
 
 
