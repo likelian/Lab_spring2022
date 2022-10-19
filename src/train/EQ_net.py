@@ -275,7 +275,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
         counter += 1
-        if counter >= 1:
+        if counter >= 10:
           break
         
 
@@ -402,7 +402,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 100)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 500)
 
 
 

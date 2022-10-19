@@ -2,9 +2,93 @@
 
 * * *
 
-## 10/??/2022
+## 10/18/2022
+
+
+
+##### Summary on the summary on EQ:
+
+
+* The model can overfit on small training data, but learns slowly on larger data.
+* There is no obvious learning on validation set. The model is not as good as predicting zeros on the evaluation metric (error).
+* Smaller output (close to 0dB), better validation results on the evaluation metric. The correlation is very very strong.
+
+
+##### Summary on EQ:
+
+
+The output of 9 frequency bands are processed in a way that the top 4 absolute changes are kept, and the rest are rounuded down to 0dB. This will be the post-processing of the final implementation (although there different ways of aggregating over audio frames).
+
+
+Validation mean absolute error when predicting random values (-15dB to 15dB):
+validation_loss: **8.61dB**
+processed_validation_loss: **6.98dB** (small value set to 0)
+
+
+Validation mean absolute error when predicting the mean value (0dB):
+validation_loss **3.32dB**
+processed_validation_loss **3.32dB**
+
+
+The model can get to this processed validation loss in the range of from **4.0dB to 4.5dB**, with the cost of relative small output values,  mean absolute value at around <u>2dB</u>. I think the suitable range is <u>from 3dB to 4dB</u>.
+
+
+The mean absolute output of validation is <u>strongly</u> correlated with validation loss, suggesting that the output is somehow random on validation. See one [example](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/overfit/1pt%20with%20model) out of many. (The output_mean.png is not labelled correctly.)
+
+
+The only way to prevent predicting zeros is to picking the 4 bands that have changes in the ground truth.
+
+The current biggest issue is that the model struggles on learning on large data. The model can overfit on 1 pt file, down to 1.51dB MAE of processed output after 500 epochs. When training on 2 pt file, it goes to 2.05dB after 500 epochs. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/overfit) 
+
+Training on 50 files is slow [link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/2-50/50). The processsed training loss goes to 2.97dB after 50 epochs, little change from 3.11dB in the first epoch. compared with 2.32dB of 50 epoch on 1 pt file. The training takes several hours.
+
+This is not about generlization on the validation set which shows probably almsot no learning, or just getting smaller output which leads to smaller error.
+
+
+
+One pt file contains 100 songs with arbitrary order. There are some overlaps of one song with different EQ settings put in one pt file.
+
+The total training set so far is 100 songs in the train folder of MUSDB18 applied 50 different EQ settings each.
+
+
+
+
 
 ### **Done:**
+
+###### EQ:
+1. normalize the gain values from [-15, 15] in dB to [0., 1.].
+2. change the loss function from MAE to MSE.
+3. changed the loss function ignore zeros in the ground truth. More weighted on the non-changed values, less the output values, better the total loss. See the [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/ignore_zeros).
+4. changed the loss function to care about the largest 4 absolute gain change values in the prediction, weighted on the rest. When the rest is fully ignored, the output values are close 0dB. It outperforms the method above, when the loss of the rest is set to 0.5. See the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/largest_4_val).
+5. larger training data (10 pt file) => output zero, change back to "ignore zeros"
+6. still goes to zero.
+7. resume the previous small value panelization, worse than with only 1 pt file. train loss stucked at 5.47dB, and validation loss at 5.53dB. 
+8. 2 pt file, step 4 loss, close to samll ouutput
+9. change reLu to tanh. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/ignore_zeros)
+10. ~~add 3 FC layers and 2 Sigmoid layers. Output goes to small values~~. removed.
+11. remove bias in the FC layer
+12. log and plot output mean, concerning only the largest 4 absolute values
+13. lr from 0.01 to 0.001, no big change. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/2-50/10)
+14. experiment with 10%? of 20 pt files. unstable, little learning of training loss after several epochs. Better results (3.97dB on processed validation loss, compared to previous 4.68dB), due to small outputs on some epochs. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/2-50/20)
+15. train on the entire 50 pt files, no big differences. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/2-50/50)
+16. change learning rate on 10 pt files [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/2-50/10)
+17. try extreme overfitting 1 pt file, 500 epochs. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/overfit)
+18. try extreme overfitting 2 pt file, 500 epochs. overfiiting is not as good as on 1 pt. [Link](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/small_train_data/overfit)
+
+
+###### Not yet done:
+1. try more than 50 epochs on 50 pt files
+2. train on 1 pt, and then train on another pt file
+2. try train and test on same audio, different EQ setting?
+3. change the network strcture again?  
+4. train and overfit on one portion exclusively, then move on to another, to avoid fitting mean/small value?
+
+
+###### Reverb:
+1. extract reverb profiles of MUSDB test set
+2. export IRs to wav for MUSDB test and train set
+
 
 
 
@@ -25,9 +109,9 @@ enter copy mode and scroll in tmux
 Because the training data is imbalanced, the model will surely output zeros.
 
 
-1. change the loss function ignore zeros, or include one zero (or just do what will be done in the post-processing?)
-2. normalization on ground truth
-3. squared error instead of aboslute error
+1. ~~change the loss function ignore zeros, or include one zero (or just do what will be done in the post-processing?)~~
+2. ~~normalization on ground truth~~
+3. ~~squared error instead of aboslute error~~
 4. just focus on MUSDB for now
 
 
