@@ -5,6 +5,8 @@ https://pygad.readthedocs.io/en/latest/
 import pygad
 import numpy as np
 from pedalboard import Pedalboard, load_plugin
+import soundfile as sf
+import librosa
 
 
 
@@ -13,19 +15,23 @@ from pedalboard import Pedalboard, load_plugin
 #desired_output = 44
 
 
-
 vst = load_plugin('/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/FdnReverb.vst3')
 vst.dry_wet = 1.   #0. is 100% dry
 
 
 
+audio, rate = sf.read('/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/ M.E.R.C. Music - Knockout.wav')
+audio = np.array(audio)
+
+#delta signal to get the impluse response of the reverb
+delta = np.zeros((2,  6 * rate))
+delta[0][0] = 1.
+delta[1][0] = 1.
+
+
+
 
 def fitness_func(solution, solution_idx):
-    """
-    """
-    #output = np.sum(solution*function_inputs)
-    #error = 1.0 / np.abs(output - desired_output)
-    
     """
     'room_size', 
     'reverberation_time_s', 
@@ -38,6 +44,8 @@ def fitness_func(solution, solution_idx):
     'fade_in_time_s', 
     'fdn_size_internal'
     """
+    #output = np.sum(solution*function_inputs)
+    #error = 1.0 / np.abs(output - desired_output)
     if solution[0] < 1.0: solution[0] = 1.0
     if solution[0] > 30.: solution[0] = 30.
     if solution[1] < 0.1: solution[1] = 0.1
@@ -71,19 +79,45 @@ def fitness_func(solution, solution_idx):
     vst.fdn_size_internal = solution[9] # range [16.0, 64.0]
     
     
+    output = vst(delta, rate)
+
+    
+    """
+    if output.shape[1] > audio.shape[1]:
+        output = np.pad(output, (0, output.shape[1] - audio.shape[1]), 'constant')
+        new_audio = audio
+    else:
+        new_audio = np.pad(audio, (0, audio.shape[1] - output.shape[1]), 'constant')
+    """
+
+    new_output = np.zeros(output.shape)
+    new_output += output
+
+    
     
 
-    #output = vst(delta, rate)
+    audio_mel = librosa.feature.melspectrogram(y=audio, sr=rate)
 
-    #limited the parameter range
-    #normalize the output and the targeted extracted_IR
-    #error = spectral_loss(output, extracted_IR)
-
+    print(audio_mel)
 
     quit()
 
+    output_mel = librosa.feature.melspectrogram(y=new_output, sr=rate)
+
+
+    error = new_audio - output
+
+    print(error)
+
+    quit()
+
+    #normalize the output and the targeted extracted_IR
+    #error = spectral_loss(output, extracted_IR)
+
     
     return error
+
+
 
 
 
