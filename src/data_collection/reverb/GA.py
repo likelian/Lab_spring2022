@@ -6,7 +6,9 @@ import pygad
 import numpy as np
 from pedalboard import Pedalboard, load_plugin
 import soundfile as sf
-import librosa
+from scipy.io import wavfile
+from scipy import signal
+import matplotlib.pyplot as plt
 
 
 
@@ -21,12 +23,25 @@ vst.dry_wet = 1.   #0. is 100% dry
 
 
 audio, rate = sf.read('/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/ M.E.R.C. Music - Knockout.wav')
-audio = np.array(audio)
+audio = np.array(audio).T
+
+
 
 #delta signal to get the impluse response of the reverb
 delta = np.zeros((2,  6 * rate))
 delta[0][0] = 1.
 delta[1][0] = 1.
+
+
+audio_len = audio.shape[1]
+
+#make the delta signal and the original IR audio the same length
+audio = np.pad(audio, ((0, 6 * rate - audio_len), (0, 6 * rate - audio_len)), 'constant')
+
+
+f, t, Sxx = signal.spectrogram(audio, rate)
+#plt.pcolormesh(t, f, Sxx[0])
+#plt.show()
 
 
 
@@ -82,30 +97,10 @@ def fitness_func(solution, solution_idx):
     output = vst(delta, rate)
 
     
-    """
-    if output.shape[1] > audio.shape[1]:
-        output = np.pad(output, (0, output.shape[1] - audio.shape[1]), 'constant')
-        new_audio = audio
-    else:
-        new_audio = np.pad(audio, (0, audio.shape[1] - output.shape[1]), 'constant')
-    """
 
-    new_output = np.zeros(output.shape)
-    new_output += output
+    f, t, output_Sxx = signal.spectrogram(output, rate)
 
-    
-    
-
-    audio_mel = librosa.feature.melspectrogram(y=audio, sr=rate)
-
-    print(audio_mel)
-
-    quit()
-
-    output_mel = librosa.feature.melspectrogram(y=new_output, sr=rate)
-
-
-    error = new_audio - output
+    error = output_Sxx - Sxx
 
     print(error)
 
