@@ -6,7 +6,6 @@ import pygad
 import numpy as np
 from pedalboard import Pedalboard, load_plugin
 import soundfile as sf
-from scipy.io import wavfile
 from scipy import signal
 import matplotlib.pyplot as plt
 
@@ -20,11 +19,12 @@ import matplotlib.pyplot as plt
 vst = load_plugin('/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/FdnReverb.vst3')
 vst.dry_wet = 1.   #0. is 100% dry
 
+#print(1)
+#quit()
 
-
-audio, rate = sf.read('/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/ M.E.R.C. Music - Knockout.wav')
-audio = np.array(audio).T
-
+input_audio, rate = sf.read('/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/ M.E.R.C. Music - Knockout.wav')
+input_audio = np.array(input_audio).T
+audio_len = input_audio.shape[1]
 
 
 #delta signal to get the impluse response of the reverb
@@ -33,10 +33,10 @@ delta[0][0] = 1.
 delta[1][0] = 1.
 
 
-audio_len = audio.shape[1]
 
 #make the delta signal and the original IR audio the same length
-audio = np.pad(audio, ((0, 6 * rate - audio_len), (0, 6 * rate - audio_len)), 'constant')
+audio = np.pad(input_audio, ((0, 0), (0, 6 * rate - audio_len)), 'constant')
+
 
 
 f, t, Sxx = signal.spectrogram(audio, rate)
@@ -46,8 +46,10 @@ f, t, Sxx = signal.spectrogram(audio, rate)
 
 
 
-def fitness_func(solution, solution_idx):
+def apply_reverb(solution, vst, delta, rate):
     """
+    render the audio from given parameters in solution
+
     'room_size', 
     'reverberation_time_s', 
     'lows_cutoff_frequency_hz',
@@ -93,24 +95,25 @@ def fitness_func(solution, solution_idx):
     vst.fade_in_time_s = solution[8] # range [0.0s, 9.0s]
     vst.fdn_size_internal = solution[9] # range [16.0, 64.0]
     
-    
     output = vst(delta, rate)
 
+    return output
+
     
+
+def fitness_func(solution, solution_idx):
+
+    output = apply_reverb(solution, vst, delta, rate)
 
     f, t, output_Sxx = signal.spectrogram(output, rate)
 
-    error = output_Sxx - Sxx
+    error = np.mean(np.abs(output_Sxx - Sxx)) #minimize the error
+    fitness = 1.0 / error #maximize the fitness
 
-    print(error)
-
-    quit()
-
-    #normalize the output and the targeted extracted_IR
-    #error = spectral_loss(output, extracted_IR)
-
+    print(fitness)
+    print(" ")
     
-    return error
+    return fitness
 
 
 
@@ -122,7 +125,7 @@ def fitness_func(solution, solution_idx):
 
 fitness_function = fitness_func
 
-num_generations = 50
+num_generations = 1
 num_parents_mating = 4
 
 sol_per_pop = 8
@@ -158,9 +161,15 @@ ga_instance = pygad.GA(num_generations=num_generations,
 ga_instance.run()
 
 
+
+
+
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
 print("Parameters of the best solution : {solution}".format(solution=solution))
 print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
 
-prediction = np.sum(np.array(function_inputs)*solution)
-print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
+
+print(output_Sxx)
+
+#prediction = np.sum(np.array(function_inputs)*solution)
+#print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
