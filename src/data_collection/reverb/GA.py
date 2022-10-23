@@ -9,6 +9,7 @@ import soundfile as sf
 from scipy import signal
 import matplotlib.pyplot as plt
 import os
+import librosa
 
 
 
@@ -76,8 +77,8 @@ def fitness_func(solution, solution_idx):
     error = np.mean(np.abs(output_Sxx - Sxx)) #minimize the error
     fitness = 1.0 / error #maximize the fitness
 
-    print(fitness)
-    print(" ")
+    #print(fitness)
+    #print(" ")
 
     return fitness
 
@@ -151,37 +152,72 @@ def evolve(dataset_path, filename):
     #make the delta signal and the original IR audio the same length
     input_audio = np.pad(input_audio, ((0, 0), (0, 6 * rate - audio_len)), 'constant')
 
+    reverb_time = RT60(input_audio)
+
+
 
     f, t, Sxx = signal.spectrogram(input_audio, rate)
     plt.pcolormesh(t, f, Sxx[0], shading='gouraud')
-    plt.savefig(plot_path + filename + ".png")
+    plt.savefig(output_path + filename + ".png")
     plt.close()
 
-
     solution = reverb_search(fitness_func, Sxx)
-
 
     output = apply_reverb(solution, vst, delta, rate)
     f, t, output_Sxx = signal.spectrogram(output, rate)
 
-    """
-    #write out the audio from outuput
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    """
+    MAE = np.mean(np.abs(output_Sxx - Sxx))
+    print("MAE: ", MAE)
+
+    sf.write(output_path + filename, output.T, rate)
 
     plt.pcolormesh(t, f, output_Sxx[0], shading='gouraud')
-    plt.savefig(plot_path + filename + "-output" + ".png")
+    plt.savefig(output_path + filename + "-output" + ".png")
     plt.close()
 
+    """
+    !!!!!!!!!
+    save json
+    """
 
 
-#path to save the plot
-plot_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/'
+
+
+
+def RT60(signal):
+
+    signal = np.mean(signal, axis=0) #mono
+    signal /= np.max(signal) #normalizes
+
+    rms = librosa.feature.rms(y=signal, frame_length = 128, hop_length = 8)[0]
+    rms = np.array(rms)
+
+    
+    rms_len_in_seconds = 8 / rate #each RMS frame in seconds
+
+    idxmax = rms.argmax()
+    rmsmax = rms[idxmax]
+
+    idx60_tuple = np.where(rms[idxmax:] <= rmsmax * 0.001) #0.001 <=> -60dB
+
+    #if rt60 is longer than the length of the audio
+    if len(idx60_tuple) == 0:
+        return 6.
+
+    idx60 = idx60_tuple[0][0]
+
+    reverb_time = rms_len_in_seconds * idx60
+
+    return reverb_time
+
+    
+
+
 
 vst = load_plugin('/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/FdnReverb.vst3')
 vst.dry_wet = 1.   #0. is 100% dry
 
-dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/"
+
 
 
 rate = 48000
@@ -191,11 +227,23 @@ delta[0][0] = 1.
 delta[1][0] = 1.
 
 
+
+dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/"
+output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/test/'
+
 for file in os.listdir(dataset_path):
         if ".wav" in file:
+            print(file)
             evolve(dataset_path, file)
 
-            print(file)
+            
 
+dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/train/"
+output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/train/'
+
+for file in os.listdir(dataset_path):
+        if ".wav" in file:
+            print(file)
+            evolve(dataset_path, file)
 
 
