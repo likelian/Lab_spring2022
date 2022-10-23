@@ -10,6 +10,53 @@ from scipy import signal
 import matplotlib.pyplot as plt
 import os
 import librosa
+import json
+
+
+
+
+def save_param(solution):
+    """
+    save the solution to a dictionary
+    """
+    if solution[0] < 1.0: solution[0] = 1.0
+    if solution[0] > 30.: solution[0] = 30.
+    if solution[1] < 0.1: solution[1] = 0.1
+    if solution[1] > 9.0: solution[1] = 9.0
+    if solution[2] < 20.: solution[2] = 20.
+    if solution[2] > 20000.: solution[2] = 20000.
+    if solution[3] < 0.01: solution[3] = 0.01
+    if solution[3] > 0.9: solution[3] = 0.9
+    if solution[4] < -80.: solution[4] = -80.
+    if solution[4] > 6.0: solution[4] = 6.0
+    if solution[5] < 20.: solution[5] = 20.
+    if solution[5] > 20000.: solution[5] = 20000.
+    if solution[6] < 0.01: solution[6] = 0.01
+    if solution[6] > 0.9: solution[6] = 0.9
+    if solution[7] < -80: solution[7] = -80.
+    if solution[7] > 4.0: solution[7] = 4.0
+    if solution[8] < 0.0: solution[8] = 0.0
+    if solution[8] > 9.0: solution[8] = 9.0
+    if solution[9] < 16.0: solution[9] = 16.0
+    if solution[9] > 64.0: solution[9] = 64.0
+
+    param_dict = {}
+
+    param_dict['room_size'] = solution[0]
+    param_dict['reverberation_time_s'] = solution[1]
+    param_dict['lows_cutoff_frequency_hz'] = solution[2]
+    param_dict['lows_q_factor'] = solution[3]
+    param_dict['lows_gain_db_s'] = solution[4]
+    param_dict['highs_cutoff_frequency_hz'] = solution[5]
+    param_dict['highs_q_factor'] = solution[6]
+    param_dict['highs_gain_db_s'] = solution[7]
+    param_dict['fade_in_time_s'] = solution[8]
+    param_dict['fdn_size_internal'] = solution[9]
+
+    return param_dict
+
+    
+    
 
 
 
@@ -75,6 +122,13 @@ def fitness_func(solution, solution_idx):
     f, t, output_Sxx = signal.spectrogram(output, rate)
 
     error = np.mean(np.abs(output_Sxx - Sxx)) #minimize the error
+
+    error += 0.1 * np.abs(solution[1] - input_reverb_time_global)
+
+    #avoid overflow
+    while error < 0.000000001:
+        error *= 10.
+
     fitness = 1.0 / error #maximize the fitness
 
     #print(fitness)
@@ -98,7 +152,7 @@ def reverb_search(fitness_func, Sxx_local):
 
     fitness_function = fitness_func
 
-    num_generations = 1
+    num_generations = 50
     num_parents_mating = 4
 
     sol_per_pop = 8
@@ -139,51 +193,6 @@ def reverb_search(fitness_func, Sxx_local):
     return solution
 
 
-
-
-
-def evolve(dataset_path, filename):
-    input_audio_path = dataset_path + filename
-    input_audio, rate = sf.read(input_audio_path)
-    input_audio = np.array(input_audio).T
-    audio_len = input_audio.shape[1]
-
-
-    #make the delta signal and the original IR audio the same length
-    input_audio = np.pad(input_audio, ((0, 0), (0, 6 * rate - audio_len)), 'constant')
-
-    reverb_time = RT60(input_audio)
-
-
-
-    f, t, Sxx = signal.spectrogram(input_audio, rate)
-    plt.pcolormesh(t, f, Sxx[0], shading='gouraud')
-    plt.savefig(output_path + filename + ".png")
-    plt.close()
-
-    solution = reverb_search(fitness_func, Sxx)
-
-    output = apply_reverb(solution, vst, delta, rate)
-    f, t, output_Sxx = signal.spectrogram(output, rate)
-
-    MAE = np.mean(np.abs(output_Sxx - Sxx))
-    print("MAE: ", MAE)
-
-    sf.write(output_path + filename, output.T, rate)
-
-    plt.pcolormesh(t, f, output_Sxx[0], shading='gouraud')
-    plt.savefig(output_path + filename + "-output" + ".png")
-    plt.close()
-
-    """
-    !!!!!!!!!
-    save json
-    """
-
-
-
-
-
 def RT60(signal):
 
     signal = np.mean(signal, axis=0) #mono
@@ -200,25 +209,90 @@ def RT60(signal):
 
     idx60_tuple = np.where(rms[idxmax:] <= rmsmax * 0.001) #0.001 <=> -60dB
 
+
     #if rt60 is longer than the length of the audio
     if len(idx60_tuple) == 0:
         return 6.
 
-    idx60 = idx60_tuple[0][0]
+    try:
+        idx60 = idx60_tuple[0][0]
+    except:
+        return 6.
+
 
     reverb_time = rms_len_in_seconds * idx60
 
     return reverb_time
 
+
+
+
+def evolve(dataset_path, filename):
+    input_audio_path = dataset_path + filename
+    input_audio, rate = sf.read(input_audio_path)
+    input_audio = np.array(input_audio).T
+    audio_len = input_audio.shape[1]
+
+
+    #make the delta signal and the original IR audio the same length
+    input_audio = np.pad(input_audio, ((0, 0), (0, 6 * rate - audio_len)), 'constant')
+
+    global input_reverb_time_global
+    input_reverb_time = RT60(input_audio)
+    input_reverb_time_global = input_reverb_time
+
+    try:
+        f, t, Sxx = signal.spectrogram(input_audio, rate)
+    except:
+        print("something wrong with spectrogram")
+        return None
     
 
+
+    plt.pcolormesh(t, f, Sxx[0], shading='gouraud')
+    plt.savefig(output_path + filename[:-4] + ".png")
+    plt.close()
+
+    solution = reverb_search(fitness_func, Sxx)
+
+    output = apply_reverb(solution, vst, delta, rate)
+    f, t, output_Sxx = signal.spectrogram(output, rate)
+
+    MAE = np.mean(np.abs(output_Sxx - Sxx))
+    print("MAE: ", MAE)
+
+
+    #calcuate RT60, get the error, print and add the error to a json file
+    
+    output_reverb_time = RT60(output)
+    reverb_time_error = np.abs(input_reverb_time - output_reverb_time)
+    print("input_reverb_time: ", input_reverb_time)
+    print("output_reverb_time: ", output_reverb_time)
+    print("reverb_time_error: ", reverb_time_error)
+    reverb_time_error_dict[filename[:-4]] = reverb_time_error
+
+
+    #save the parameters found to a json file
+    param_dict = save_param(solution)
+    with open(output_path + filename[:-4] + '-parameter.json', 'w') as fp:
+        json.dump(param_dict, fp)
+
+
+
+    sf.write(output_path + filename, output.T, rate)
+
+    plt.pcolormesh(t, f, output_Sxx[0], shading='gouraud')
+    plt.savefig(output_path + filename[:-4] + "-output" + ".png")
+    plt.close()
+
+
+
+
+#######################################################################################
 
 
 vst = load_plugin('/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/FdnReverb.vst3')
 vst.dry_wet = 1.   #0. is 100% dry
-
-
-
 
 rate = 48000
 #delta signal to get the impluse response of the reverb
@@ -228,22 +302,43 @@ delta[1][0] = 1.
 
 
 
+
 dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/"
 output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/test/'
+reverb_time_error_dict = {}
+
+counter = 0
 
 for file in os.listdir(dataset_path):
         if ".wav" in file:
+            print("  ")
+            print("  ")
+            print("  ")
             print(file)
             evolve(dataset_path, file)
-
             
+
+mean_reverb_time_error = np.mean(list(reverb_time_error_dict.values()))
+print("mean_reverb_time_error: ", mean_reverb_time_error)
+with open(output_path + 'reverb_time_error.json', 'w') as fp:
+    json.dump(reverb_time_error_dict, fp)
+
+
 
 dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/train/"
 output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/train/'
+reverb_time_error_dict = {}
 
 for file in os.listdir(dataset_path):
         if ".wav" in file:
+            print("  ")
+            print("  ")
+            print("  ")
             print(file)
             evolve(dataset_path, file)
 
+mean_reverb_time_error = np.mean(list(reverb_time_error_dict.values()))
+print("mean_reverb_time_error: ", mean_reverb_time_error)
+with open(output_path + 'reverb_time_error.json', 'w') as fp:
+    json.dump(reverb_time_error_dict, fp)
 
