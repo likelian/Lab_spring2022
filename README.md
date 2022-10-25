@@ -1,9 +1,61 @@
 # Lab_fall2022
+* * *
+
+
+
+
+
+## 10/27/2022
+
+
+### **Done:**
+
+A loook at the reverb extraction results. I applied three Vahalla reverb on three mostly dry singing vocal track.
+
+```
+dry_wet ratio directly from the Chameleon plugin:
+Carla:
+GT: 20.3%
+Estimated: 6.1%
+
+Christy:
+GT: 33.3%
+Estimated:18.2%
+
+Darcy:
+GT: 19.9%
+Estimated:14.8%
+```
+
+
+
+
+
 
 
 * * *
-
 ## 10/25/2022
+
+
+### **To-do:**
+
+human mix:
+1. prepare audio
+2. prepare session
+3. prepare instruction
+4. send to Ben, text and email
+5. arrange a date to meet
+
+
+
+### **Meeting:**
+
+distribution of RT60 error
+
+experiment on reverb extraction quality, 3 files
+
+log spectrogram as cost function would be better
+
 
 ### **Done:**
 
@@ -14,6 +66,7 @@
     3. the cost function is the spectrogram error.
     4. reached a mean reverb time error of RT60 of **0.22 second**. It could be further improved by more generations, but I was limited by the computational cost on my laptop (vst loading doesn't work on Linux).
 
+1. contacted a mixing engineer (thanks Ben!)
 
 ### **Thoughts:**
 
