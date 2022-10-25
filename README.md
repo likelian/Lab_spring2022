@@ -1,5 +1,28 @@
 # Lab_fall2022
 
+
+* * *
+
+## 10/25/2022
+
+### **Done:**
+
+
+1. collected the reverb parameter data of MUSDB dataset. See it [here](https://github.com/likelian/Lab_spring2022/tree/main/data).
+    1. used a commercial plugin [Chameleon](https://www.accentize.com/chameleon/) to estimate the impulse response and the dry/wet ratio.
+    2. used a python genetic algorithm package [PyGAD](https://pygad.readthedocs.io/) to estimate the appropriate parameters on an ope-source reverb plugin [FdnReverb](https://plugins.iem.at/docs/plugindescriptions/#fdnreverb) to be close to the impulse response.
+    3. the cost function is the spectrogram error.
+    4. reached a mean reverb time error of RT60 of **0.22 second**. It could be further improved by more generations, but I was limited by the computational cost on my laptop (vst loading doesn't work on Linux).
+
+
+### **Thoughts:**
+
+R2 score?
+multiple model on different training data, and vote?
+concatenate spectrogram?
+
+
+
 * * *
 
 ## 10/18/2022
