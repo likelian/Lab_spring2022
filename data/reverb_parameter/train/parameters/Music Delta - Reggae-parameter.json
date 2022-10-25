@@ -1,1 +1,1 @@
-{"room_size": 10.641491425626569, "reverberation_time_s": 1.5, "lows_cutoff_frequency_hz": 80.0, "lows_q_factor": 0.9, "lows_gain_db_s": 3.0, "highs_cutoff_frequency_hz": 8000.0, "highs_q_factor": 0.9, "highs_gain_db_s": -19.789789383345468, "fade_in_time_s": 0.8524748249156126}
+{"room_size": 10.641491425626569, "reverberation_time_s": 1.5, "lows_cutoff_frequency_hz": 80.0, "lows_q_factor": 0.9, "lows_gain_db_s": 3.0, "highs_cutoff_frequency_hz": 8000.0, "highs_q_factor": 0.9, "highs_gain_db_s": -19.789789383345468, "fade_in_time_s": 0.8524748249156126, "dry_wet": 0.078}
