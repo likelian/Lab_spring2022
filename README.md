@@ -3,9 +3,38 @@
 
 
 
-
-
 ## 10/27/2022
+
+### **To-do:**
+
+Reverb:
+
+1. evaluation the quality of reverb extraction
+
+
+EQ:
+
+1. check time-freq resolution
+2. average neighbor spectrums, or even average over the song
+3. overfit on one song, and test if a different EQ setting can be predicted
+
+
+### **Meeting:**
+
+time freq resolution:
+can the mel-spectrogram reflect the frequency bands?
+For thie particular EQ task, no need for good time resolution
+increase hop/block size
+
+average neighbor spectrums/me-spectrums(5s, 10s, etc.)
+or even average over song
+
+
+overfit on song of different EQ setting, and test on the song with different EQ settings
+
+Add MSD later. Alex doesn't believe that more original data is the solution. The current setup is 100 songs and 50 EQ settings for each. Alex thinks it's not bad.
+
+
 
 
 ### **Done:**
@@ -14,7 +43,7 @@ A loook at the reverb extraction results. I applied three Vahalla reverb on thre
 
 ```
 dry_wet ratio directly from the Chameleon plugin:
-Carla:
+Carla(track name):
 GT: 20.3%
 Estimated: 6.1%
 
@@ -40,8 +69,8 @@ Estimated:14.8%
 ### **To-do:**
 
 human mix:
-1. prepare audio
-2. prepare session
+1. ~~prepare audio~~
+2. ~~prepare session~~
 3. prepare instruction
 4. send to Ben, text and email
 5. arrange a date to meet
