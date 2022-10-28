@@ -321,8 +321,8 @@ delta[1][0] = 1.
 
 
 
-dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/"
-output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/test/'
+dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_match_experiment/extracted/"
+output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_match_experiment/output/'
 reverb_time_error_dict = {}
 
 counter = 0
@@ -335,25 +335,6 @@ for file in os.listdir(dataset_path):
             print(file)
             evolve(dataset_path, file)
             
-
-mean_reverb_time_error = np.mean(list(reverb_time_error_dict.values()))
-print("mean_reverb_time_error: ", mean_reverb_time_error)
-with open(output_path + 'reverb_time_error.json', 'w') as fp:
-    json.dump(reverb_time_error_dict, fp)
-
-
-
-dataset_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/train/"
-output_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb matching/train/'
-reverb_time_error_dict = {}
-
-for file in os.listdir(dataset_path):
-        if ".wav" in file and file not in os.listdir(output_path):
-            print("  ")
-            print("  ")
-            print("  ")
-            print(file)
-            evolve(dataset_path, file)
 
 mean_reverb_time_error = np.mean(list(reverb_time_error_dict.values()))
 print("mean_reverb_time_error: ", mean_reverb_time_error)
