@@ -6,8 +6,6 @@ from .level import level_process
 
 
 
-
-
 def EQ(self):
 
     rate = self.sampleRate
@@ -20,12 +18,12 @@ def EQ(self):
     acc_blocked = block(acc, rate)
     vox_blocked = block(vox, rate)
 
+
     filter_arr = gate_index(vox_blocked)
 
     acc_gated = gate(acc_blocked, filter_arr)
     vox_gated = gate(vox_blocked, filter_arr)
 
-    #vox_balanced = level_process(acc_gated, vox_gated, 10., rate)
 
     if acc_gated.shape[0] == 0:
         print("No vocal?")
@@ -34,15 +32,18 @@ def EQ(self):
     acc_rms_band = filter_bank(acc_gated, rate)
     vox_rms_band = filter_bank(vox_gated, rate)
 
+
     # the differencce between two tracks' frequency banks
     rms_band_diff = acc_rms_band - vox_rms_band
-    #ignore the two lowest frequency bands
-    #rms_band_diff = rms_band_diff[2:]
+
     diff_mean = np.mean(rms_band_diff)
     rms_band_diff -= diff_mean
 
-    acc_filtered = loudness.K_filter(acc_gated, rate)
-    vox_filtered = loudness.K_filter(vox_gated, rate)
+    #acc_filtered = loudness.K_filter(acc_gated, rate)
+    #vox_filtered = loudness.K_filter(vox_gated, rate)
+    
+    acc_filtered = acc_gated
+    vox_filtered = vox_gated
 
 
     acc_rms_band_filtered = filter_bank(acc_filtered, rate)
@@ -52,9 +53,12 @@ def EQ(self):
     acc_rank = np.argsort(-acc_rms_band_filtered)
     vox_rank = np.argsort(-vox_rms_band_filtered)
 
+    print("acc_rank", acc_rank)
+    print("vox_rank", vox_rank)
 
-    acc_rank_threshold = 3
-    vox_rank_threshold = 4
+
+    acc_rank_threshold = 2
+    vox_rank_threshold = 6
     acc_top_rank = acc_rank[:acc_rank_threshold]
     vox_top_rank = vox_rank[:vox_rank_threshold]
 
@@ -71,10 +75,10 @@ def EQ(self):
                 band_list.append(band)
 
 
-    fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+    fcs = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
 
-    freq_list = np.full((10,), 999) #frequencies are initialized with 999
-    gain_list = np.zeros(10)
+    freq_list = np.full((9,), 999) #frequencies are initialized with 999
+    gain_list = np.zeros(9)
 
 
     for i, f in np.ndenumerate(band_list):
@@ -239,13 +243,13 @@ def filter_bank(audio, rate):
     """
 
     Nyquist = rate/2
-    fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] #ISO standard octave-band center frequencies
+    fcs = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] #ISO standard octave-band center frequencies
 
-    rms_dB_bank = np.zeros(10)
+    rms_dB_bank = np.zeros(9)
 
     for idx, fc in enumerate(fcs):
 
-        bandwidth = fc*2**0.5/Nyquist - fc*2**(-0.5)/Nyquist
+        bandwidth = fc*(2**0.5)/Nyquist - fc*(2**(-0.5))/Nyquist
 
         sos = signal.butter(2, [fc*2**(-0.5)/Nyquist, fc*2**0.5/Nyquist], 'bp', fs=rate, output='sos') #second order sections
         filtered = signal.sosfilt(sos, audio)

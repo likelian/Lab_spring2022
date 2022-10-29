@@ -9,8 +9,13 @@ def reverb(self):
     acc = self.acc
     vox = self.vox
 
+    #change vox to stereo in order to get stereo reverb
+    if len(vox.shape) != 2:
+        vox = np.array([vox, vox]).T
+
+
     if len(acc.shape) == 2:
-        monoAcc = np.mean(acc, axis=0)
+        monoAcc = np.mean(acc, axis=1)
         onset_env = librosa.onset.onset_strength(monoAcc, rate)
     else:
         onset_env = librosa.onset.onset_strength(acc, rate)

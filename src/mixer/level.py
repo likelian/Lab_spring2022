@@ -15,6 +15,7 @@ def level_balance(self, optional_ratio=None):
         rate = self.sampleRate
 
         output = level_process(acc, vox, target_vox_acc_ratio, rate)
+        
 
         self.vox = output
 

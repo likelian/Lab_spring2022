@@ -9,7 +9,7 @@ from .EQ import EQ
 
 class mixer:
     def __init__(self):
-        self.target_vox_acc_ratio = -0.5
+        self.target_vox_acc_ratio = 0.
         self.targetLRA = 14
 
 
@@ -36,10 +36,13 @@ class mixer:
         if checked is False:
             return None
 
+        #self.set_target_vox_acc_ratio(0)
+        self.target_vox_acc_ratio = 0.
         level_balance(self)
         EQ(self)
         compression(self)
         reverb(self)
+        self.set_target_vox_acc_ratio(-0.5)
         level_balance(self)
 
 
