@@ -9,16 +9,18 @@
 
 ### **To-do:**
 
-Reverb:
-
-1. evaluation the quality of reverb extraction
-
-
 EQ:
 
 1. check time-freq resolution
 2. average neighbor spectrums, or even average over the song
 3. overfit on one song, and test if a different EQ setting can be predicted
+
+
+
+Reverb:
+
+1. ~~evaluation the quality of reverb extraction~~
+
 
 
 
@@ -42,21 +44,31 @@ Add MSD later. Alex doesn't believe that more original data is the solution. The
 
 ### **Done:**
 
+##### Rule-based and human mix:
+
+changed the session file for human mixing
+* change EQ Compressor order
+* reverb room size to 15
+
+change the rule-based system
+* dry_wet to 0.16
+* reverb room size to 1
+* compressor release time to 150ms
+
+bounced the clipping-free audio from Reaper for rule-based mixing
+
+
+##### Reverb:
 
 Evaluation of the reverb prameter estimation by genetic algorithm. The error compares the extracted IRs by Chameleon and the IRs from FdnReverb. See the histogram [here](https://github.com/likelian/Lab_spring2022/tree/main/results/reverb/reverb_extraction).
 
 
 train folder
-
 mean_reverb_time_error:  **0.22s**
-
 var_reverb_time_error:  0.07s
 
-
 test folder
-
 mean_reverb_time_error:  **0.18s**
-
 var_reverb_time_error:  0.02s
 
 --
