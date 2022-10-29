@@ -42,7 +42,24 @@ Add MSD later. Alex doesn't believe that more original data is the solution. The
 
 ### **Done:**
 
-A loook at the reverb extraction results. I applied three Vahalla reverb on three mostly dry singing vocal track.
+
+Evaluation of the reverb prameter estimation by genetic algorithm. The error compares the extracted IRs by Chameleon and the IRs from FdnReverb. See the histogram [here](https://github.com/likelian/Lab_spring2022/tree/main/results/reverb/reverb_extraction).
+
+
+train folder
+mean_reverb_time_error:  **0.22s**
+var_reverb_time_error:  0.07s
+
+test folder
+mean_reverb_time_error:  **0.18s**
+var_reverb_time_error:  0.02s
+
+--
+
+
+
+
+A loook at the reverb extraction results with ground truth. I applied three Vahalla reverb on three mostly dry singing vocal track.
 
 ```
 dry_wet ratio directly from the Chameleon plugin:
@@ -57,6 +74,8 @@ Estimated:18.2%
 Darcy:
 GT: 19.9%
 Estimated:14.8%
+
+
 
 
 Christy.wav
@@ -77,8 +96,8 @@ absolute error:  0.15s
 mean_reverb_time_error: 0.17s
 
 
-
 ```
+
 
 
 
