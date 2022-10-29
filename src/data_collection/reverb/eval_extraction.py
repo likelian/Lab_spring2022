@@ -312,6 +312,7 @@ vst = load_plugin('/Users/likelian/Desktop/Lab/Lab_spring2022/VST3/Mac/FdnReverb
 vst.dry_wet = 1.   #0. is 100% dry
 vst.fdn_size_internal = 64 #GUI is more restricted on this parameter
 
+
 rate = 48000
 #delta signal to get the impluse response of the reverb
 delta = np.zeros((2,  6 * rate))

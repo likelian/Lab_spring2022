@@ -3,6 +3,8 @@
 
 
 
+
+
 ## 10/27/2022
 
 ### **To-do:**
@@ -17,6 +19,7 @@ EQ:
 1. check time-freq resolution
 2. average neighbor spectrums, or even average over the song
 3. overfit on one song, and test if a different EQ setting can be predicted
+
 
 
 ### **Meeting:**
@@ -54,7 +57,30 @@ Estimated:18.2%
 Darcy:
 GT: 19.9%
 Estimated:14.8%
+
+
+
+Christy.wav
+original_reverb_time(RT60):  0.63s
+extracted_reverb_time:  0.79s
+absolute error: 0.16s
+  
+Carla.wav
+original_reverb_time:  3.73s
+extracted_reverb_time:  3.53s
+absolute error:  0.21s
+
+Darcy.wav
+original_reverb_time:  0.71s
+extracted_reverb_time:  0.86s
+absolute error:  0.15s
+ 
+mean_reverb_time_error: 0.17s
+
+
+
 ```
+
 
 
 
