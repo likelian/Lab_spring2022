@@ -47,11 +47,16 @@ Evaluation of the reverb prameter estimation by genetic algorithm. The error com
 
 
 train folder
+
 mean_reverb_time_error:  **0.22s**
+
 var_reverb_time_error:  0.07s
 
+
 test folder
+
 mean_reverb_time_error:  **0.18s**
+
 var_reverb_time_error:  0.02s
 
 --
