@@ -99,7 +99,7 @@ def RT60(signal):
 def compare_RT60(file):
 
     original_path_to_file = original_path+file
-    extracted_path_to_file = extracted_path+file
+    extracted_path_to_file = param_path+file
     
     original_audio, samplerate = sf.read(original_path_to_file)
     original_audio = np.array(original_audio).T
@@ -112,7 +112,7 @@ def compare_RT60(file):
     #extracted_audio = np.pad(extracted_audio, ((0, 0), (0, 6 * rate - audio_len)), 'constant')
 
     json_file = file[:-4]+"-parameter.json"
-    with open(extracted_path+json_file, 'r') as f:
+    with open(param_path+json_file, 'r') as f:
         parameters = json.load(f)
     
     output = apply_reverb(parameters, vst, delta, rate)
@@ -130,8 +130,6 @@ def compare_RT60(file):
     reverb_time_error_dict[file] = error
 
     
-
-
     return None
 
 
@@ -152,28 +150,86 @@ delta = np.zeros((2,  6 * rate))
 delta[0][0] = 1.
 delta[1][0] = 1.
 
+output_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/results/reverb/reverb_extraction/"
 
 
-original_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_match_experiment/original/"
-#original_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_match_experiment/extracted/'
-extracted_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_match_experiment/output/'
+
+
+#######################################################################################
+
+
+original_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/test/"
+param_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_parameter/test/parameters/'
 reverb_time_error_dict = {}
 
 
-for file in os.listdir(extracted_path):
-        if ".wav" in file and file in os.listdir(extracted_path):
+counter = 0
+
+for file in os.listdir(original_path):
+        if ".wav" in file:
             print("  ")
             print("  ")
             print("  ")
             print(file)
             compare_RT60(file)
-            
+     
 
-mean_reverb_time_error = np.mean(list(reverb_time_error_dict.values()))
-#variance
+reverb_time_error_list = list(reverb_time_error_dict.values())
+
+mean_reverb_time_error = np.mean(reverb_time_error_list)
+var_reverb_time_error  = np.var(reverb_time_error_list)
 #plot error distribution
 print(" ")
 print("mean_reverb_time_error: ", mean_reverb_time_error)
-#with open(output_path + 'reverb_time_error.json', 'w') as fp:
-#    json.dump(reverb_time_error_dict, fp)
+print("var_reverb_time_error: ", var_reverb_time_error)
 
+
+plt.hist(reverb_time_error_list, bins=20)
+plt.gca().set(title='reverb_estimation_error_historgram(test)', xlabel='absolute RT60 error', ylabel='Counts')
+plt.savefig(output_path + "reverb_estimation_error_historgram(test)")
+plt.close()
+
+
+with open(output_path + 'reverb_time_error.json(test)', 'w') as fp:
+    json.dump(reverb_time_error_dict, fp)
+
+
+
+
+#######################################################################################
+
+
+original_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/data/IRs/train/"
+param_path = '/Users/likelian/Desktop/Lab/Lab_spring2022/data/reverb_parameter/train/parameters/'
+reverb_time_error_dict = {}
+
+
+counter = 0
+
+for file in os.listdir(original_path):
+        if ".wav" in file:
+            print("  ")
+            print("  ")
+            print("  ")
+            print(file)
+            compare_RT60(file)
+     
+
+reverb_time_error_list = list(reverb_time_error_dict.values())
+
+mean_reverb_time_error = np.mean(reverb_time_error_list)
+var_reverb_time_error  = np.var(reverb_time_error_list)
+#plot error distribution
+print(" ")
+print("mean_reverb_time_error: ", mean_reverb_time_error)
+print("var_reverb_time_error: ", var_reverb_time_error)
+
+
+plt.hist(reverb_time_error_list, bins=20)
+plt.gca().set(title='reverb_estimation_error_historgram(train)', xlabel='absolute RT60 error', ylabel='Counts')
+plt.savefig(output_path + "reverb_estimation_error_historgram(train)")
+plt.close()
+
+
+with open(output_path + 'reverb_time_error(train).json', 'w') as fp:
+    json.dump(reverb_time_error_dict, fp)

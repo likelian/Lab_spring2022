@@ -59,7 +59,6 @@ GT: 19.9%
 Estimated:14.8%
 
 
-
 Christy.wav
 original_reverb_time(RT60):  0.63s
 extracted_reverb_time:  0.79s
