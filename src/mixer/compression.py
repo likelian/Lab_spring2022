@@ -58,7 +58,7 @@ def compression(self):
     vst_name = "OmniCompressor.vst3"
     vst = load_plugin(vst_path + vst_name)
     vst.attack_time_ms = 30.
-    vst.release_time_ms = 200.
+    vst.release_time_ms = 150.
 
     iterate_count = 0
 

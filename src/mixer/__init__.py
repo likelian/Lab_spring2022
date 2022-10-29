@@ -90,6 +90,6 @@ class mixer:
 
         meter = pyln.Meter(self.sampleRate)
         loudness = meter.integrated_loudness(mix)
-        mix = pyln.normalize.loudness(mix, loudness, -20.0)
+        mix = pyln.normalize.loudness(mix, loudness, -28.0)
 
         return mix
