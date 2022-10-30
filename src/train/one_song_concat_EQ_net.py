@@ -184,6 +184,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
       for file in os.listdir(dataset_path):
         if ".pt" in file:
+            print(file)
             data = torch.load(dataset_path+"/"+file)
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=False)
 
@@ -273,9 +274,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
-        counter += 1
-        if counter >= 10:
-          break
+        #counter += 1
+        #if counter >= 10:
+        #  break
         
 
       # append the loss for this epoch

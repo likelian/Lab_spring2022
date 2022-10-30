@@ -184,6 +184,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
       for file in os.listdir(dataset_path):
         if ".pt" in file:
+
+            #print(file)
+
             data = torch.load(dataset_path+"/"+file)
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
@@ -191,6 +194,8 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
             for data_acc, data_vox, target in train_loader:
+
+                print(data_vox)
 
                 #remove!!!!!
                 #only train on 1/50 of the data
@@ -239,13 +244,6 @@ def train(model, device, dataset_path, test_path, epochs):
                 #small values are set to 0.5
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
-                #print(torch.mean(torch.abs(processed_pred - 0.5)))
-                #add weighted loss of non-changed gains
-                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
-                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
-                #else:
-                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
-
 
                 #MSE = loss(processed_pred, target)
                 MSE = loss(filtered_pred, filtered_target)
@@ -273,9 +271,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
-        counter += 1
-        if counter >= 10:
-          break
+        #counter += 1
+        #if counter >= 10:
+        #  break
         
 
       # append the loss for this epoch
@@ -395,17 +393,19 @@ device = torch.device('cuda')
 
 #dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/train/"
 
-#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/train/"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/train/"
 
-test_path    = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/test/"
+#test_path    = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/test/"
+
+test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/49-1/test/"
 
 ###############################################################################
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 100)
 
 
 
