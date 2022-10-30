@@ -159,7 +159,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.000001)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -178,14 +178,14 @@ def train(model, device, dataset_path, test_path, epochs):
 
       processed_loss = 0.
 
-      train_length = 0
+      train_length = 1
       
       counter = 0
 
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=False)
 
             train_loader_count = 0
 
@@ -287,7 +287,7 @@ def train(model, device, dataset_path, test_path, epochs):
       print("    ")
       print("epoch", epoch)
       print("    ")
-      print('pred', pred_dB[0])
+      print('pred', pred_dB)
       print('targ', target_dB[0])
       print("    ")
       print("train_loss", running_loss/train_length)
@@ -311,14 +311,14 @@ def train(model, device, dataset_path, test_path, epochs):
       model.eval()
       running_loss = 0.
       processed_loss = 0.
-      length = 0
+      length = 1
       abs_mean = 0.
 
       for file in os.listdir(test_path):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=False)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -337,20 +337,20 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 mapped_target = (test_target + 15.)/30.
 
-                filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
+                #filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
                 
-                processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
+                #processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
 
                 test_pred = test_pred * 30. - 15.
-                processed_test_pred_dB = processed_test_pred * 30. - 15.
+                #processed_test_pred_dB = processed_test_pred * 30. - 15.
 
                 test_MSE = MAE_validation_loss(test_pred, test_target)
                 running_loss += test_MSE.item()
 
-                processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
-                processed_loss += processed_test_MAE.item()
+                #processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
+                #processed_loss += processed_test_MAE.item()
 
-                abs_mean += torch.mean(torch.abs(processed_test_pred_dB)).item()
+                #abs_mean += torch.mean(torch.abs(processed_test_pred_dB)).item()
 
             length += len(test_loader)
 
@@ -363,8 +363,8 @@ def train(model, device, dataset_path, test_path, epochs):
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
 
-      processed_validation_loss.append(processed_loss/length)
-      print("processed_validation_loss", processed_loss/length)
+      #processed_validation_loss.append(processed_loss/length)
+      #print("processed_validation_loss", processed_loss/length)
 
       
 
