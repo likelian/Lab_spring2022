@@ -224,31 +224,33 @@ def EQ_mel_spec(abs_audio_path, output_path):
 
 
 
-        gt_tensor = torch.tensor(gain_matrix).float()
-
-
-
-
-
-
-
-        acc_concat_mel_spec = torch.mean(acc_mel_spec, dim=1)
-        vox_concat_mel_spec = torch.mean(vox_mel_spec, dim=1)
-
-        print(acc_mel_spec.shape)
-        print(vox_mel_spec.shape)
-
-        print(acc_concat_mel_spec.shape)
-        print(vox_concat_mel_spec.shape)
-
-        quit()
-
-
-
         
 
 
+        gt_tensor = torch.tensor(gain_matrix).float()
+
+
+        print("gt_tensor", gt_tensor.shape)
+        print("acc_mel_spec", acc_mel_spec.shape)
+
+
+        gt_tensor = torch.mean(gt_tensor, dim=0, keepdim=True)
+
+
+        #concat mel-spectrums
+        acc_mel_spec = torch.mean(acc_mel_spec, dim=0, keepdim=True)
+        vox_mel_spec = torch.mean(vox_mel_spec, dim=0, keepdim=True)
+
+
+
+        print("gt_tensor", gt_tensor.shape)
+        print("acc_mel_spec", acc_mel_spec.shape)
+
+
         dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
+
+
+        #quit()
 
 
         print(str(freq_top_list))
@@ -267,5 +269,5 @@ output_path = "/Volumes/mix/Dataset/EQ_mel/musdb18hq/one_song_concat/A Classic E
 audio_path = "/Volumes/mix/Dataset/musdb18hq/train"
 
 
-for i in range(100000):
+for i in range(10000):
     EQ_mel_spec(audio_path, output_path)
