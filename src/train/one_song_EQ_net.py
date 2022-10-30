@@ -195,8 +195,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
             for data_acc, data_vox, target in train_loader:
 
-                print(data_vox)
-
                 #remove!!!!!
                 #only train on 1/50 of the data
                 #train_loader_count += 1

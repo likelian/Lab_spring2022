@@ -211,7 +211,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
             continue
         
         try:
-            vox_mel_spec = reshape(vox_mel_spec)
+            new_vox_mel_spec = reshape(new_vox_mel_spec)
         except:
             print("reshape(vox_mel_spec)")
             continue
@@ -228,7 +228,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
         gt_tensor = torch.tensor(gain_matrix).float()
 
 
-        dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
+        dataset = torch.utils.data.TensorDataset(acc_mel_spec, new_vox_mel_spec, gt_tensor)
 
 
         print(str(freq_top_list))

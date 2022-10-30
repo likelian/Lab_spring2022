@@ -211,7 +211,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
             continue
         
         try:
-            vox_mel_spec = reshape(vox_mel_spec)
+            new_vox_mel_spec = reshape(new_vox_mel_spec)
         except:
             print("reshape(vox_mel_spec)")
             continue
@@ -239,7 +239,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
 
         #concat mel-spectrums
         acc_mel_spec = torch.mean(acc_mel_spec, dim=0, keepdim=True)
-        vox_mel_spec = torch.mean(vox_mel_spec, dim=0, keepdim=True)
+        new_vox_mel_spec = torch.mean(new_vox_mel_spec, dim=0, keepdim=True)
 
 
 
@@ -247,7 +247,7 @@ def EQ_mel_spec(abs_audio_path, output_path):
         print("acc_mel_spec", acc_mel_spec.shape)
 
 
-        dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec, gt_tensor)
+        dataset = torch.utils.data.TensorDataset(acc_mel_spec, new_vox_mel_spec, gt_tensor)
 
 
         #quit()
