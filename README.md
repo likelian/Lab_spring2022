@@ -1,6 +1,15 @@
 # Lab_fall2022
 * * *
 
+## 11/1/2022
+
+### **Done:**
+
+##### EQ:
+
+
+The model cannot even learn over one song of 49 EQ settings and validate on 1 EQ setting. The validation loss goes down as the model predicts smaller values. The training loss can hardly move after reaching 3+dB, much worse than expected. See the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/one_song/48-vs-1).
+
 
 
 
@@ -54,8 +63,18 @@ change the rule-based system
 * dry_wet to 0.16
 * reverb room size to 1
 * compressor release time to 150ms
+* removed K-weighted filter in EQ
+* changed the EQ ranking
+* a few other things I don't remember, need to refer to the code when writing the paper
+
 
 bounced the clipping-free audio from Reaper for rule-based mixing
+
+Fixed a bug:
+rule-based reverb wa
+
+
+the final normalized loudness should be **-28 LKFS**. Use iZotope RX to set the loudness.
 
 
 ##### Reverb:
