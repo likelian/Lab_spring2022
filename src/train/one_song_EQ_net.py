@@ -393,9 +393,11 @@ def train(model, device, dataset_path, test_path, epochs):
 device = torch.device('cuda')
 
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/train/"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/train/"
 
-test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/test/"
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
+
+test_path    = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/49-1/test/"
 
 ###############################################################################
 
