@@ -391,13 +391,15 @@ device = torch.device('cuda')
 
 #dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/train/"
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
+
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/train/one_song/A Classic Education - NightOwl/"
 
 #dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/train/"
 
 #test_path    = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/test/"
 
-test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/49-1/test/"
+test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/test/"
 
 ###############################################################################
 
