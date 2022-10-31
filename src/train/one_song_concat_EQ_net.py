@@ -376,9 +376,6 @@ def train(model, device, dataset_path, test_path, epochs):
       print(" ")
       output_mean.append(abs_mean)
 
-      
-
-
   return train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean
 
 
