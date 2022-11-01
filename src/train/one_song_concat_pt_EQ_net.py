@@ -86,11 +86,11 @@ class EqNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    x = self.dropout(x)
     x = self.fc1(x)
     x = self.sig1(x)
     x = self.fc2(x)
     x = self.sig2(x)
+    x = self.dropout(x)
     x = self.fc3(x)
     x = torch.squeeze(x)
 
@@ -160,7 +160,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.00001)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -249,7 +249,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
                 #MSE = loss(processed_pred, target)
-                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
 
 
                 pred_dB = pred * 30. - 15.
