@@ -17,14 +17,14 @@ class EqNet(nn.Module):
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
 
     
-    self.fc1 = nn.Linear(in_features=768, out_features=9, bias=True)
+    #self.fc1 = nn.Linear(in_features=768, out_features=9, bias=True)
 
-    #self.fc1 = nn.Linear(in_features=768, out_features=768)
-    #self.fc2 = nn.Linear(in_features=768, out_features=768)
-    #self.fc3 = nn.Linear(in_features=768, out_features=9)
+    self.fc1 = nn.Linear(in_features=768, out_features=768)
+    self.fc2 = nn.Linear(in_features=768, out_features=768)
+    self.fc3 = nn.Linear(in_features=768, out_features=9)
 
-    #self.sig1 = nn.Sigmoid()
-    #self.sig2 = nn.Sigmoid()
+    self.sig1 = nn.Sigmoid()
+    self.sig2 = nn.Sigmoid()
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -58,29 +58,29 @@ class EqNet(nn.Module):
     # Conv layer 1.
     x = self.conv1(x)
     x = self.batchnorm1(x)
-    #x = self.relu1(x)
-    x = self.tanh1(x)
+    x = self.relu1(x)
+    #x = self.tanh1(x)
     x = self.max_pool2d1(x)
 
     # Conv layer 2.
     x = self.conv2(x)
     x = self.batchnorm2(x)
-    #x = self.relu2(x)
-    x = self.tanh2(x)
+    x = self.relu2(x)
+    #x = self.tanh2(x)
     x = self.max_pool2d2(x)
 
     # Conv layer 3.
     x = self.conv3(x)
     x = self.batchnorm3(x)
-    #x = self.relu3(x)
-    x = self.tanh3(x)
+    x = self.relu3(x)
+    #x = self.tanh3(x)
     x = self.max_pool2d3(x)
 
     # Conv layer 4.
     x = self.conv4(x)
     x = self.batchnorm4(x)
-    #x = self.relu4(x)
-    x = self.tanh4(x)
+    x = self.relu4(x)
+    #x = self.tanh4(x)
     x = self.max_pool2d4(x)
 
 
@@ -88,10 +88,10 @@ class EqNet(nn.Module):
     x = torch.flatten(x, 1)
     x = self.dropout(x)
     x = self.fc1(x)
-    #x = self.sig1(x)
-    #x = self.fc2(x)
-    #x = self.sig2(x)
-    #x = self.fc3(x)
+    x = self.sig1(x)
+    x = self.fc2(x)
+    x = self.sig2(x)
+    x = self.fc3(x)
     x = torch.squeeze(x)
 
     return x
@@ -150,6 +150,7 @@ def select_top_predction(pred, target):
 
 
 
+
 def train(model, device, dataset_path, test_path, epochs):
 
   loss = nn.MSELoss()
@@ -178,19 +179,20 @@ def train(model, device, dataset_path, test_path, epochs):
 
       processed_loss = 0.
 
-      train_length = 1
+      train_length = 0
       
       counter = 0
 
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=False)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
 
             for data_acc, data_vox, target in train_loader:
+
                 #remove!!!!!
                 #only train on 1/50 of the data
                 #train_loader_count += 1
@@ -238,17 +240,23 @@ def train(model, device, dataset_path, test_path, epochs):
                 #small values are set to 0.5
                 processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
+                #print(torch.mean(torch.abs(processed_pred - 0.5)))
+                #add weighted loss of non-changed gains
+                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
+                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
+                #else:
+                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+
 
                 #MSE = loss(processed_pred, target)
-                MSE = loss(filtered_pred, filtered_target)
-
+                MSE = loss(filtered_pred, filtered_target) #+ 0.1 * loss(zeros_target, zeros_pred)
 
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
                 processed_pred_dB = processed_pred * 30. - 15.
 
-                MAE_train = MAE_train_loss(pred_dB, target_dB[0])
+                MAE_train = MAE_train_loss(pred_dB, target_dB)
 
                 processed_MAE = L1_train_loss(processed_pred_dB, target_dB)
 
@@ -259,8 +267,6 @@ def train(model, device, dataset_path, test_path, epochs):
                 running_loss += MAE_train.item()
                 processed_loss += processed_MAE.item()
 
-
-
         
         del data
         del train_loader
@@ -269,7 +275,7 @@ def train(model, device, dataset_path, test_path, epochs):
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
         #counter += 1
-        #if counter >= 100:
+        #if counter >= 10:
         #  break
         
 
@@ -282,8 +288,8 @@ def train(model, device, dataset_path, test_path, epochs):
       print("    ")
       print("epoch", epoch)
       print("    ")
-      print('pred', pred_dB)
-      print('targ', target_dB)
+      print('pred', pred_dB[0])
+      print('targ', target_dB[0])
       print("    ")
       print("train_loss", running_loss/train_length)
       print("processed_train_loss", processed_loss/train_length)
@@ -306,14 +312,14 @@ def train(model, device, dataset_path, test_path, epochs):
       model.eval()
       running_loss = 0.
       processed_loss = 0.
-      length = 1
+      length = 0
       abs_mean = 0.
 
       for file in os.listdir(test_path):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=False)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -332,8 +338,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 mapped_target = (test_target + 15.)/30.
 
-                test_pred = test_pred[None, :] #add dimension
-
                 filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
                 
                 processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
@@ -343,7 +347,6 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 test_MSE = MAE_validation_loss(test_pred, test_target)
                 running_loss += test_MSE.item()
-
 
                 processed_test_MAE = L1_validation_loss(processed_test_pred_dB, test_target)
                 processed_loss += processed_test_MAE.item()
@@ -376,6 +379,9 @@ def train(model, device, dataset_path, test_path, epochs):
       print(" ")
       output_mean.append(abs_mean)
 
+      
+
+
   return train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean
 
 
@@ -388,15 +394,9 @@ def train(model, device, dataset_path, test_path, epochs):
 device = torch.device('cuda')
 
 
-#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/train/"
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/pt/train/"
 
-#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song/1000/one_song/A Classic Education - NightOwl/"
-
-#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/one_song_concat/one_song_concat/train/"
-
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/10000/train/"
-
-test_path    = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/10000/test/"
+test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/pt/test"
 
 ###############################################################################
 
