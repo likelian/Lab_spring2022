@@ -278,9 +278,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
-        counter += 1
-        if counter >= 2:
-          break
+        #counter += 1
+        #if counter >= 2:
+        #  break
         
 
       # append the loss for this epoch
