@@ -64,6 +64,13 @@ I think:
 * whether the training and validation set share the same original song may not matter on the results. Of course this is not allowed for real experiments.
 
 
+Data aurgmentation:
+
+* add Gussian noise on ground truth
+* add Gussian noise on mel-spectrogram
+* on audio (local computional time cost, storage/RAM cost)
+
+
 
 
 
