@@ -7,8 +7,68 @@
 
 ##### EQ:
 
+Frequency resolution: 44100/2048 = **21.53Hz**
+Mel spectrum has **128** banks.
 
-The model cannot even learn over one song of 49 EQ settings and validate on 1 EQ setting. The validation loss goes down as the model predicts smaller values. The training loss can hardly move after reaching 3+dB, much worse than expected. See the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/one_song/48-vs-1).
+--
+
+It seems that my data collection didn’t include the EQ effect!! Fixed for the new data.
+
+--
+
+The model cannot even learn over **one song of ~~49~~ 10 EQ settings and validate on 1 EQ setting**. The validation loss goes down as the model predicts smaller values. The training loss can hardly move after reaching 3+dB, much worse than expected. See the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/one_song/48-vs-1).
+
+--
+--
+
+**one song in 1000 EQ settings**, see the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/one_song/1000) (batch size of 1). The validation set which is also from the same song with different EQ settings. The model doesn't genernalize, but can overfit much better than any previous experiments.
+
+When overfit on one song, the test output can get some very large numbers. See below:
+
+```
+test_pred tensor([ -2.9509,   6.5698,  -7.7532,  -0.4996, -28.7141,   0.4498, -16.3401, -2.5833,   6.5215])
+
+test_targ tensor([ -7.0740,   9.1288,  -7.5502, -12.5740,   0.0000,   0.0000,   0.0000, 0.0000,   0.0000])
+```
+
+-- 
+
+
+
+**one song one averaged mel-spectrogram frame**
+
+
+<u>3h30min for 10000 concatenated EQ data collection.</u> <u>1min can collect 47 files</u>.
+
+
+The data size is much smaller. See the results [here](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/concat_one_song/10000/pt/0.1%20*%20zeros%20lr%3D0.00001/change%20dropout%20location). Compared with previous [results](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/one_song/1000) on the mel-spectrum of the entire songs (1000 EQ settings, some changes in the model). The two results look similar. Again, can overfit well on the training data, but cannot generalize at all.
+
+The training is a lot lot faster (minutes vs hours). Far less storage requirements (400MB vs 10GB). 
+
+Interesttingly, smaller training data size ([1/10](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/concat_one_song/10000/pt/0.1%20*%20zeros%20lr%3D0.00001/change%20dropout%20location/one%20tenth%20data) and [1/5](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/concat_one_song/10000/pt/0.1%20*%20zeros%20lr%3D0.00001/change%20dropout%20location/one%20fifth%20data)) shows no overfitting on the training set. The output is very small, similar to the experiments on the entire dataset in the previous weeks. 
+
+The validation results make some sense, but terribly wrong on others.
+
+```
+test_pred tensor([ -7.6203,  -1.7941,   2.2201, -15.0948,   6.8406,  -5.6358,  -3.6307, -1.9124,  -5.1027])
+
+test_targ tensor([ -9.1660,  -3.8127,   1.6574,   0.0000,   0.0000,   0.0000,   0.0000,  -11.0619,   0.0000])
+```
+
+### **Thoughts:**
+
+It's frustrating to see that the model cannot generalize on one song with different EQ settings.
+
+I think:
+* the key is to have many many EQ settings, no matter on one song or more than one songs.
+* whether the training and validation set share the same original song may not matter on the results. Of course this is not allowed for real experiments.
+
+
+Data aurgmentation:
+
+* add Gussian noise on ground truth
+* add Gussian noise on mel-spectrogram
+* on audio (local computional time cost, storage/RAM cost)
 
 
 
@@ -20,9 +80,9 @@ The model cannot even learn over one song of 49 EQ settings and validate on 1 EQ
 
 EQ:
 
-1. check time-freq resolution
+1. ~~check time-freq resolution~~
 2. average neighbor spectrums, or even average over the song
-3. overfit on one song, and test if a different EQ setting can be predicted
+3. ~~overfit on one song, and test if a different EQ setting can be predicted~~
 
 
 
@@ -82,13 +142,18 @@ the final normalized loudness should be **-28 LKFS**. Use iZotope RX to set the 
 Evaluation of the reverb prameter estimation by genetic algorithm. The error compares the extracted IRs by Chameleon and the IRs from FdnReverb. See the histogram [here](https://github.com/likelian/Lab_spring2022/tree/main/results/reverb/reverb_extraction).
 
 
+
 train folder
-mean_reverb_time_error:  **0.22s**
-var_reverb_time_error:  0.07s
+
+* mean_reverb_time_error:  **0.22s**
+* var_reverb_time_error:  0.07s
+
+
 
 test folder
-mean_reverb_time_error:  **0.18s**
-var_reverb_time_error:  0.02s
+
+* mean_reverb_time_error:  **0.18s**
+* var_reverb_time_error:  0.02s
 
 --
 
@@ -99,6 +164,7 @@ A loook at the reverb extraction results with ground truth. I applied three Vaha
 
 ```
 dry_wet ratio directly from the Chameleon plugin:
+
 Carla(track name):
 GT: 20.3%
 Estimated: 6.1%
@@ -110,8 +176,6 @@ Estimated:18.2%
 Darcy:
 GT: 19.9%
 Estimated:14.8%
-
-
 
 
 Christy.wav
@@ -130,8 +194,6 @@ extracted_reverb_time:  0.86s
 absolute error:  0.15s
  
 mean_reverb_time_error: 0.17s
-
-
 ```
 
 
