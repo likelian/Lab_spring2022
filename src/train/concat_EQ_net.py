@@ -211,7 +211,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 mean_tensor = torch.zeros(target.shape)
                 std_tensor = torch.full(target.shape, 0.01)
-                noise = torch.normal(mean_tensor, std_tensor)
+                noise = torch.normal(mean_tensor, std_tensor).to(device)
                 target += noise
 
                 data_acc = torch.nn.functional.normalize(data_acc)
