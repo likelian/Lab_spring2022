@@ -51,7 +51,9 @@ class EqNet(nn.Module):
     self.max_pool2d4 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d5 = nn.MaxPool2d(kernel_size=2)
 
-    self.dropout = nn.Dropout(p=0.3, inplace=False)
+    self.dropout1 = nn.Dropout(p=0.3, inplace=False)
+    self.dropout2 = nn.Dropout(p=0.3, inplace=False)
+    self.dropout3 = nn.Dropout(p=0.3, inplace=False)
 
 
   def forward(self, x):
@@ -86,11 +88,13 @@ class EqNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
+    x = self.dropout1(x)
     x = self.fc1(x)
     x = self.sig1(x)
+    x = self.dropout2(x)
     x = self.fc2(x)
     x = self.sig2(x)
-    x = self.dropout(x)
+    x = self.dropout3(x)
     x = self.fc3(x)
     x = torch.squeeze(x)
 
