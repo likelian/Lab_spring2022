@@ -190,7 +190,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=1, shuffle=False, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
@@ -208,6 +208,11 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
               
                 target = (target + 15.)/30. #normalize the target from (-15.0, 15.0) to (0., 1.)
+
+                mean_tensor = torch.zeros(target.shape)
+                std_tensor = torch.full(target.shape, 0.01)
+                noise = torch.normal(mean_tensor, std_tensor)
+                target += noise
 
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
