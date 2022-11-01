@@ -249,7 +249,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
                 #MSE = loss(processed_pred, target)
-                MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                MSE = loss(filtered_pred, filtered_target) + 0.5 * loss(zeros_target, zeros_pred)
 
 
                 pred_dB = pred * 30. - 15.
