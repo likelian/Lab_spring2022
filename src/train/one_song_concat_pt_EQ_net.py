@@ -88,10 +88,10 @@ class EqNet(nn.Module):
 
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
-    x = self.dropout1(x)
+    #x = self.dropout1(x)
     x = self.fc1(x)
     x = self.sig1(x)
-    x = self.dropout2(x)
+    #x = self.dropout2(x)
     x = self.fc2(x)
     x = self.sig2(x)
     x = self.dropout3(x)
@@ -278,9 +278,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
-        #counter += 1
-        #if counter >= 10:
-        #  break
+        counter += 1
+        if counter >= 1:
+          break
         
 
       # append the loss for this epoch
