@@ -26,13 +26,13 @@ def mel_spec(audio_path, output_path):
 
     for (dirpath, dirnames, filenames) in walk(abs_audio_path):
 
-        #musdb18hq dataset
-        #if "mixture.wav" in filenames \
-        #    and "vocals.wav" in filenames:
-
-        #GTZAN dataset
-        if "no_vocals.wav" in filenames \
+        musdb18hq dataset
+        if "mixture.wav" in filenames \
             and "vocals.wav" in filenames:
+
+        GTZAN dataset
+        #if "no_vocals.wav" in filenames \
+        #    and "vocals.wav" in filenames:
 
             #mixture_path = dirpath+"/mixture.wav"
             acc_path = dirpath+"/no_vocals.wav"
