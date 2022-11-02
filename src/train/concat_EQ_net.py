@@ -208,14 +208,26 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc, data_vox, target = data_acc.to(device), data_vox.to(device), target.to(device)
               
                 target = (target + 15.)/30. #normalize the target from (-15.0, 15.0) to (0., 1.)
-
-                mean_tensor = torch.zeros(target.shape)
-                std_tensor = torch.full(target.shape, 0.01)
-                noise = torch.normal(mean_tensor, std_tensor).to(device)
-                target += noise
+                
+                #add Gussian Noise to the ground truth
+                #mean_tensor = torch.zeros(target.shape)
+                #std_tensor = torch.full(target.shape, 0.1)
+                #noise = torch.normal(mean_tensor, std_tensor).to(device)
+                #target += noise
+                #del noise
+                #gc.collect()
 
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
+
+                #add Gussian Noise to the input data
+                mean_tensor = torch.zeros(data_vox.shape)
+                std_tensor = torch.full(data_vox.shape, 0.001)
+                noise = torch.normal(mean_tensor, std_tensor).to(device)
+                data_vox += noise
+                del noise
+                gc.collect()
+
 
                 data_acc *= torch.rand(1).cuda()
                 data_vox *= torch.rand(1).cuda()
@@ -328,7 +340,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=2, shuffle=False, num_workers=0, drop_last=True)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
