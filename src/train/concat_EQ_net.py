@@ -19,8 +19,8 @@ class EqNet(nn.Module):
     
     #self.fc1 = nn.Linear(in_features=768, out_features=9, bias=True)
 
-    self.fc1 = nn.Linear(in_features=768, out_features=768)
-    self.fc2 = nn.Linear(in_features=768, out_features=768)
+    self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
+    self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc3 = nn.Linear(in_features=768, out_features=9)
 
     self.sig1 = nn.Sigmoid()
@@ -195,6 +195,10 @@ def train(model, device, dataset_path, test_path, epochs):
             train_loader_count = 0
 
 
+            mean_tensor = torch.zeros(torch.Size([25, 64, 128]))
+            std_tensor = torch.full(torch.Size([25, 64, 128]), 0.001)
+
+
             for data_acc, data_vox, target in train_loader:
 
                 #remove!!!!!
@@ -221,12 +225,15 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_vox = torch.nn.functional.normalize(data_vox)
 
                 #add Gussian Noise to the input data
-                mean_tensor = torch.zeros(data_vox.shape)
-                std_tensor = torch.full(data_vox.shape, 0.001)
-                noise = torch.normal(mean_tensor, std_tensor).to(device)
+                #mean_tensor = torch.zeros(data_vox.shape)
+                #std_tensor = torch.full(data_vox.shape, 0.001)
+                
+                #noise = torch.normal(mean_tensor, std_tensor).to(device)
+                noise = (torch.randn(data_vox.shape).to(device) - 0.5) * 0.001
+
                 data_vox += noise
-                del noise
-                gc.collect()
+                #del noise
+                #gc.collect()
 
 
                 data_acc *= torch.rand(1).cuda()
