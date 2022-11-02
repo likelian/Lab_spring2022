@@ -190,7 +190,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=15, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
@@ -229,9 +229,9 @@ def train(model, device, dataset_path, test_path, epochs):
                 #std_tensor = torch.full(data_vox.shape, 0.001)
                 
                 #noise = torch.normal(mean_tensor, std_tensor).to(device)
-                noise = (torch.randn(data_vox.shape).to(device) - 0.5) * 0.001
+                #noise = (torch.randn(data_vox.shape).to(device) - 0.5) * 0.001
 
-                data_vox += noise
+                #data_vox += noise
                 #del noise
                 #gc.collect()
 
@@ -432,7 +432,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat_one_song/pt/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 100)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 200)
 
 
 
