@@ -21,7 +21,7 @@ class EqNet(nn.Module):
 
     self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
-    self.fc3 = nn.Linear(in_features=768, out_features=9)
+    self.fc3 = nn.Linear(in_features=768, out_features=9, bias=False)
 
     self.sig1 = nn.Sigmoid()
     self.sig2 = nn.Sigmoid()
