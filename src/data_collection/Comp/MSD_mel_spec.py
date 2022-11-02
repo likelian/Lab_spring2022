@@ -40,6 +40,8 @@ def mel_spec(audio_path, output_path):
             index = path_str.rfind('/')
             filename = path_str[index+1:]
             print(filename)
+            if filename+".pt" in os.listdir(output_path):
+                continue
         else:
             continue
         
@@ -63,7 +65,10 @@ def mel_spec(audio_path, output_path):
         acc = acc.detach().numpy()
         vox = vox.detach().numpy()
 
-        LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
+        try:
+            LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
+        except:
+            continue
 
         LRA_list = []
         for i in range(int(acc.shape[0] / 65536)):
