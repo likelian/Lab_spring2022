@@ -164,7 +164,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.00001)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -190,7 +190,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=15, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=5, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
