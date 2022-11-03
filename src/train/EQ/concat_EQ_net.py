@@ -164,7 +164,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-5)
+  optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -190,7 +190,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=10, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
@@ -432,35 +432,35 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat_one_song/pt/test"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 200)
 
 
 
 ###############################################################################
 
-textfile = open("../../results/train_loss.txt", "w")
+textfile = open("/home/kli421/dir1/Lab_spring2022/results/train_loss.txt", "w")
 for element in train_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
-textfile = open("../../results/validation_loss.txt", "w")
+textfile = open("../../../results/validation_loss.txt", "w")
 for element in validation_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
 
-textfile = open("../../results/processed_train_loss.txt", "w")
+textfile = open("../../../results/processed_train_loss.txt", "w")
 for element in processed_train_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
-textfile = open("../../results/rocessed_validation_loss.txt", "w")
+textfile = open("../../../results/rocessed_validation_loss.txt", "w")
 for element in processed_validation_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
 
-textfile = open("../../results/output_mean.txt", "w")
+textfile = open("../../../results/output_mean.txt", "w")
 for element in output_mean:
     textfile.write(str(element) + "\n")
 textfile.close()
@@ -486,15 +486,15 @@ def plot(train_loss, validation_loss, plot_output_path):
   plt.savefig(plot_output_path)
   plt.close()
 
-plot_output_path = '../../results/Loss.png'
+plot_output_path = '../../../results/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
 
-plot_output_path = '../../results/Processed_Loss.png'
+plot_output_path = '../../../results/Processed_Loss.png'
 
 plot(processed_train_loss, processed_validation_loss, plot_output_path)
 
 
-plot_output_path = '../../results/output_mean.png'
+plot_output_path = '../../../results/output_mean.png'
 
 plot(output_mean, output_mean, plot_output_path)
