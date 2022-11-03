@@ -171,7 +171,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-6)
+  optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-7)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
