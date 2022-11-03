@@ -164,7 +164,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
+  optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -195,8 +195,8 @@ def train(model, device, dataset_path, test_path, epochs):
             train_loader_count = 0
 
 
-            mean_tensor = torch.zeros(torch.Size([25, 64, 128]))
-            std_tensor = torch.full(torch.Size([25, 64, 128]), 0.001)
+            #mean_tensor = torch.zeros(torch.Size([25, 64, 128]))
+            #std_tensor = torch.full(torch.Size([25, 64, 128]), 0.001)
 
 
             for data_acc, data_vox, target in train_loader:
@@ -221,8 +221,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 #del noise
                 #gc.collect()
 
-                data_acc = torch.nn.functional.normalize(data_acc)
-                data_vox = torch.nn.functional.normalize(data_vox)
+                #data_acc = torch.nn.functional.normalize(data_acc)
+                #data_vox = torch.nn.functional.normalize(data_vox)
 
                 #add Gussian Noise to the input data
                 #mean_tensor = torch.zeros(data_vox.shape)
