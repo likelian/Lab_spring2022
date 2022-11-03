@@ -22,6 +22,7 @@ class EqNet(nn.Module):
     self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc3 = nn.Linear(in_features=768, out_features=9, bias=False)
+    self.fc4 = nn.Linear(in_features=9, out_features=9, bias=True)
 
     self.sig1 = nn.Sigmoid()
     self.sig2 = nn.Sigmoid()
@@ -31,6 +32,7 @@ class EqNet(nn.Module):
     self.batchnorm3 = nn.BatchNorm2d(num_features=32)
     self.batchnorm4 = nn.BatchNorm2d(num_features=64)
     self.batchnorm5 = nn.BatchNorm2d(num_features=128)
+    self.batchnorm6 = nn.BatchNorm1d(num_features=9)
 
     self.relu1 = nn.ReLU()
     self.relu2 = nn.ReLU()
@@ -44,6 +46,8 @@ class EqNet(nn.Module):
     self.tanh3 = nn.Tanh()
     self.tanh4 = nn.Tanh()
     self.tanh5 = nn.Tanh()
+
+    self.Softmax1 = nn.Softmax(dim=1)
 
     self.max_pool2d1 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d2 = nn.MaxPool2d(kernel_size=2)
@@ -96,6 +100,9 @@ class EqNet(nn.Module):
     x = self.sig2(x)
     x = self.dropout3(x)
     x = self.fc3(x)
+    #x = self.batchnorm6(x)
+    #x = self.fc4(x)
+    #x = self.tanh1(x)
     x = torch.squeeze(x)
 
     return x
@@ -221,8 +228,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 #del noise
                 #gc.collect()
 
-                #data_acc = torch.nn.functional.normalize(data_acc)
-                #data_vox = torch.nn.functional.normalize(data_vox)
+                data_acc = torch.nn.functional.normalize(data_acc)
+                data_vox = torch.nn.functional.normalize(data_vox)
 
                 #add Gussian Noise to the input data
                 #mean_tensor = torch.zeros(data_vox.shape)
