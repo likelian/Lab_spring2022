@@ -25,33 +25,34 @@ def mel_spec(audio_path, output_path):
 
 
     for (dirpath, dirnames, filenames) in walk(abs_audio_path):
-
-        #GTZAN dataset
-        #if "no_vocals.wav" in filenames \
+        
+        #musdb18hq dataset
+        #if "mixture.wav" in filenames \
         #    and "vocals.wav" in filenames:
 
-
-        #musdb18hq dataset
-        if "mixture.wav" in filenames \
-            and "vocals.wav" in filenames:
-            mixture_path = dirpath+"/mixture.wav"
-            #acc_path = dirpath+"/no_vocals.wav"
+        #GTZAN dataset
+        if "no_vocals.wav" in filenames \
+            and "vocals.wav" in filenames:        
+            #mixture_path = dirpath+"/mixture.wav"
+            acc_path = dirpath+"/no_vocals.wav"
             vox_path = dirpath+"/vocals.wav"
             path_str = str(dirpath)
             index = path_str.rfind('/')
             filename = path_str[index+1:]
             print(filename)
+            if filename+".pt" in os.listdir(output_path):
+                continue
         else:
             continue
         
 
-        mxiture, sample_rate = torchaudio.load(mixture_path)
-        #acc, sample_rate = torchaudio.load(acc_path)
+        #mxiture, sample_rate = torchaudio.load(mixture_path)
+        acc, sample_rate = torchaudio.load(acc_path)
         vox, sample_rate = torchaudio.load(vox_path)
 
         rate = sample_rate
 
-        acc = mxiture - vox
+        #acc = mxiture - vox
 
         #mono
         acc = torch.mean(acc, 0)
@@ -64,7 +65,10 @@ def mel_spec(audio_path, output_path):
         acc = acc.detach().numpy()
         vox = vox.detach().numpy()
 
-        LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
+        try:
+            LRA = loudness.LoudnessRange(vox, rate, overlapSize = 0.1)
+        except:
+            continue
 
         LRA_list = []
         for i in range(int(acc.shape[0] / 65536)):
@@ -110,14 +114,7 @@ def mel_spec(audio_path, output_path):
 
 
 
-
-audio_path = "/home/kli421/dir1/musdb18hq/train/"
-output_path = "/home/kli421/dir1/comp_mel/musdb18hq/train/"
-
-mel_spec(audio_path, output_path)
-
-
-audio_path = "/home/kli421/dir1/musdb18hq/test/"
-output_path = "/home/kli421/dir1/comp_mel/musdb18hq/test/"
+audio_path = "/home/kli421/dir1/MSD/separated/mdx_extra/"
+output_path = "/home/kli421/dir1/comp_mel/MSD/"
 
 mel_spec(audio_path, output_path)
