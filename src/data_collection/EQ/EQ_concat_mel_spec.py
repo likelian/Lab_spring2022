@@ -154,9 +154,16 @@ def EQ_mel_spec(abs_audio_path, output_path):
         else:
             continue
 
-        mxiture, sample_rate = torchaudio.load(mixture_path)
+        try:
+            mxiture, sample_rate = torchaudio.load(mixture_path)
+        except:
+            continue
         #acc, sample_rate = torchaudio.load(acc_path)
-        vox, sample_rate = torchaudio.load(vox_path)
+
+        try:
+            vox, sample_rate = torchaudio.load(vox_path)
+        except:
+            continue
 
         acc = mxiture - vox
 
@@ -263,14 +270,14 @@ audio_path = "/Volumes/mix/Dataset/musdb18hq/test"
 
 for i in range(100):
     EQ_mel_spec(audio_path, output_path)
-    
+
 
 
 #about 10MB for each file
 output_path = "/Volumes/mix/Dataset/EQ_mel/musdb18hq/concat/train/"
 audio_path = "/Volumes/mix/Dataset/musdb18hq/train"
 
-for i in range(200):
+for i in range(2000):
     EQ_mel_spec(audio_path, output_path)
 
 
