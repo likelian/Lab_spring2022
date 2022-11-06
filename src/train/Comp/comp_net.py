@@ -78,7 +78,7 @@ class CompNet(nn.Module):
     return x
 
 
-def train(model, device, dataset_path, test_loader, epochs):
+def train(model, device, dataset_path, test_path, epochs):
 
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
@@ -101,13 +101,16 @@ def train(model, device, dataset_path, test_loader, epochs):
       for file in os.listdir(dataset_path):
 
         if ".pt" in file:
-            data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0)
+            try:
+                data = torch.load(dataset_path+"/"+file)
+            except:
+                print("file not read")
+                print(file)
+                continue
+
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
 
             train_length += len(train_loader)
-
-            print(train_length)
-
 
             for data_acc, data_vox, target in train_loader:
                 
@@ -136,6 +139,9 @@ def train(model, device, dataset_path, test_loader, epochs):
         del train_loader
         gc.collect()
 
+        break
+
+
 
       #save the checkpoint for each epoch
       #torch.save({
@@ -151,6 +157,8 @@ def train(model, device, dataset_path, test_loader, epochs):
       # append the loss for this epoch
       train_loss.append(running_loss/train_length)
 
+      print("   ")
+
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
       
@@ -159,20 +167,26 @@ def train(model, device, dataset_path, test_loader, epochs):
       model.eval()
       running_loss = 0.
 
-      for test_acc, test_vox, test_target in test_loader:
-          # getting the validation set
-          test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
 
-          test_acc = torch.nn.functional.normalize(test_acc)
-          test_vox = torch.nn.functional.normalize(test_vox)
+      for file in os.listdir(test_path):
+        if ".pt" in file:
+            data = torch.load(test_path+"/"+file)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=2, shuffle=False, num_workers=0, drop_last=True)
 
-          test_data = torch.stack((test_acc, test_vox), dim=0)
-          test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
+            for test_acc, test_vox, test_target in test_loader:
+                # getting the validation set
+                test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
 
-          optimizer.zero_grad()
-          test_pred = model(test_data)
-          test_MSE = t_loss(test_pred, test_target)
-          running_loss += test_MSE.item()**0.5
+                test_acc = torch.nn.functional.normalize(test_acc)
+                test_vox = torch.nn.functional.normalize(test_vox)
+
+                test_data = torch.stack((test_acc, test_vox), dim=0)
+                test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
+
+                optimizer.zero_grad()
+                test_pred = model(test_data)
+                test_MSE = t_loss(test_pred, test_target)
+                running_loss += test_MSE.item()**0.5
 
       
 
@@ -195,20 +209,17 @@ def train(model, device, dataset_path, test_loader, epochs):
 device = torch.device('cuda')
 
 
-dataset_path = "/home/kli421/dir1/comp_mel/MSD/"
+dataset_path = "/home/kli421/dir1/comp_mel/concat/MSD/"
 
-test_dataset = torch.load("/home/kli421/dir1/comp_mel/musdb18hq/test")
+test_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test"
 
 
-
-test_loader = torch.utils.data.DataLoader(
-    test_dataset, batch_size=2, shuffle=False, num_workers=0)
 
 ###############################################################################
 
 net = CompNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_loader,100)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 500)
 
 
 
