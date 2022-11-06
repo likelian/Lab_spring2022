@@ -50,21 +50,21 @@ def concat(dataset_path, otuput_path):
 
 
 
-#dataset_path = "/home/kli421/dir1/comp_mel/MSD"
-#otuput_path = "/home/kli421/dir1/comp_mel/concat/MSD/"
+dataset_path = "/home/kli421/dir1/comp_mel/MSD"
+otuput_path = "/home/kli421/dir1/comp_mel/concat/MSD/"
+
+concat(dataset_path, otuput_path)
+
+
+
+#dataset_path = "/home/kli421/dir1/comp_mel/musdb18hq/test"
+#otuput_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test/"
 
 #concat(dataset_path, otuput_path)
 
 
 
-dataset_path = "/home/kli421/dir1/comp_mel/musdb18hq/test"
-otuput_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test/"
+#dataset_path = "/home/kli421/dir1/comp_mel/musdb18hq/train"
+#otuput_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/train/"
 
-concat(dataset_path, otuput_path)
-
-
-
-dataset_path = "/home/kli421/dir1/comp_mel/musdb18hq/train"
-otuput_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/train/"
-
-concat(dataset_path, otuput_path)
+#concat(dataset_path, otuput_path)

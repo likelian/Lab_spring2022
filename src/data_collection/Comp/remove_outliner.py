@@ -17,8 +17,8 @@ def remove_outliner(data_path, output_path):
     count = 0
     for data_acc, data_vox, target in loader:
     
-        if target > -30. and target < 5.:
-            finite_idx_list.append(count)            
+        if target < 30. and target > 5.:
+            finite_idx_list.append(count)
 
         count += 1
 
