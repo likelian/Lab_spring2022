@@ -16,7 +16,7 @@ class CompNet(nn.Module):
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
     
-    #self.fc1 = nn.Linear(in_features=768, out_features=768)
+    self.fc1 = nn.Linear(in_features=768, out_features=768)
     self.fc2 = nn.Linear(in_features=768, out_features=1)
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
@@ -76,8 +76,8 @@ class CompNet(nn.Module):
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     x = self.dropout(x)
-    #x = self.fc1(x)
-    #x = self.tanh1(x)
+    x = self.fc1(x)
+    x = self.tanh1(x)
     x = self.fc2(x)
     x = torch.squeeze(x)
 
