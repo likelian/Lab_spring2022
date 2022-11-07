@@ -16,7 +16,7 @@ class CompNet(nn.Module):
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
     
-    self.fc1 = nn.Linear(in_features=768, out_features=768)
+    #self.fc1 = nn.Linear(in_features=768, out_features=768)
     self.fc2 = nn.Linear(in_features=768, out_features=1)
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
@@ -76,12 +76,11 @@ class CompNet(nn.Module):
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     x = self.dropout(x)
-    x = self.fc1(x)
-    x = self.tanh1(x)
+    #x = self.fc1(x)
+    #x = self.tanh1(x)
     x = self.fc2(x)
     x = torch.squeeze(x)
-
-
+    
     return x
 
 
@@ -114,6 +113,7 @@ def train(model, device, dataset_path, test_path, epochs):
         if ".pt" in file:
             try:
                 data = torch.load(dataset_path+"/"+file)
+                print(file)
             except:
                 print("file not read")
                 print(file)
@@ -121,7 +121,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 gc.collect()
                 continue
 
-            train_loader = torch.utils.data.DataLoader(data, batch_size=50, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_length += len(train_loader)
 
@@ -151,8 +151,6 @@ def train(model, device, dataset_path, test_path, epochs):
                 MAE = MAE_loss(pred, target)
                 running_loss += MAE.item()  # add the loss for this batch
                      
-
-        #print("train_loss", running_loss/train_length)
 
         del data
         del train_loader
