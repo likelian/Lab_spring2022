@@ -94,7 +94,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
   MAE_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.000001)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
@@ -117,6 +117,8 @@ def train(model, device, dataset_path, test_path, epochs):
             except:
                 print("file not read")
                 print(file)
+                del data
+                gc.collect()
                 continue
 
             train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
@@ -156,7 +158,7 @@ def train(model, device, dataset_path, test_path, epochs):
         del train_loader
         gc.collect()
 
-        break
+
 
 
 
@@ -245,7 +247,7 @@ test_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test"
 
 net = CompNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 50)
 
 
 
