@@ -29,7 +29,7 @@ def concat(dataset_path, otuput_path):
             counter += 1
         
 
-        """
+        
         if counter >= 1000:
             dataset = torch.utils.data.ConcatDataset(datasets)
             torch.save(dataset, otuput_path+str(dataset_counter)+".pt")
@@ -39,7 +39,7 @@ def concat(dataset_path, otuput_path):
             del dataset
             counter = 1
             dataset_counter += 1
-        """
+        
             
     
     dataset = torch.utils.data.ConcatDataset(datasets)
@@ -55,7 +55,18 @@ def concat(dataset_path, otuput_path):
 #otuput_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/pt/train/"
 
 
-dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/train"
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/train"
+#otuput_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/pt/"
+
+
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/single_file/train"
 otuput_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/pt/"
+
+concat(dataset_path, otuput_path)
+
+
+
+dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/single_file/test"
+otuput_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/pt/"
 
 concat(dataset_path, otuput_path)

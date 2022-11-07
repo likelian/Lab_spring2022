@@ -121,7 +121,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 gc.collect()
                 continue
 
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=50, shuffle=True, num_workers=0, drop_last=True)
 
             train_length += len(train_loader)
 
