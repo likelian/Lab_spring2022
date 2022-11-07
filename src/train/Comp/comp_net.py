@@ -87,6 +87,8 @@ class CompNet(nn.Module):
 
 def train(model, device, dataset_path, test_path, epochs):
 
+  torch.manual_seed(0)
+
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
 
@@ -117,7 +119,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 print(file)
                 continue
 
-            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=False, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_length += len(train_loader)
 
@@ -159,13 +161,13 @@ def train(model, device, dataset_path, test_path, epochs):
 
 
       #save the checkpoint for each epoch
-      #torch.save({
-      #      'epoch': epoch,
-      #      'model_state_dict': model.state_dict(),
-      #      'optimizer_state_dict': optimizer.state_dict(),
-      #      'loss': MSE
-      #      }, 
-      #      "/home/kli421/dir1/Lab_spring2022/results/Comp/check_point/"+str(epoch)+".pt")    
+      torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': MSE
+            }, 
+            "/home/kli421/dir1/Lab_spring2022/results/Comp/check_point/"+str(epoch)+".pt")    
 
 
 
@@ -243,7 +245,7 @@ test_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test"
 
 net = CompNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 200)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 500)
 
 
 
