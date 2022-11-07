@@ -15,7 +15,9 @@ class CompNet(nn.Module):
     self.conv3 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=0)
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
-    self.fc1 = nn.Linear(in_features=768, out_features=1)
+    
+    #self.fc1 = nn.Linear(in_features=768, out_features=768)
+    self.fc2 = nn.Linear(in_features=768, out_features=1)
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -28,6 +30,8 @@ class CompNet(nn.Module):
     self.relu3 = nn.ReLU()
     self.relu4 = nn.ReLU()
     self.relu5 = nn.ReLU()
+
+    self.tanh1 = nn.Tanh()
 
     self.max_pool2d1 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d2 = nn.MaxPool2d(kernel_size=2)
@@ -72,8 +76,11 @@ class CompNet(nn.Module):
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     x = self.dropout(x)
-    x = self.fc1(x)
+    #x = self.fc1(x)
+    #x = self.tanh1(x)
+    x = self.fc2(x)
     x = torch.squeeze(x)
+
 
     return x
 
@@ -83,7 +90,9 @@ def train(model, device, dataset_path, test_path, epochs):
   loss = nn.MSELoss()
   t_loss = nn.MSELoss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+  MAE_loss = nn.L1Loss()
+
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.000001)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
@@ -119,8 +128,10 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
 
-                data_acc *= torch.rand(1).cuda()
-                data_vox *= torch.rand(1).cuda()
+                target = (target - 5.)/(30. - 5.)
+
+                #data_acc *= torch.rand(1).cuda()
+                #data_vox *= torch.rand(1).cuda()
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -130,7 +141,11 @@ def train(model, device, dataset_path, test_path, epochs):
                 MSE.backward()
                 optimizer.step()
 
-                running_loss += MSE.item()**0.5  # add the loss for this batch
+                pred = pred * 25. + 5.
+                target = target * 25. + 5.
+
+                MAE = MAE_loss(pred, target)
+                running_loss += MAE.item()  # add the loss for this batch
                      
 
         #print("train_loss", running_loss/train_length)
@@ -161,6 +176,9 @@ def train(model, device, dataset_path, test_path, epochs):
 
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
+
+      print("target", target[:6])
+      print("pred", pred[:6])
       
 
       # evaluate on test data
@@ -176,6 +194,7 @@ def train(model, device, dataset_path, test_path, epochs):
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
                 test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
+                test_target = (test_target - 5.)/(30. - 5.)
 
                 test_acc = torch.nn.functional.normalize(test_acc)
                 test_vox = torch.nn.functional.normalize(test_vox)
@@ -186,7 +205,12 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
                 test_pred = model(test_data)
                 test_MSE = t_loss(test_pred, test_target)
-                running_loss += test_MSE.item()**0.5
+
+                test_pred = test_pred * 25. + 5.
+                test_target = test_target * 25. + 5.
+
+                MAE = MAE_loss(test_pred, test_target)
+                running_loss += MAE.item()  # add the loss for this batch
 
       
 
@@ -219,18 +243,18 @@ test_path = "/home/kli421/dir1/comp_mel/concat/musdb18hq/test"
 
 net = CompNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss = train(net, device, dataset_path, test_path, 200)
 
 
 
 ###############################################################################
 
-textfile = open("../../results/Comp/train_loss.txt", "w")
+textfile = open("../../../results/Comp/train_loss.txt", "w")
 for element in train_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
-textfile = open("../../results/Comp/validation_loss.txt", "w")
+textfile = open("../../../results/Comp/validation_loss.txt", "w")
 for element in validation_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
@@ -257,6 +281,6 @@ def plot(train_loss, validation_loss, plot_output_path):
   plt.savefig(plot_output_path)
   plt.close()
 
-plot_output_path = '../../results/Loss.png'
+plot_output_path = '../../../results/Comp/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
