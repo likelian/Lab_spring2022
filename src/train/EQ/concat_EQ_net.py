@@ -431,9 +431,15 @@ device = torch.device('cuda')
 
 #dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/pt/train/"
 
+#dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/pt/"
+
+#test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat_one_song/pt/test"
+
 dataset_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/train/pt/"
 
-test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat_one_song/pt/test"
+
+test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/pts"
+
 
 ###############################################################################
 
