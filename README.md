@@ -1,7 +1,60 @@
 # Lab_fall2022
 * * *
 
+## 11/8/2022
+
+### **Done:**
+
+human mix finished
+
+##### EQ:
+
+extract mel-spec for the test set
+
+##### Comp:
+
+1. data collection
+2. start training with data cleaning
+3. remove LRA > 30. and LRA < 5.
+
+```
+MSD_mean = 16.3574 dB
+test_mean = 15.1526 dB
+train_mean = 16.1977 dB
+
+mean_prediction_error = 2.81837dB
+```
+See the results of compNet [here](https://github.com/likelian/Lab_spring2022/tree/main/results/Comp). 
+
+
+
+Song level evaluation:
+abs error of the above this [model](https://github.com/likelian/Lab_spring2022/tree/main/results/Comp/lr%3D0.0001%2C%20weight_decay%3D0.000001) on 48 test songs: **2.85** dB
+
+mean prediction of 16.3574 dB:
+abs error over 48 test songs **3.16** dB
+
+##### Reverb:
+
+
+
 ## 11/1/2022
+
+### **Meeting:**
+
+
+One mel-spectrum for one EQ setting may be too abbreviated. Try 10s aggregation.
+
+The data presentation may be the problem.
+
+
+30 user results shoud be enough to be statistically significant.
+
+Experts’ rating may not need to be statistically significant to mean something.
+
+Leave one week for data analysis.
+
+
 
 ### **Done:**
 
