@@ -1,7 +1,58 @@
 # Lab_fall2022
 * * *
 
+## 11/15/2022
+
+
+### **To-do:**
+
+average parameter in the rule-based system?
+
+
+Comp:
+1. plot the error distribution
+2. plot gt distribution
+
+
+EQ:
+1. EQ shape loss, remove gain mean
+2. one network for each band?
+
+Reverb:
+1. train
+
+Random mix
+1. get it done
+constraint of random mix range
+uniform and normal random?
+
+
 ## 11/8/2022
+
+
+
+
+### **To-do:**
+
+average parameter in the rule-based system?
+
+Comp:
+1. plot the error distribution
+2. plot gt distribution
+
+
+EQ:
+1. EQ shape loss, remove gain mean
+2. one network for each band?
+
+Reverb:
+1. train
+
+Random mix
+1. get it done
+constraint of random mix range
+uniform and normal random?
+
 
 ### **Done:**
 
@@ -1384,3 +1435,4 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
+s
