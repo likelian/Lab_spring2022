@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 
 ###############################################################################
@@ -139,7 +140,7 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             
             test_target_mean = np.mean(np.array(test_target_list))
 
-            #test_pred_mean = 16.3574
+            test_pred_mean = 16.3574
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
 
@@ -148,12 +149,28 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             print("abs_error:        ", abs_error)
             print(" ")
 
+            #remove!
+
+            if test_target_list[0] < 5. or test_target_list[0] > 30: continue
+            #abs_error_list.append(test_target_list[0])
             abs_error_list.append(abs_error)
+            
+            
 
 
   abs_error_mean = np.mean(np.array(abs_error_list))
 
   print("abs_error over 48 test songs", abs_error_mean)
+
+  #plt.hist(abs_error_list, bins=20) 
+  #plt.gca().set(title='song level model error historgram', xlabel='absolute error', ylabel='Counts')
+  #plt.gca().set(title='ground truth LRA', xlabel='ground truth LRA', ylabel='counts')
+  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "Ground Truth LRA")
+  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "song level model error historgram")
+  #plt.close()
+
+
+  #plot abs_error_list
 
 
 
