@@ -113,7 +113,6 @@ def train(model, device, dataset_path, test_path, epochs):
         if ".pt" in file:
             try:
                 data = torch.load(dataset_path+"/"+file)
-                print(file)
             except:
                 print("file not read")
                 print(file)
@@ -176,8 +175,8 @@ def train(model, device, dataset_path, test_path, epochs):
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
 
-      print("target", target[:6])
-      print("pred", pred[:6])
+      #print("target", target[:6])
+      #print("pred", pred[:6])
       
 
       # evaluate on test data
@@ -214,8 +213,8 @@ def train(model, device, dataset_path, test_path, epochs):
 
       print("validation_loss", running_loss/len(test_loader))
 
-      print("test_target", test_target)
-      print("test_pred", test_pred)
+      print("test_target", test_target[0])
+      print("test_pred", test_pred[0])
 
 
   
