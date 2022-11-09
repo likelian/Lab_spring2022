@@ -202,17 +202,10 @@ def train(model, device, dataset_path, test_path, epochs):
             train_loader_count = 0
 
 
-            #mean_tensor = torch.zeros(torch.Size([25, 64, 128]))
-            #std_tensor = torch.full(torch.Size([25, 64, 128]), 0.001)
-
 
             for data_acc, data_vox, target in train_loader:
 
-                #remove!!!!!
-                #only train on 1/50 of the data
-                #train_loader_count += 1
-                #if train_loader_count % 50 != 0:
-                #  continue
+
 
                 train_length += 1
 
@@ -220,27 +213,12 @@ def train(model, device, dataset_path, test_path, epochs):
               
                 target = (target + 15.)/30. #normalize the target from (-15.0, 15.0) to (0., 1.)
                 
-                #add Gussian Noise to the ground truth
-                #mean_tensor = torch.zeros(target.shape)
-                #std_tensor = torch.full(target.shape, 0.1)
-                #noise = torch.normal(mean_tensor, std_tensor).to(device)
-                #target += noise
-                #del noise
-                #gc.collect()
+
 
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
 
-                #add Gussian Noise to the input data
-                #mean_tensor = torch.zeros(data_vox.shape)
-                #std_tensor = torch.full(data_vox.shape, 0.001)
-                
-                #noise = torch.normal(mean_tensor, std_tensor).to(device)
-                #noise = (torch.randn(data_vox.shape).to(device) - 0.5) * 0.001
 
-                #data_vox += noise
-                #del noise
-                #gc.collect()
 
 
                 data_acc *= torch.rand(1).cuda()
@@ -256,35 +234,35 @@ def train(model, device, dataset_path, test_path, epochs):
                 #loss function only concerns about where the targeted ground truth has gain changes
                 #in other words, the values in target that are 0dB or normalized 0. are ingored
                 #so as the corresponding values in prediction
-                ones = torch.ones(target.shape).to(device)
-                zeros = torch.zeros(target.shape).to(device)
-
-                filter_idx = torch.where(target != 0.5, ones, zeros)
-                filtered_target = filter_idx * target
-                filtered_pred = filter_idx * pred
-
-                zeros_idx = torch.where(target == 0.5, ones, zeros)
-                zeros_target = zeros_idx * target
-                zeros_pred = zeros_idx * pred
-
-                filter_idx = torch.where(target != 0.5, ones, zeros)
                 
+                #ones = torch.ones(target.shape).to(device)
+                #zeros = torch.zeros(target.shape).to(device)
 
+                #filter_idx = torch.where(target != 0.5, ones, zeros)
+                #filtered_target = filter_idx * target
+                #filtered_pred = filter_idx * pred
+
+                #zeros_idx = torch.where(target == 0.5, ones, zeros)
+                #zeros_target = zeros_idx * target
+                #zeros_pred = zeros_idx * pred
+
+                #filter_idx = torch.where(target != 0.5, ones, zeros)
+                
                 #filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
 
                 #small values are set to 0.5
-                processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
+                #processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
-                #print(torch.mean(torch.abs(processed_pred - 0.5)))
-                #add weighted loss of non-changed gains
-                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
-                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
-                #else:
-                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                #MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+
+                MSE = loss(pred, target)
+
+                print(target)
+
+                quit()
 
 
-                #MSE = loss(processed_pred, target)
-                MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+
 
 
                 pred_dB = pred * 30. - 15.
