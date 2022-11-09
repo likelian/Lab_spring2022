@@ -104,11 +104,11 @@ audio_path = "/home/kli421/dir1/musdb18hq/train/"
 output_path = "/home/kli421/dir1/reverb_mel/musdb18/train/single_file/"
 param_path = "/home/kli421/dir1/Lab_spring2022/data/reverb_parameter/train/parameters/"
 
-mel_spec(audio_path, output_path, param_path)
+#mel_spec(audio_path, output_path, param_path)
 
 
 audio_path = "/home/kli421/dir1/musdb18hq/test/"
-output_path = "/home/kli421/dir1/reverb_mel/musdb18/test/single_file"
+output_path = "/home/kli421/dir1/reverb_mel/musdb18/test/single_file/"
 param_path = "/home/kli421/dir1/Lab_spring2022/data/reverb_parameter/test/parameters/"
 
 mel_spec(audio_path, output_path, param_path)
