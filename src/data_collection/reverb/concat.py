@@ -54,13 +54,13 @@ def concat(dataset_path, otuput_path):
 
 
 dataset_path = "/home/kli421/dir1/reverb_mel/musdb18/train/single_file"
-otuput_path = "/home/kli421/dir1/reverb_mel/musdb18/train/pt"
+otuput_path = "/home/kli421/dir1/reverb_mel/musdb18/train/pt/"
 
 concat(dataset_path, otuput_path)
 
 
 
 dataset_path = "/home/kli421/dir1/reverb_mel/musdb18/test/single_file"
-otuput_path = "/home/kli421/dir1/reverb_mel/musdb18/test/pt"
+otuput_path = "/home/kli421/dir1/reverb_mel/musdb18/test/pt/"
 
 concat(dataset_path, otuput_path)
