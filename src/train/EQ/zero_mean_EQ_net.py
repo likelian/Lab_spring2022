@@ -171,7 +171,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, weight_decay=1e-7)
+  optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=0)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -197,15 +197,22 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=10, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=25, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
 
+            #mean_tensor = torch.zeros(torch.Size([25, 64, 128]))
+            #std_tensor = torch.full(torch.Size([25, 64, 128]), 0.001)
+
 
             for data_acc, data_vox, target in train_loader:
 
-
+                #remove!!!!!
+                #only train on 1/50 of the data
+                #train_loader_count += 1
+                #if train_loader_count % 50 != 0:
+                #  continue
 
                 train_length += 1
 
@@ -213,16 +220,31 @@ def train(model, device, dataset_path, test_path, epochs):
               
                 target = (target + 15.)/30. #normalize the target from (-15.0, 15.0) to (0., 1.)
                 
-
+                #add Gussian Noise to the ground truth
+                #mean_tensor = torch.zeros(target.shape)
+                #std_tensor = torch.full(target.shape, 0.1)
+                #noise = torch.normal(mean_tensor, std_tensor).to(device)
+                #target += noise
+                #del noise
+                #gc.collect()
 
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
 
+                #add Gussian Noise to the input data
+                #mean_tensor = torch.zeros(data_vox.shape)
+                #std_tensor = torch.full(data_vox.shape, 0.001)
+                
+                #noise = torch.normal(mean_tensor, std_tensor).to(device)
+                #noise = (torch.randn(data_vox.shape).to(device) - 0.5) * 0.001
+
+                #data_vox += noise
+                #del noise
+                #gc.collect()
 
 
-
-                data_acc *= torch.rand(1).cuda()
-                data_vox *= torch.rand(1).cuda()
+                #data_acc *= torch.rand(1).cuda()
+                #data_vox *= torch.rand(1).cuda()
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -230,39 +252,43 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
 
 
+                pred -= torch.mean(pred, dim=1, keepdim=True)
+                pred += 0.5
+                target -= torch.mean(target, dim=1, keepdim=True)
+                target += 0.5
                 
                 #loss function only concerns about where the targeted ground truth has gain changes
                 #in other words, the values in target that are 0dB or normalized 0. are ingored
                 #so as the corresponding values in prediction
+                ones = torch.ones(target.shape).to(device)
+                zeros = torch.zeros(target.shape).to(device)
+
+                filter_idx = torch.where(target != 0.5, ones, zeros)
+                filtered_target = filter_idx * target
+                filtered_pred = filter_idx * pred
+
+                zeros_idx = torch.where(target == 0.5, ones, zeros)
+                zeros_target = zeros_idx * target
+                zeros_pred = zeros_idx * pred
+
+                filter_idx = torch.where(target != 0.5, ones, zeros)
                 
-                #ones = torch.ones(target.shape).to(device)
-                #zeros = torch.zeros(target.shape).to(device)
 
-                #filter_idx = torch.where(target != 0.5, ones, zeros)
-                #filtered_target = filter_idx * target
-                #filtered_pred = filter_idx * pred
-
-                #zeros_idx = torch.where(target == 0.5, ones, zeros)
-                #zeros_target = zeros_idx * target
-                #zeros_pred = zeros_idx * pred
-
-                #filter_idx = torch.where(target != 0.5, ones, zeros)
-                
                 #filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
 
                 #small values are set to 0.5
-                #processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
+                processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
 
-                #MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                #print(torch.mean(torch.abs(processed_pred - 0.5)))
+                #add weighted loss of non-changed gains
+                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
+                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
+                #else:
+                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+
 
                 MSE = loss(pred, target)
-
-                print(target)
-
-                quit()
-
-
-
+                #MSE = loss(filtered_pred, filtered_target) #+ 0.1 * loss(zeros_target, zeros_pred)
 
 
                 pred_dB = pred * 30. - 15.
@@ -280,10 +306,16 @@ def train(model, device, dataset_path, test_path, epochs):
                 running_loss += MAE_train.item()
                 processed_loss += processed_MAE.item()
 
+                #remove
+                break
+
         
         del data
         del train_loader
         gc.collect()
+
+        #remove
+        break
 
         #remove!!!!!!!!!!!!!!!
         #only train on the first 1 .pt file, half of all
@@ -348,6 +380,11 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 optimizer.zero_grad()
                 test_pred = model(test_data)
+
+                test_pred -= torch.mean(test_pred, dim=1, keepdim=True)
+                test_pred += 0.5
+                test_target -= torch.mean(test_target, dim=1, keepdim=True)
+                test_target += 0.5
 
                 mapped_target = (test_target + 15.)/30.
 
@@ -423,7 +460,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/pt"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 200)
+train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 500)
 
 
 
