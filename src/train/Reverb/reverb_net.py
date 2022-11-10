@@ -159,7 +159,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
   train_indie_error_df = pd.DataFrame(columns=param_label_list)
   test_indie_error_df = pd.DataFrame(columns=param_label_list)
-
+  #train_df = pd.DataFrame(columns=param_label_list)
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
     tepochs.set_description('Training')
@@ -213,24 +213,33 @@ def train(model, device, dataset_path, test_path, epochs):
                 target = denormalize(target)
 
                 indie_error = torch.mean(torch.abs(pred - target), dim=0).detach().cpu().numpy()
+                #target = torch.mean(target, dim=0).detach().cpu().numpy()
                 try:
                   train_indie_error_df.loc[epoch] += indie_error
+                  #train_df.loc[0] += target
                 except:
                   train_indie_error_df.loc[epoch] = indie_error
+                  #train_df.loc[0] = target
+                
+                
 
         del data
         del train_loader
         gc.collect()
 
+        #train_df /= train_length
+        #train_df.to_csv("../../../results/train_mean.csv", sep='\t')
+
+
 
       #save the checkpoint for each epoch
-      #torch.save({
-      #      'epoch': epoch,
-      #      'model_state_dict': model.state_dict(),
-      #      'optimizer_state_dict': optimizer.state_dict(),
-      #      'loss': MSE
-      #      },
-      #      "/home/kli421/dir1/Lab_spring2022/results/reverb/check_point/"+str(epoch)+".pt")    
+      torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': MSE
+            },
+            "/home/kli421/dir1/Lab_spring2022/results/reverb/check_point/"+str(epoch)+".pt")    
 
 
 
