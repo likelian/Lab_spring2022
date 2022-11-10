@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 from tqdm import tqdm
 import gc
+import pandas as pd
 
 
 class ReverbNet(nn.Module):
@@ -130,7 +131,6 @@ def denormalize(param):
 
 
 
-
 def train(model, device, dataset_path, test_path, epochs):
 
   torch.manual_seed(0)
@@ -144,6 +144,21 @@ def train(model, device, dataset_path, test_path, epochs):
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
+
+  param_label_list = ["room_size", 
+                      "reverberation_time_s",
+                      "lows_cutoff_frequency_hz",
+                      "lows_q_factor",
+                      "lows_gain_db_s",
+                      "highs_cutoff_frequency_hz",
+                      "highs_q_factor",
+                      "highs_gain_db_s",
+                      "fade_in_time_s",
+                      "dry_wet"
+                      ]
+
+  train_indie_error_df = pd.DataFrame(columns=param_label_list)
+  test_indie_error_df = pd.DataFrame(columns=param_label_list)
 
 
   with tqdm(range(epochs), unit='epoch') as tepochs:
@@ -181,7 +196,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc *= torch.rand(1).cuda()
                 data_vox *= torch.rand(1).cuda()
 
-                normalize(target)
+                target = normalize(target)
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -191,19 +206,21 @@ def train(model, device, dataset_path, test_path, epochs):
                 MSE.backward()
                 optimizer.step()
 
+                MAE = MAE_loss(pred, target)
+                running_loss += MAE.item()  # add the loss for this batch
+
                 pred = denormalize(pred)
                 target = denormalize(target)
 
-                MAE = MAE_loss(pred, target)
-                running_loss += MAE.item()  # add the loss for this batch
-                     
+                indie_error = torch.mean(torch.abs(pred - target), dim=0).detach().cpu().numpy()
+                try:
+                  train_indie_error_df.loc[epoch] += indie_error
+                except:
+                  train_indie_error_df.loc[epoch] = indie_error
 
         del data
         del train_loader
         gc.collect()
-
-
-
 
 
       #save the checkpoint for each epoch
@@ -212,27 +229,27 @@ def train(model, device, dataset_path, test_path, epochs):
       #      'model_state_dict': model.state_dict(),
       #      'optimizer_state_dict': optimizer.state_dict(),
       #      'loss': MSE
-      #      }, 
-      #      "/home/kli421/dir1/Lab_spring2022/results/Comp/check_point/"+str(epoch)+".pt")    
+      #      },
+      #      "/home/kli421/dir1/Lab_spring2022/results/reverb/check_point/"+str(epoch)+".pt")    
 
 
 
       # append the loss for this epoch
       train_loss.append(running_loss/train_length)
+      train_indie_error_df.loc[epoch] /= train_length
 
       print("   ")
 
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
-
+      print(train_indie_error_df.loc[epoch])
       #print("target", target[0])
       #print("pred", pred[0])
-      
+
 
       # evaluate on test data
       model.eval()
       running_loss = 0.
-
 
       for file in os.listdir(test_path):
         if ".pt" in file:
@@ -252,24 +269,31 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
                 test_pred = model(test_data)
 
-                test_pred = denormalize(test_pred)
+                test_target = normalize(test_target)
 
                 MAE = MAE_loss(test_pred, test_target)
                 running_loss += MAE.item()  # add the loss for this batch
 
-      
+                test_pred = denormalize(test_pred)
+                test_target = denormalize(test_target)
+
+                indie_error = torch.mean(torch.abs(test_pred - test_target), dim=0).detach().cpu().numpy()
+                try:
+                  test_indie_error_df.loc[epoch] += indie_error
+                except:
+                  test_indie_error_df.loc[epoch] = indie_error
+
 
       validation_loss.append(running_loss/len(test_loader))
+      test_indie_error_df.loc[epoch] /= len(test_loader)
 
       print("validation_loss", running_loss/len(test_loader))
+      print(test_indie_error_df.loc[epoch])
+      
+      #print("test_target", test_target[0])
+      #print("test_pred", test_pred[0])
 
-      print("test_target", test_target[0])
-      print("test_pred", test_pred[0])
-
-
-  
-
-  return train_loss, validation_loss#, batch_train_loss, batch_validation_loss
+  return train_loss, validation_loss, train_indie_error_df, test_indie_error_df#, batch_train_loss, batch_validation_loss
 
 
 
@@ -288,7 +312,7 @@ test_path = "/home/kli421/dir1/reverb_mel/musdb18/test/pt"
 
 net = ReverbNet().to(device)
 
-train_loss, validation_loss = train(net, device, dataset_path, test_path, 100)
+train_loss, validation_loss, train_indie_error_df, test_indie_error_df = train(net, device, dataset_path, test_path, 500)
 
 
 
@@ -304,6 +328,8 @@ for element in validation_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
+train_indie_error_df.to_csv("../../../results/train_error.csv", sep='\t')
+test_indie_error_df.to_csv("../../../results/test_error.csv", sep='\t')
 
 
 ###############################################################################
@@ -318,8 +344,8 @@ def plot(train_loss, validation_loss, plot_output_path):
   plt.plot(train_loss, color='darkorange', label='train loss')
   plt.plot(validation_loss, color='deepskyblue', label='validation loss')
   plt.xlabel('Epochs')
-  plt.ylabel("L1 Loss (in dB)")
-  plt.ylim([0., 10.])
+  plt.ylabel("L1 Loss Normalized(0., 1.)")
+  plt.ylim([0., 1.])
   #plt.title("Loss")
   plt.legend(bbox_to_anchor=(1, -0.1), borderaxespad=0)
   plt.tight_layout()

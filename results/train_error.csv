@@ -1,0 +1,2 @@
+	room_size	reverberation_time_s	lows_cutoff_frequency_hz	lows_q_factor	lows_gain_db_s	highs_cutoff_frequency_hz	highs_q_factor	highs_gain_db_s	fade_in_time_s	dry_wet
+0	10.648135	2.7834153	5628.2847	0.42942855	25.793629	6863.595	0.32662702	26.225405	2.6478448	0.30048275
