@@ -244,12 +244,12 @@ train_loss, validation_loss = train(net, device, dataset_path, test_path, 100)
 
 ###############################################################################
 
-textfile = open("../../../results/Comp/train_loss.txt", "w")
+textfile = open("../../../results/train_loss.txt", "w")
 for element in train_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
 
-textfile = open("../../../results/Comp/validation_loss.txt", "w")
+textfile = open("../../../results/validation_loss.txt", "w")
 for element in validation_loss:
     textfile.write(str(element) + "\n")
 textfile.close()
@@ -276,6 +276,6 @@ def plot(train_loss, validation_loss, plot_output_path):
   plt.savefig(plot_output_path)
   plt.close()
 
-plot_output_path = '../../../results/Comp/Loss.png'
+plot_output_path = '../../../results/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
