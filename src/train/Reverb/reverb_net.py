@@ -84,6 +84,23 @@ class ReverbNet(nn.Module):
     return x
 
 
+def normalize(param):
+  """
+  intput: torch tensor
+  """
+
+  print(param.T.shape)
+
+  param_T = param.T
+  param_T[0] = param_T[0]
+
+
+  quit()
+
+
+
+  return None
+
 def train(model, device, dataset_path, test_path, epochs):
 
   torch.manual_seed(0)
@@ -131,9 +148,17 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc = torch.nn.functional.normalize(data_acc)
                 data_vox = torch.nn.functional.normalize(data_vox)
 
+                data_acc *= torch.rand(1).cuda()
+                data_vox *= torch.rand(1).cuda()
 
-                #data_acc *= torch.rand(1).cuda()
-                #data_vox *= torch.rand(1).cuda()
+
+
+                normalize(target)
+
+
+
+
+                
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
