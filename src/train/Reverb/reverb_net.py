@@ -87,19 +87,49 @@ class ReverbNet(nn.Module):
 def normalize(param):
   """
   intput: torch tensor
+  return: torch tensor
   """
-
-  print(param.T.shape)
-
   param_T = param.T
-  param_T[0] = param_T[0]
+
+  param_T[0] /= 30. #room_size [1, 30]
+  param_T[1] /= 9.0 #reverberation_time_s [0.1, 9.0]
+  param_T[2] /= 20000. #lows_cutoff_frequency_hz [20., 20000.]
+  param_T[3] /= 0.9 #lows_q_factor [0.01,  0.9]
+  param_T[4] = (param_T[4] + 80.) / 86. #lows_gain_db_s [-80., 6.]
+  param_T[5] /= 20000. #highs_cutoff_frequency_hz
+  param_T[6] /= 0.9 #highs_q_factor [0.01,  0.9]
+  param_T[7] = (param_T[7] + 80.) / 86. #highs_gain_db_s [-80., 6.]
+  param_T[8] /= 9.0 #fade_in_time_s [0., 9.]
+
+  param = param_T.T
+
+  return param
 
 
-  quit()
+def denormalize(param):
+  """
+  intput: torch tensor
+  return: torch tensor
+  """
+  param_T = param.T
+
+  param_T[0] *= 30. #room_size [1, 30]
+  param_T[1] *= 9.0 #reverberation_time_s [0.1, 9.0]
+  param_T[2] *= 20000. #lows_cutoff_frequency_hz [20., 20000.]
+  param_T[3] *= 0.9 #lows_q_factor [0.01,  0.9]
+  param_T[4] = param_T[4] * 86. - 80. #lows_gain_db_s [-80., 6.]
+  param_T[5] *= 20000. #highs_cutoff_frequency_hz
+  param_T[6] *= 0.9 #highs_q_factor [0.01,  0.9]
+  param_T[7] = param_T[7] * 86. - 80. #highs_gain_db_s [-80., 6.]
+  param_T[8] *= 9.0 #fade_in_time_s [0., 9.]
+
+  param = param_T.T
+
+  return param
 
 
 
-  return None
+
 
 def train(model, device, dataset_path, test_path, epochs):
 
@@ -151,14 +181,7 @@ def train(model, device, dataset_path, test_path, epochs):
                 data_acc *= torch.rand(1).cuda()
                 data_vox *= torch.rand(1).cuda()
 
-
-
                 normalize(target)
-
-
-
-
-                
 
                 data = torch.stack((data_acc, data_vox), dim=0)
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
@@ -168,6 +191,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 MSE.backward()
                 optimizer.step()
 
+                pred = denormalize(pred)
+                target = denormalize(target)
 
                 MAE = MAE_loss(pred, target)
                 running_loss += MAE.item()  # add the loss for this batch
@@ -200,8 +225,8 @@ def train(model, device, dataset_path, test_path, epochs):
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
 
-      #print("target", target[:6])
-      #print("pred", pred[:6])
+      #print("target", target[0])
+      #print("pred", pred[0])
       
 
       # evaluate on test data
@@ -226,8 +251,8 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 optimizer.zero_grad()
                 test_pred = model(test_data)
-                test_MSE = t_loss(test_pred, test_target)
 
+                test_pred = denormalize(test_pred)
 
                 MAE = MAE_loss(test_pred, test_target)
                 running_loss += MAE.item()  # add the loss for this batch
