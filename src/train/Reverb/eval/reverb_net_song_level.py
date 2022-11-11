@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 ###############################################################################
@@ -187,12 +188,20 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
                 test_pred = denormalize(test_pred)
 
+                #mean value prediction
+                #test_pred = torch.tensor([14.546935, 1.5948825, 101.77251, 0.5270046, -2.1335206, 11858.535,
+                #  0.7714809, -16.023586, 0.6773426, 0.11475082]).to(device)
+
+
                 indie_error = torch.mean(torch.abs(test_pred - test_target), dim=0).detach().cpu().numpy()
 
                 try:
                   test_indie_error_df.loc[file] += indie_error
                 except:
                   test_indie_error_df.loc[file] = indie_error
+
+        test_indie_error_df.loc[file] /= len(test_loader)
+          
 
 
 
@@ -209,7 +218,7 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
 test_folder = "/home/kli421/dir1/reverb_mel/musdb18/test/single_file"
 
-#model_path = ""
+model_path = "/home/kli421/dir1/Lab_spring2022/results/reverb/training/lr=0.00001/46.pt"
 
 checkpoint = torch.load(model_path)
 

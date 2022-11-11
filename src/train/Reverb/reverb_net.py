@@ -140,7 +140,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
   MAE_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.00001, weight_decay=0.)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.00001)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
@@ -221,8 +221,6 @@ def train(model, device, dataset_path, test_path, epochs):
                   train_indie_error_df.loc[epoch] = indie_error
                   #train_df.loc[0] = target
                 
-                
-
         del data
         del train_loader
         gc.collect()
@@ -251,7 +249,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
-      print(train_indie_error_df.loc[epoch])
+      #print(train_indie_error_df.loc[epoch])
       #print("target", target[0])
       #print("pred", pred[0])
 
@@ -321,7 +319,7 @@ test_path = "/home/kli421/dir1/reverb_mel/musdb18/test/pt"
 
 net = ReverbNet().to(device)
 
-train_loss, validation_loss, train_indie_error_df, test_indie_error_df = train(net, device, dataset_path, test_path, 500)
+train_loss, validation_loss, train_indie_error_df, test_indie_error_df = train(net, device, dataset_path, test_path, 200)
 
 
 
