@@ -202,6 +202,8 @@ def train(model, device, dataset_path, test_path, epochs):
                 data = data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
                 pred = model(data)
                 optimizer.zero_grad()
+
+                pred.
                 MSE = loss(pred, target)
                 MSE.backward()
                 optimizer.step()
