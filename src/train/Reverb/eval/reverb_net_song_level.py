@@ -173,6 +173,9 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
             running_loss = 0.
 
+            pred_arr = np.zeros(10)
+            counter = 0
+
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
                 test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
@@ -193,16 +196,15 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
                 #  0.7714809, -16.023586, 0.6773426, 0.11475082]).to(device)
 
 
-                indie_error = torch.mean(torch.abs(test_pred - test_target), dim=0).detach().cpu().numpy()
+                pred_arr += test_pred.detach().cpu().numpy()
+                counter += 1
 
-                try:
-                  test_indie_error_df.loc[file] += indie_error
-                except:
-                  test_indie_error_df.loc[file] = indie_error
-
-        test_indie_error_df.loc[file] /= len(test_loader)
+            
+            pred_arr /= counter
+            print(pred_arr)
+            abs_error = np.abs(pred_arr - test_target[0].detach().cpu().numpy())
+            test_indie_error_df.loc[file] = abs_error
           
-
 
 
 

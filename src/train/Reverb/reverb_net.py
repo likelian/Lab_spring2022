@@ -140,7 +140,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
   MAE_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.00001)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.000001, weight_decay=0.00001)
 
   train_loss, validation_loss = [], []
   batch_train_loss, batch_validation_loss = [], []
@@ -203,10 +203,13 @@ def train(model, device, dataset_path, test_path, epochs):
                 pred = model(data)
                 optimizer.zero_grad()
 
-                pred.
-                MSE = loss(pred, target)
+                MSE = 5* loss(pred.T[0], target.T[0]) + 5 * loss(pred.T[1], target.T[1]) + 10 * loss(pred.T[9], target.T[9]) + loss(pred, target)
+                #MSE = loss(pred.T[9], target.T[9])
+                #MSE = loss(pred, target)
                 MSE.backward()
                 optimizer.step()
+
+
 
                 MAE = MAE_loss(pred, target)
                 running_loss += MAE.item()  # add the loss for this batch
@@ -251,7 +254,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
       print("epoch", epoch)
       print("train_loss", running_loss/train_length)
-      #print(train_indie_error_df.loc[epoch])
+      print(train_indie_error_df.loc[epoch])
       #print("target", target[0])
       #print("pred", pred[0])
 
@@ -263,7 +266,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(test_path):
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=2, shuffle=False, num_workers=0, drop_last=True)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=2, shuffle=True, num_workers=0, drop_last=True)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -321,7 +324,7 @@ test_path = "/home/kli421/dir1/reverb_mel/musdb18/test/pt"
 
 net = ReverbNet().to(device)
 
-train_loss, validation_loss, train_indie_error_df, test_indie_error_df = train(net, device, dataset_path, test_path, 200)
+train_loss, validation_loss, train_indie_error_df, test_indie_error_df = train(net, device, dataset_path, test_path, 500)
 
 
 
