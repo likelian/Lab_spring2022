@@ -121,6 +121,67 @@ def EQ(self):
 
 
 
+def rand_freq_gain():
+    """
+    return:
+        gain_arr (numpy array):
+        [ -1.05, -9.28, -14.9, 0., 1.56315401, 0., 0., 0., 0.]
+        freq_top_list (list):
+        [63, 125, 250, 1000]
+        gain_top_list (list):
+        [-1.05, -9.28, -14.92, 1.56]
+    """
+
+    #fcs = [31.5, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+    fcs = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+
+    #uniform random floating number from [-15., 15).
+    gain_arr = (np.random.rand(len(fcs),) - 0.5) * 30. 
+
+    rng = np.random.default_rng()
+    unselected_freq_idx = rng.choice(len(fcs), len(fcs)-4, replace=False)
+
+    #set unselected gain values to 0.
+    for idx in unselected_freq_idx:
+        gain_arr[idx] = 0.
+
+    freq_top_list = []
+    gain_top_list = []
+
+    for idx, val in enumerate(gain_arr):
+        if val != 0.:
+            freq_top_list.append(fcs[idx])
+            gain_top_list.append(val)
+
+    return gain_arr, freq_top_list, gain_top_list
+
+
+
+def randEQ(self):
+
+    vox = self.vox
+    rate = self.sampleRate
+
+    vst_path = "../VST3/"
+    vst_name = "MultiEQ.vst3"
+    vst = load_plugin(vst_path + vst_name)
+
+
+    if len(vox.shape) == 2:
+        vst.number_of_input_channels = vox.shape[1]
+    else:
+        vst.number_of_input_channels = 1
+    
+    gain_arr, freq_top_list, gain_top_list = rand_freq_gain()
+
+    output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
+
+    self.vox = output
+
+
+
+
+
 def applyEQ(vst, vox, rate, freq_top_list, gain_top_list):
     """
     apply EQ to vox from given parameters

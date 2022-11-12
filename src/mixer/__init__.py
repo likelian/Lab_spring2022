@@ -4,7 +4,7 @@ import pyloudnorm as pyln
 from .level import level_balance
 from .compression import compression
 from .reverb import reverb
-from .EQ import EQ
+from .EQ import *
 
 
 class mixer:
@@ -27,6 +27,9 @@ class mixer:
 
     def set_sampleRate(self, rate):
         self.sampleRate = rate
+
+    def random_EQ(self):
+        randEQ(self)
 
 
     def process(self):
