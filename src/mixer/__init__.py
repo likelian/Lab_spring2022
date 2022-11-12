@@ -12,7 +12,6 @@ class mixer:
         self.target_vox_acc_ratio = 0.
         self.targetLRA = 14
 
-
     def set_target_vox_acc_ratio(self, target_vox_acc_ratio):
         self.target_vox_acc_ratio = target_vox_acc_ratio
 
