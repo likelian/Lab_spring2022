@@ -22,7 +22,8 @@ class EqNet(nn.Module):
     self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
     self.fc3 = nn.Linear(in_features=768, out_features=9, bias=False)
-    self.fc4 = nn.Linear(in_features=9, out_features=9, bias=True)
+    #self.fc4 = nn.Linear(in_features=9, out_features=9, bias=True)
+    self.fc4 = nn.Linear(in_features=9, out_features=1, bias=True)
 
     self.sig1 = nn.Sigmoid()
     self.sig2 = nn.Sigmoid()
@@ -32,8 +33,7 @@ class EqNet(nn.Module):
     self.batchnorm3 = nn.BatchNorm2d(num_features=32)
     self.batchnorm4 = nn.BatchNorm2d(num_features=64)
     self.batchnorm5 = nn.BatchNorm2d(num_features=128)
-    #self.batchnorm6 = nn.BatchNorm1d(num_features=9)
-    self.batchnorm6 = nn.BatchNorm1d(num_features=1)
+    self.batchnorm6 = nn.BatchNorm1d(num_features=9)
 
     self.relu1 = nn.ReLU()
     self.relu2 = nn.ReLU()
@@ -102,7 +102,7 @@ class EqNet(nn.Module):
     x = self.dropout3(x)
     x = self.fc3(x)
     #x = self.batchnorm6(x)
-    #x = self.fc4(x)
+    x = self.fc4(x)
     #x = self.tanh1(x)
     x = torch.squeeze(x)
 
@@ -253,57 +253,40 @@ def train(model, device, dataset_path, test_path, epochs):
                 optimizer.zero_grad()
 
 
-                
-                #loss function only concerns about where the targeted ground truth has gain changes
-                #in other words, the values in target that are 0dB or normalized 0. are ingored
-                #so as the corresponding values in prediction
-                ones = torch.ones(target.shape).to(device)
-                zeros = torch.zeros(target.shape).to(device)
+                ones = torch.ones(target.T[0].shape).to(device)
+                zeros = torch.zeros(target.T[0].shape).to(device)
 
-                filter_idx = torch.where(target != 0.5, ones, zeros)
-                filtered_target = filter_idx * target
+                filter_idx = torch.where(target.T[0] != 0.5, ones, zeros)
+                filtered_target = filter_idx * target.T[0]
                 filtered_pred = filter_idx * pred
 
-                zeros_idx = torch.where(target == 0.5, ones, zeros)
-                zeros_target = zeros_idx * target
+                zeros_idx = torch.where(target.T[0] == 0.5, ones, zeros)
+                zeros_target = zeros_idx * target.T[0]
                 zeros_pred = zeros_idx * pred
 
-                filter_idx = torch.where(target != 0.5, ones, zeros)
-                
-
-                #filtered_target, filtered_pred, zeros_target, zeros_pred = select_top_predction(pred, target)
-
-                #small values are set to 0.5
-                processed_pred = torch.where(filtered_pred == 0., 0.5, filtered_pred)
-
-                #print(torch.mean(torch.abs(processed_pred - 0.5)))
-                #add weighted loss of non-changed gains
-                #if torch.mean(torch.abs(processed_pred - 0.5)) < 0.1:
-                #  MSE = loss(filtered_pred, filtered_target) - torch.mean(torch.abs(processed_pred - 0.5)) + 0.11111111
-                #else:
-                #  MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
+                filter_idx = torch.where(target.T[0] != 0.5, ones, zeros)
 
 
-                #MSE = loss(processed_pred, target)
-                #MSE = loss(filtered_pred, filtered_target) + 0.1 * loss(zeros_target, zeros_pred)
 
-                MSE = loss(filtered_pred.T[0], filtered_target.T[0])
+                #MSE = loss(pred, target.T[0])
+                MSE = loss(filtered_pred, filtered_target)
+
 
 
                 pred_dB = pred * 30. - 15.
                 target_dB = target * 30. - 15.
-                processed_pred_dB = processed_pred * 30. - 15.
 
-                MAE_train = MAE_train_loss(pred_dB, target_dB)
 
-                processed_MAE = L1_train_loss(processed_pred_dB.T[0], target_dB.T[0])
+                MAE_train = MAE_train_loss(pred_dB, target_dB.T[0])
+
+
 
                 MSE.backward()
                 optimizer.step()
 
                 #running_loss += loss(pred, target).item() #**0.5  # add the loss for this batch
                 running_loss += MAE_train.item()
-                processed_loss += processed_MAE.item()
+
 
         
         del data
@@ -319,18 +302,18 @@ def train(model, device, dataset_path, test_path, epochs):
 
       # append the loss for this epoch
       train_loss.append(running_loss/train_length)
-      processed_train_loss.append(processed_loss/train_length)
+      #processed_train_loss.append(processed_loss/train_length)
 
       
       print("--------------------")
       print("    ")
       print("epoch", epoch)
       print("    ")
-      print('pred', pred_dB[0])
-      print('targ', target_dB[0])
+      print('pred', pred_dB)
+      print('targ', target_dB.T[0])
       print("    ")
       print("train_loss", running_loss/train_length)
-      print("processed_train_loss", processed_loss/train_length)
+      #print("processed_train_loss", processed_loss/train_length)
       
 
 
@@ -376,20 +359,18 @@ def train(model, device, dataset_path, test_path, epochs):
 
                 mapped_target = (test_target + 15.)/30.
 
-                filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
+                #filtered_test_target, filtered_test_pred, zeros_test_target, zeros_test_pred = select_top_predction(test_pred, mapped_target)
                 
-                processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
+                #processed_test_pred = torch.where(filtered_test_pred == 0., 0.5, filtered_test_pred)
 
                 test_pred = test_pred * 30. - 15.
-                processed_test_pred_dB = processed_test_pred * 30. - 15.
+                #processed_test_pred_dB = processed_test_pred * 30. - 15.
 
-                test_MSE = MAE_validation_loss(test_pred.T[0], test_target.T[0])
+                test_MSE = MAE_validation_loss(test_pred, test_target.T[0])
                 running_loss += test_MSE.item()
 
-                processed_test_MAE = L1_validation_loss(processed_test_pred_dB.T[0], test_target.T[0])
-                processed_loss += processed_test_MAE.item()
 
-                abs_mean += torch.mean(torch.abs(processed_test_pred_dB)).item()
+                abs_mean += torch.mean(torch.abs(test_pred)).item()
 
             length += len(test_loader)
 
@@ -402,14 +383,14 @@ def train(model, device, dataset_path, test_path, epochs):
       validation_loss.append(running_loss/length)
       print("validation_loss", running_loss/length)
 
-      processed_validation_loss.append(processed_loss/length)
-      print("processed_validation_loss", processed_loss/length)
+      #processed_validation_loss.append(processed_loss/length)
+      #print("processed_validation_loss", processed_loss/length)
 
       
 
       print("    ")
-      print('test_pred', test_pred[0])
-      print('test_targ', test_target[0])
+      print('test_pred', test_pred)
+      print('test_targ', test_target.T[0])
 
       abs_mean /= length
       print(" ")
@@ -420,7 +401,7 @@ def train(model, device, dataset_path, test_path, epochs):
       
 
 
-  return train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean
+  return train_loss, validation_loss, output_mean
 
 
 
@@ -448,7 +429,7 @@ test_path = "/home/kli421/dir1/EQ_mel/musdb18hq/concat/test/pt"
 
 net = EqNet().to(device)
 
-train_loss, validation_loss, processed_train_loss, processed_validation_loss, output_mean = train(net, device, dataset_path, test_path, 200)
+train_loss, validation_loss, output_mean = train(net, device, dataset_path, test_path, 300)
 
 
 
@@ -465,15 +446,15 @@ for element in validation_loss:
 textfile.close()
 
 
-textfile = open("../../../results/processed_train_loss.txt", "w")
-for element in processed_train_loss:
-    textfile.write(str(element) + "\n")
-textfile.close()
+#textfile = open("../../../results/processed_train_loss.txt", "w")
+#for element in processed_train_loss:
+#    textfile.write(str(element) + "\n")
+#textfile.close()
 
-textfile = open("../../../results/rocessed_validation_loss.txt", "w")
-for element in processed_validation_loss:
-    textfile.write(str(element) + "\n")
-textfile.close()
+#textfile = open("../../../results/rocessed_validation_loss.txt", "w")
+#for element in processed_validation_loss:
+#    textfile.write(str(element) + "\n")
+#textfile.close()
 
 
 textfile = open("../../../results/output_mean.txt", "w")
@@ -506,9 +487,7 @@ plot_output_path = '../../../results/Loss.png'
 
 plot(train_loss, validation_loss, plot_output_path)
 
-plot_output_path = '../../../results/Processed_Loss.png'
 
-plot(processed_train_loss, processed_validation_loss, plot_output_path)
 
 
 plot_output_path = '../../../results/output_mean.png'
