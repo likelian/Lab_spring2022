@@ -43,13 +43,15 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
 
     #random EQ
+    mixer_one.random_EQ()
+    quit()
     #random Comp
     #random Reverb
     #random Level
 
 
     mix = mixer_one.get_mix()
-    sf.write(write_path + foldername + "-mix.wav", mix, rate)
+    sf.write(write_path + foldername + "-rand.wav", mix, rate)
 
 
 
