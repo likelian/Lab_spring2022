@@ -19,10 +19,10 @@ class EqNet(nn.Module):
     
     #self.fc1 = nn.Linear(in_features=768, out_features=9, bias=True)
 
-    self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
-    self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
-    self.fc3 = nn.Linear(in_features=768, out_features=9, bias=False)
-    self.fc4 = nn.Linear(in_features=9, out_features=9, bias=True)
+    #self.fc1 = nn.Linear(in_features=768, out_features=768, bias=False)
+    #self.fc2 = nn.Linear(in_features=768, out_features=768, bias=False)
+    self.fc3 = nn.Linear(in_features=768, out_features=9, bias=True)
+    #self.fc4 = nn.Linear(in_features=9, out_features=9, bias=True)
 
     self.sig1 = nn.Sigmoid()
     self.sig2 = nn.Sigmoid()
@@ -93,11 +93,11 @@ class EqNet(nn.Module):
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     #x = self.dropout1(x)
-    x = self.fc1(x)
-    x = self.sig1(x)
+    #x = self.fc1(x)
+    #x = self.sig1(x)
     #x = self.dropout2(x)
-    x = self.fc2(x)
-    x = self.sig2(x)
+    #x = self.fc2(x)
+    #x = self.sig2(x)
     x = self.dropout3(x)
     x = self.fc3(x)
     #x = self.batchnorm6(x)
@@ -171,7 +171,7 @@ def train(model, device, dataset_path, test_path, epochs):
   L1_train_loss = nn.L1Loss()
   L1_validation_loss = nn.L1Loss()
 
-  optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=0)
+  optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0)
 
   train_loss, validation_loss = [], []
   #batch_train_loss, batch_validation_loss = [], []
@@ -197,7 +197,7 @@ def train(model, device, dataset_path, test_path, epochs):
       for file in os.listdir(dataset_path):
         if ".pt" in file:
             data = torch.load(dataset_path+"/"+file)
-            train_loader = torch.utils.data.DataLoader(data, batch_size=10, shuffle=True, num_workers=0, drop_last=True)
+            train_loader = torch.utils.data.DataLoader(data, batch_size=30, shuffle=True, num_workers=0, drop_last=True)
 
             train_loader_count = 0
 
@@ -334,13 +334,13 @@ def train(model, device, dataset_path, test_path, epochs):
 
       #save the checkpoint for each epoch
 
-      #torch.save({
-      #      'epoch': epoch,
-      #      'model_state_dict': model.state_dict(),
-      #      'optimizer_state_dict': optimizer.state_dict(),
-      #      'loss': MSE
-      #      }, 
-      #      "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
+      torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': MSE
+            }, 
+            "/home/kli421/dir1/Lab_spring2022/results/check_point/"+str(epoch)+".pt")    
       
 
       # evaluate on test data
@@ -354,7 +354,7 @@ def train(model, device, dataset_path, test_path, epochs):
 
         if ".pt" in file:
             data = torch.load(test_path+"/"+file)
-            test_loader = torch.utils.data.DataLoader(data, batch_size=2, shuffle=False, num_workers=0, drop_last=True)
+            test_loader = torch.utils.data.DataLoader(data, batch_size=20, shuffle=False, num_workers=0, drop_last=True)
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
