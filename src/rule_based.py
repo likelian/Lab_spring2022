@@ -50,7 +50,8 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     vox = mixer_one.process()
 
     mix = mixer_one.get_mix()
-    sf.write(write_path + foldername + "-mix.wav", mix, rate)
+    
+    sf.write(write_path + foldername + "-rule.wav", mix, rate)
 
 
 
