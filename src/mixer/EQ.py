@@ -162,6 +162,8 @@ def randEQ(self):
     vox = self.vox
     rate = self.sampleRate
 
+    vox = mono(vox)
+
     vst_path = "../VST3/"
     vst_name = "MultiEQ.vst3"
     vst = load_plugin(vst_path + vst_name)
@@ -173,6 +175,10 @@ def randEQ(self):
         vst.number_of_input_channels = 1
     
     gain_arr, freq_top_list, gain_top_list = rand_freq_gain()
+
+    self.param_dict["gain_arr"] = gain_arr.tolist()
+    self.param_dict["freq_top_list"] = freq_top_list
+    self.param_dict["gain_top_list"] = gain_top_list
 
     output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
 

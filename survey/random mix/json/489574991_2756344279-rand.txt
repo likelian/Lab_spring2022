@@ -1,0 +1,38 @@
+{
+  "gain_arr": [
+    0.0,
+    0.0,
+    0.0,
+    7.817624843104429,
+    -13.598215894271519,
+    0.0,
+    -2.6664672518322217,
+    0.0,
+    5.258252929250931
+  ],
+  "freq_top_list": [
+    500,
+    1000,
+    4000,
+    16000
+  ],
+  "gain_top_list": [
+    7.817624843104429,
+    -13.598215894271519,
+    -2.6664672518322217,
+    5.258252929250931
+  ],
+  "threshold_db": -43.9,
+  "ratio": 6.8,
+  "room_size": 19.0,
+  "reverberation_time_s": 7.4,
+  "lows_cutoff_frequency_hz": 5301.0,
+  "lows_q_factor": 0.21,
+  "lows_gain_db_s": -2.8,
+  "highs_cutoff_frequency_hz": 369.0,
+  "highs_q_factor": 0.34,
+  "highs_gain_db_s": -51.7,
+  "dry_wet": 0.9,
+  "fade_in_time_s": 1.37,
+  "relative_loudness": 1.2604177846484852
+}
