@@ -1,13 +1,15 @@
 import numpy as np
 import pyloudnorm as pyln
 
-from .level import level_balance
-from .compression import compression
-from .reverb import reverb
+from .level import *
+from .compression import *
+from .reverb import *
 from .EQ import *
 
 
 class mixer:
+    param_dict = {}
+    
     def __init__(self):
         self.target_vox_acc_ratio = 0.
         self.targetLRA = 14
@@ -28,8 +30,26 @@ class mixer:
     def set_sampleRate(self, rate):
         self.sampleRate = rate
 
+    def call_EQ(self):
+        EQ(self)
+    
+    def call_Comp(self):
+        compression(self)
+    
+    def call_Reverb(self):
+        reverb(self)
+
     def random_EQ(self):
         randEQ(self)
+
+    def random_Comp(self):
+        randComp(self)
+
+    def random_Verb(self):
+        randVerb(self)
+
+    def call_level_balance(self):
+        level_balance(self)
 
 
     def process(self):

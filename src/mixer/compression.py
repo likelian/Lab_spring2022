@@ -4,6 +4,31 @@ import loudness
 import pyloudnorm as pyln
 
 
+
+def randComp(self):
+
+    vst_path = "../VST3/"
+    vst_name = "OmniCompressor.vst3"
+    vst = load_plugin(vst_path + vst_name)
+    vst.attack_time_ms = 30.
+    vst.release_time_ms = 150.
+
+
+    vst.threshold_db = np.random.rand() * 60. - 50. #[-50.0dB, 10.0dB] 
+    self.param_dict["threshold_db"] = vst.threshold_db
+    
+    vst.ratio_1 = np.random.rand() * 19. + 1. #[1.0 : 1, inf : 1]
+    self.param_dict["ratio"] = vst.ratio_1
+
+    rate = self.sampleRate
+    vox = self.vox
+
+    output = vst(vox, rate)
+    
+
+    self.vox = output
+
+
 def compression(self):
     """
     the stating parameters:
@@ -101,5 +126,7 @@ def compression(self):
             print("target_loudness_range", targetLRA)
             break
 
+    self.param_dict["threshold_db"] = vst.threshold_db
+    self.param_dict["ratio"] = vst.ratio_1
 
     self.vox = output
