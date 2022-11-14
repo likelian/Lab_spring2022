@@ -4,49 +4,123 @@
 ## 11/15/2022
 
 
-### **To-do:**
+### **Done:**
 
-average parameter in the rule-based system?
+##### Rule-based:
+
+1. log parameter json
+
+##### random mix:
+
+1. create uniform random mix
+2. -8dB to 8dB relative loudness
+3. log parameter json
 
 
-Comp:
-1. plot the error distribution
-2. plot gt distribution
+##### Comp:
+song level reulsts after removing outliners in test set:
+
+Song level evaluation:
+abs error of the above this [model](https://github.com/likelian/Lab_spring2022/tree/main/results/Comp/lr%3D0.0001%2C%20weight_decay%3D0.000001) on 48 test songs: **2.63** dB
+
+mean prediction of 16.3574 dB:
+abs error over 48 test songs **2.88** dB
+
+Error distribution and grounud truth LRA distribution is in the above link.
 
 
-EQ:
-1. EQ shape loss, remove gain mean
-2. one network for each band?
 
-Reverb:
-1. train
 
-Random mix
-1. get it done
-constraint of random mix range
-uniform and normal random?
+##### Reverb:
+
+Many reuslts [here](https://github.com/likelian/Lab_spring2022/tree/main/results/reverb/training)
+
+song-level model error of [model](https://github.com/likelian/Lab_spring2022/tree/main/results/reverb/training/lr%3D0.00001) 
+```
+room_size                       7.298484
+reverberation_time_s            1.005998
+lows_cutoff_frequency_hz       41.553016
+lows_q_factor                   0.355384
+lows_gain_db_s                  3.619424
+highs_cutoff_frequency_hz    3390.795938
+highs_q_factor                  0.135629
+highs_gain_db_s                 5.014345
+fade_in_time_s                  0.400559
+dry_wet                         0.061344
+```
+
+
+mean value prediction error song level
+
+```
+room_size: 7.311460
+reverberation_time_s: 1.007009
+lows_cutoff_frequency_hz: 40.261948
+lows_q_factor: 0.359836
+lows_gain_db_s: 3.645113
+highs_cutoff_frequency_hz: 3461.823242
+highs_q_factor: 0.171179
+highs_gain_db_s: 5.349164
+fade_in_time_s: 0.402940
+dry_wet: 0.071644
+```
+
+
+
+
+mean value of the training set
+
+```
+room_size: 14.546935
+reverberation_time_s: 1.5948825
+lows_cutoff_frequency_hz: 101.77251
+lows_q_factor: 0.5270046
+lows_gain_db_s: -2.1335206
+highs_cutoff_frequency_hz: 11858.535
+highs_q_factor: 0.7714809
+highs_gain_db_s: -16.023586
+fade_in_time_s: 0.6773426
+dry_wet: 0.11475082
+```
+
+
+##### EQ:
+
+The final [model](https://github.com/likelian/Lab_spring2022/tree/main/results/EQ/aggregate/more_data/lr%3D0.001%20with%20mdoel)
+
+
+EQ final processed error
+**4.481698507979765** dB
+
+processed output mean:
+**1.7551649273452112** dB
+
+
+
 
 
 ## 11/8/2022
 
 
 
-
 ### **To-do:**
 
 average parameter in the rule-based system?
 
-Comp:
-1. plot the error distribution
-2. plot gt distribution
-
-
-EQ:
-1. EQ shape loss, remove gain mean
-2. one network for each band?
 
 Reverb:
 1. train
+
+Comp:
+1. ~~plot the error distribution~~
+2. ~~plot gt distribution~~
+
+
+EQ:
+1. ~~EQ shape loss, remove gain mean~~
+2. one network for each band?
+
+
 
 Random mix
 1. get it done
@@ -1435,4 +1509,3 @@ Three  possibilities of the terrible results: overfit immediately, or it’s a u
 
 1. word: validation != test
 2. Paper writing
-s
