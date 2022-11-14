@@ -126,5 +126,7 @@ def compression(self):
             print("target_loudness_range", targetLRA)
             break
 
+    self.param_dict["threshold_db"] = vst.threshold_db
+    self.param_dict["ratio"] = vst.ratio_1
 
     self.vox = output

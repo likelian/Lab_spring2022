@@ -53,8 +53,8 @@ def EQ(self):
     acc_rank = np.argsort(-acc_rms_band_filtered)
     vox_rank = np.argsort(-vox_rms_band_filtered)
 
-    print("acc_rank", acc_rank)
-    print("vox_rank", vox_rank)
+    #print("acc_rank", acc_rank)
+    #print("vox_rank", vox_rank)
 
 
     acc_rank_threshold = 2
@@ -97,10 +97,18 @@ def EQ(self):
     gain_top_list = gain_list_ordered[:4]
     freq_top_list = freq_list_ordered[:4]
 
-    print("rms_band_diff", rms_band_diff)
+    #print("rms_band_diff", rms_band_diff)
 
-    print("gain_top_list", gain_top_list)
-    print("freq_top_list", freq_top_list)
+    #print("gain_top_list", gain_top_list)
+    #print("freq_top_list", freq_top_list)
+
+
+    gain_arr = np.zeros(9)
+    counter = 0
+    for freq in freq_top_list:
+        if freq in fcs:
+            gain_arr[fcs.index(freq)] = gain_top_list[counter]
+        counter += 1
 
 
     vst_path = "../VST3/"
@@ -113,6 +121,9 @@ def EQ(self):
     else:
         vst.number_of_input_channels = 1
 
+    self.param_dict["gain_arr"] = gain_arr.tolist()
+    self.param_dict["freq_top_list"] = freq_top_list.tolist()
+    self.param_dict["gain_top_list"] = gain_top_list.tolist()
 
     output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
     

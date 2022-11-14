@@ -2,6 +2,7 @@ import numpy as np
 import soundfile as sf
 from os import walk
 from mixer import mixer
+import json
 
 
 
@@ -43,15 +44,24 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     mixer_one.set_sampleRate(rate)
 
     mixer_one.set_target_vox_acc_ratio(0.)
+    mixer_one.param_dict["relative_loudness"] = 0.
+
+    mixer_one.checkShape()
+    mixer_one.call_level_balance()
+    mixer_one.call_EQ()
     mixer_one.set_targetLRA(15.7)
+    mixer_one.call_Comp()
+    mixer_one.call_Reverb()
+    mixer_one.call_level_balance()
 
     mix = mixer_one.get_mix()
 
-    vox = mixer_one.process()
-
-    mix = mixer_one.get_mix()
-    
     sf.write(write_path + foldername + "-rule.wav", mix, rate)
+
+    print(mixer_one.param_dict)
+
+    with open(write_path + 'json/' + foldername + '-rule.txt', 'w') as f:
+        json.dump(mixer_one.param_dict, f, indent=2)
 
 
 

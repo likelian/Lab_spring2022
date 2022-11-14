@@ -93,6 +93,17 @@ def reverb(self):
     vst.fade_in_time_s = 0.2
     vst.fdn_size_internal = 64
 
+    self.param_dict["room_size"] = vst.room_size
+    self.param_dict["reverberation_time_s"] = vst.reverberation_time_s
+    self.param_dict["lows_cutoff_frequency_hz"] = vst.lows_cutoff_frequency_hz
+    self.param_dict["lows_q_factor"] = vst.lows_q_factor
+    self.param_dict["lows_gain_db_s"] = vst.lows_gain_db_s
+    self.param_dict["highs_cutoff_frequency_hz"] = vst.highs_cutoff_frequency_hz
+    self.param_dict["highs_q_factor"] = vst.highs_q_factor
+    self.param_dict["highs_gain_db_s"] = vst.highs_gain_db_s
+    self.param_dict["dry_wet"] = vst.dry_wet
+    self.param_dict["fade_in_time_s"] = vst.fade_in_time_s
+
     output = vst(vox, rate)
 
     self.vox = output

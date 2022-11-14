@@ -30,6 +30,15 @@ class mixer:
     def set_sampleRate(self, rate):
         self.sampleRate = rate
 
+    def call_EQ(self):
+        EQ(self)
+    
+    def call_Comp(self):
+        compression(self)
+    
+    def call_Reverb(self):
+        reverb(self)
+
     def random_EQ(self):
         randEQ(self)
 
