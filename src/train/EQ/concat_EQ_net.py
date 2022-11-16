@@ -161,7 +161,6 @@ def select_top_predction(pred, target):
 
 
 
-
 def train(model, device, dataset_path, test_path, epochs):
 
   loss = nn.MSELoss()
