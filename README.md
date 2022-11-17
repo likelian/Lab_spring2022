@@ -1,7 +1,31 @@
 # Lab_fall2022
 * * *
 
+
+
+## 11/22/2022
+
+
+### **Done:**
+
+1. presentation slides
+
+
+### **To-do:**
+
+1. presentation slides
+2. deep learning pipeline
+3. release the survey
+4. add traditional features, just an experiment
+
+
+
 ## 11/15/2022
+
+
+### **Meeting:**
+
+Think about what does it matter for the listening survey when the deep learning model shows no generalization on the validation set.
 
 
 ### **Done:**
