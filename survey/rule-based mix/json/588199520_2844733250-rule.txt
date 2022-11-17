@@ -1,14 +1,14 @@
 {
-  "relative_loudness": 0.0,
+  "relative_loudness": -1.77,
   "gain_arr": [
     0.0,
     0.0,
     0.0,
     0.0,
     0.0,
-    2.2992606629655703,
+    3.179505790637747,
     0.0,
-    1.309910399622614,
+    1.3477014421177804,
     0.0
   ],
   "freq_top_list": [
@@ -18,21 +18,21 @@
     999
   ],
   "gain_top_list": [
-    2.2992606629655703,
-    1.309910399622614,
+    3.179505790637747,
+    1.3477014421177804,
     0.0,
     0.0
   ],
-  "room_size": 15.0,
+  "room_size": 20.0,
   "reverberation_time_s": 1.8,
-  "lows_cutoff_frequency_hz": 100.0,
-  "lows_q_factor": 0.5,
-  "lows_gain_db_s": 0.0,
-  "highs_cutoff_frequency_hz": 2000.0,
-  "highs_q_factor": 0.5,
-  "highs_gain_db_s": 0.0,
-  "dry_wet": 0.16,
-  "fade_in_time_s": 0.2,
-  "threshold_db": -15.0,
-  "ratio": 3.4
+  "lows_cutoff_frequency_hz": 102.0,
+  "lows_q_factor": 0.53,
+  "lows_gain_db_s": -2.1,
+  "highs_cutoff_frequency_hz": 11884.0,
+  "highs_q_factor": 0.77,
+  "highs_gain_db_s": -16.0,
+  "dry_wet": 0.11,
+  "fade_in_time_s": 0.68,
+  "threshold_db": -3.0,
+  "ratio": 3.0
 }
