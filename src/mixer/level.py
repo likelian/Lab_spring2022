@@ -28,7 +28,7 @@ def level_process(acc, vox, target_vox_acc_ratio, sampleRate):
 
     vox_acc_ratio = vox_loudness - acc_loudness
     dB = target_vox_acc_ratio - vox_acc_ratio
-    gain = 10**(dB/20)
+    gain = 10.**(dB/20.)
 
     vox *= gain
 

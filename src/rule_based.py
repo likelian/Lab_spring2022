@@ -43,13 +43,13 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     mixer_one.set_sampleRate(rate)
 
-    mixer_one.set_target_vox_acc_ratio(0.)
-    mixer_one.param_dict["relative_loudness"] = 0.
+    mixer_one.set_target_vox_acc_ratio(-1.77)
+    mixer_one.param_dict["relative_loudness"] = -1.77
 
     mixer_one.checkShape()
     mixer_one.call_level_balance()
     mixer_one.call_EQ()
-    mixer_one.set_targetLRA(15.7)
+    mixer_one.set_targetLRA(16.4)
     mixer_one.call_Comp()
     mixer_one.call_Reverb()
     mixer_one.call_level_balance()

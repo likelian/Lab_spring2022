@@ -83,15 +83,21 @@ def reverb(self):
 
     vst = load_plugin(vst_path + vst_name)
 
-    vst.room_size = 15
-    vst.reverberation_time_s = RT
-    vst.dry_wet = 0.16   #0. is 100% dry
 
-    # set other parameters to default
-    vst.lows_gain_db_s = 0.
-    vst.highs_gain_db_s = 0.
-    vst.fade_in_time_s = 0.2
+    vst.reverberation_time_s = RT
+    
     vst.fdn_size_internal = 64
+
+    vst.lows_cutoff_frequency_hz = 101.77 #[20.0Hz, 20000.0Hz]
+    vst.lows_q_factor = 0.53 #[0.01, 0.9]
+    vst.lows_gain_db_s = -2.13 #[-80.0dB/s, 6.0dB/s]
+    vst.highs_cutoff_frequency_hz = 11858.54 #[20.0Hz, 20000.0Hz]
+    vst.highs_q_factor = 0.77 #[0.01, 0.9]
+    vst.highs_gain_db_s = -16.02 #[-80.0dB/s, 4.0dB/s]
+    vst.fade_in_time_s = 0.68
+    vst.dry_wet = 0.11   #0. is 100% dry
+
+
 
     self.param_dict["room_size"] = vst.room_size
     self.param_dict["reverberation_time_s"] = vst.reverberation_time_s
