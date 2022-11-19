@@ -3,7 +3,7 @@ import torchaudio
 import numpy as np
 
 
-def mel_spec(acc, vox, rate):
+def mel_spec(acc, vox, rate, aggregate=False):
     #win_length = n_fft
     #hop_length = win_length // 2
     transform = torchaudio.transforms.MelSpectrogram(sample_rate=rate, n_fft=2048)
@@ -22,8 +22,7 @@ def mel_spec(acc, vox, rate):
     acc_mel_spec = transform(acc)
     vox_mel_spec = transform(vox)
 
-    acc = acc.detach().numpy()
-    vox = vox.detach().numpy()
+    
 
 
     def reshape(mel_spec):
@@ -45,6 +44,12 @@ def mel_spec(acc, vox, rate):
     except:
         print("reshape(vox_mel_spec)")
         return None
+
+
+    if aggregate:
+        acc_mel_spec = torch.mean(acc_mel_spec, dim=0, keepdim=True)
+        vox_mel_spec = torch.mean(vox_mel_spec, dim=0, keepdim=True)
+    
 
     dataset = torch.utils.data.TensorDataset(acc_mel_spec, vox_mel_spec)
 

@@ -4,7 +4,7 @@ from pedalboard import Pedalboard, load_plugin
 #import loudness
 
 from mixer.mixNet import mel_spec
-
+from mixer.mixNet import EqNet
 
 
 
@@ -17,9 +17,36 @@ def deep_EQ(self):
     acc = mono(acc)
     vox = mono(vox)
 
+    mel_spec_dataset = mel_spec.mel_spec(acc, vox, rate, aggregate=True)
+
+    gain_arr = EqNet.run_EqNet(mel_spec_dataset)
+
+    #limit the range [-15, 15]
+    gain_arr = np.where(gain_arr > 15., 15, gain_arr)
+    gain_arr = np.where(gain_arr < -15., -15, gain_arr)
+
+    
+
+    fcs = [63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000]
+    freq_top_list = []
+    gain_top_list = []
+    for idx, val in enumerate(gain_arr):
+        if val != 0.:
+            freq_top_list.append(fcs[idx])
+            gain_top_list.append(val)
+
+    self.param_dict["gain_arr"] = gain_arr.tolist()
+    self.param_dict["freq_top_list"] = freq_top_list
+    self.param_dict["gain_top_list"] = gain_top_list
 
 
+    vst_path = "../VST3/"
+    vst_name = "MultiEQ.vst3"
+    vst = load_plugin(vst_path + vst_name)
 
+    output = applyEQ(vst, vox, rate, freq_top_list, gain_top_list)
+        
+    self.vox = output
 
 
 
