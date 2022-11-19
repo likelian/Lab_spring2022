@@ -3,6 +3,27 @@ from pedalboard import Pedalboard, load_plugin
 import loudness
 import pyloudnorm as pyln
 
+from mixer.mixNet import mel_spec
+from mixer.mixNet import CompNet
+
+
+def deep_Comp(self):
+
+    rate = self.sampleRate
+    acc = self.acc
+    vox = self.vox
+
+    mel_spec_dataset = mel_spec.mel_spec(acc, vox, rate)
+
+    targetLRA = CompNet.run_CompNet(mel_spec_dataset)
+
+    #remove outliner
+    #if test_target_list[0] < 5. or test_target_list[0] > 30: continue
+
+    self.set_targetLRA(targetLRA)
+    self.call_Comp()
+
+
 
 
 def randComp(self):

@@ -62,7 +62,7 @@ class mixer:
         deep_EQ(self)
     
     def call_deep_Comp(self):
-        deep_comp(self)
+        deep_Comp(self)
 
     def call_deep_Reverb(self):
         deep_reverb(self)
