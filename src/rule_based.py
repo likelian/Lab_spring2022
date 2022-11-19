@@ -34,7 +34,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     acc, rate = sf.read(acc_path)
     vox, rate = sf.read(vox_path)
 
-    print(rate)
+    #print(rate)
 
     mixer_one = mixer()
 
@@ -52,7 +52,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     mixer_one.set_targetLRA(16.4)
     mixer_one.call_Comp()
     mixer_one.call_Reverb()
-    mixer_one.call_level_balance()
+    mixer_one.call_Level_Balance()
 
     mix = mixer_one.get_mix()
 
@@ -60,8 +60,8 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     print(mixer_one.param_dict)
 
-    with open(write_path + 'json/' + foldername + '-rule.txt', 'w') as f:
-        json.dump(mixer_one.param_dict, f, indent=2)
+    #with open(write_path + 'json/' + foldername + '-rule.txt', 'w') as f:
+    #    json.dump(mixer_one.param_dict, f, indent=2)
 
 
 

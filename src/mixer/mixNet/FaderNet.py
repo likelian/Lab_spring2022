@@ -1,4 +1,5 @@
 import os
+import sys
 import torch
 import torch.nn as nn
 import numpy as np
@@ -63,12 +64,6 @@ class FaderNet(nn.Module):
     x = self.relu4(x)
     x = self.max_pool2d4(x)
 
-    # Conv layer 5.
-    #x = self.conv5(x)
-    #x = self.batchnorm5(x)
-    #x = self.relu5(x)
-    #x = self.max_pool2d5(x)
-
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     x = self.dropout(x)
@@ -81,56 +76,46 @@ class FaderNet(nn.Module):
 ###############################################################################
 
 
-def run_FaderNet(checkpoint, model_class, device, test_folder):
+def run_FaderNet(data, model_path="./mixer/mixNet/FaderNet.pt", model_class=FaderNet, device=torch.device('cpu')):
+
+  if torch.cuda.is_available():
+    map_location=lambda storage, loc: storage.cuda()
+  else:
+    map_location='cpu'
+
+  checkpoint = torch.load(model_path, map_location=map_location)
 
   model = model_class().to(device)
   model.load_state_dict(checkpoint['model_state_dict'])
 
   model.eval()
 
-  abs_error_list = []
+  data_loader = torch.utils.data.DataLoader(data, batch_size=1, shuffle=False, num_workers=0)
 
-  #load data of each song
-  data = torch.load(test_folder+"/"+file)
+  pred_list = []
 
-  test_loader = torch.utils.data.DataLoader(data, batch_size=1, shuffle=False, num_workers=0)
-
-  test_pred_list = []
-
-  for test_acc, test_vox in test_loader:
+  for acc, vox in data_loader:
       # getting the validation set
-      test_acc, test_vox, test_target = test_acc.to(device), test_vox.to(device), test_target.to(device)
+      acc, vox = acc.to(device), vox.to(device)
 
-      test_acc = torch.nn.functional.normalize(test_acc)
-      test_vox = torch.nn.functional.normalize(test_vox)
+      acc = torch.nn.functional.normalize(acc)
+      vox = torch.nn.functional.normalize(vox)
 
-      test_data = torch.stack((test_acc, test_vox), dim=0)
-      test_data = test_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
+      intput_data = torch.stack((acc, vox), dim=0)
+      intput_data = intput_data.permute(1, 0, 2, 3) #batch, channel, time_step, mel_bank
 
-      #optimizer.zero_grad()
-      test_pred = model(test_data)
+      pred = model(intput_data)
 
-      test_pred_list.append(test_pred.cpu().detach().item())
+      pred_list.append(pred.cpu().detach().item())
 
+  pred_mean = np.mean(np.array(pred_list))
 
-
-      test_pred_mean = np.mean(np.array(test_pred_list))
-
-      return test_pred_mean
+  return pred_mean
             
 
-###############################################################################
 
 
-#audio to mel spec
-#mel spec to dataloader
 
-model_class = FaderNet
-model_path = "FaderNet.pt"
-checkpoint = torch.load(model_path)
-device = torch.device('cpu')
-
-run_FaderNet(checkpoint, model_class, device)
 
 
 

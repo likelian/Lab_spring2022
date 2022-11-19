@@ -56,9 +56,10 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     #print(mixer_one.param_dict)
 
     sf.write(write_path + foldername + "-rand.wav", mix, rate)
+    
 
-    with open(write_path + 'json/' + foldername + '-rand.txt', 'w') as f:
-        json.dump(mixer_one.param_dict, f, indent=2)
+    #with open(write_path + 'json/' + foldername + '-rand.txt', 'w') as f:
+    #    json.dump(mixer_one.param_dict, f, indent=2)
 
     
 

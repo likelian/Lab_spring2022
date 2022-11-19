@@ -1,8 +1,26 @@
 import numpy as np
 from scipy import signal
 from pedalboard import Pedalboard, load_plugin
-import loudness
-from .level import level_process
+#import loudness
+
+from mixer.mixNet import mel_spec
+
+
+
+
+def deep_EQ(self):
+
+    rate = self.sampleRate
+    acc = self.acc
+    vox = self.vox
+
+    acc = mono(acc)
+    vox = mono(vox)
+
+
+
+
+
 
 
 

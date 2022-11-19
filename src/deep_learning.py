@@ -5,7 +5,6 @@ from mixer import mixer
 import json
 
 
-
 read_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/audio/input/"
 write_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/audio/output/"
 
@@ -34,14 +33,17 @@ for (dirpath, dirnames, filenames) in walk(read_path):
     acc, rate = sf.read(acc_path)
     vox, rate = sf.read(vox_path)
 
-    print(rate)
-
     mixer_one = mixer()
 
     mixer_one.load_acc(acc)
     mixer_one.load_vox(vox)
 
     mixer_one.set_sampleRate(rate)
+
+    mixer_one.call_deep_EQ()
+    #mixer_one.call_deep_Comp()
+    #mixer_one.call_deep_Reverb()
+    mixer_one.call_deep_Level_Balance()
 
     
 

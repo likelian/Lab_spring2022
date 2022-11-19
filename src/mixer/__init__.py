@@ -30,6 +30,8 @@ class mixer:
     def set_sampleRate(self, rate):
         self.sampleRate = rate
 
+
+
     def call_EQ(self):
         EQ(self)
     
@@ -38,6 +40,11 @@ class mixer:
     
     def call_Reverb(self):
         reverb(self)
+
+    def call_Level_Balance(self):
+        level_balance(self)
+
+
 
     def random_EQ(self):
         randEQ(self)
@@ -48,25 +55,22 @@ class mixer:
     def random_Verb(self):
         randVerb(self)
 
-    def call_level_balance(self):
-        level_balance(self)
+    
+    
 
+    def call_deep_EQ(self):
+        deep_EQ(self)
+    
+    def call_deep_Comp(self):
+        deep_comp(self)
 
-    def process(self):
+    def call_deep_Reverb(self):
+        deep_reverb(self)
 
-        checked = self.checkShape()
-        if checked is False:
-            return None
+    def call_deep_Level_Balance(self):
+        deep_level_balance(self)
 
-        #self.set_target_vox_acc_ratio(0)
-        self.target_vox_acc_ratio = 0.
-        level_balance(self)
-        EQ(self)
-        compression(self)
-        reverb(self)
-        self.set_target_vox_acc_ratio(-0.5)
-        level_balance(self)
-
+    
 
 
 

@@ -1,5 +1,26 @@
 import numpy as np
 import pyloudnorm as pyln
+from mixer.mixNet import mel_spec
+from mixer.mixNet import FaderNet
+
+
+def deep_level_balance(self):
+    
+    acc = self.acc
+    vox = self.vox
+
+    rate = self.sampleRate
+
+    mel_spec_dataset = mel_spec.mel_spec(acc, vox, rate)
+
+    target_vox_acc_ratio = FaderNet.run_FaderNet(mel_spec_dataset)
+
+    self.param_dict["relative_loudness"] = target_vox_acc_ratio
+
+    output = level_process(acc, vox, target_vox_acc_ratio, rate)
+        
+    self.vox = output
+
 
 
 def level_balance(self, optional_ratio=None):

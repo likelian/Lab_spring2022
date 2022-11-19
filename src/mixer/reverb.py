@@ -88,6 +88,7 @@ def reverb(self):
     
     vst.fdn_size_internal = 64
 
+    vst.room_size = 14.54
     vst.lows_cutoff_frequency_hz = 101.77 #[20.0Hz, 20000.0Hz]
     vst.lows_q_factor = 0.53 #[0.01, 0.9]
     vst.lows_gain_db_s = -2.13 #[-80.0dB/s, 6.0dB/s]

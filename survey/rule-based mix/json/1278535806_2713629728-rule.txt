@@ -23,7 +23,7 @@
     0.0,
     0.0
   ],
-  "room_size": 20.0,
+  "room_size": 15.0,
   "reverberation_time_s": 1.8,
   "lows_cutoff_frequency_hz": 102.0,
   "lows_q_factor": 0.53,
