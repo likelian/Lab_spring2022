@@ -42,7 +42,7 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     mixer_one.call_deep_EQ()
     mixer_one.call_deep_Comp()
-    #mixer_one.call_deep_Reverb()
+    mixer_one.call_deep_Reverb()
     mixer_one.call_deep_Level_Balance()
 
     

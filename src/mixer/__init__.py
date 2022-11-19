@@ -65,7 +65,7 @@ class mixer:
         deep_Comp(self)
 
     def call_deep_Reverb(self):
-        deep_reverb(self)
+        deep_Reverb(self)
 
     def call_deep_Level_Balance(self):
         deep_level_balance(self)
