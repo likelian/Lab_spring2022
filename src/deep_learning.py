@@ -2,6 +2,7 @@ import numpy as np
 import soundfile as sf
 from os import walk
 from mixer import mixer
+import json
 
 
 
@@ -11,6 +12,7 @@ write_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/audio/output/"
 counter = 0
 f_1 = []
 for (dirpath, dirnames, filenames) in walk(read_path):
+
 
     acc_path = None
     vox_path = None
@@ -41,28 +43,16 @@ for (dirpath, dirnames, filenames) in walk(read_path):
 
     mixer_one.set_sampleRate(rate)
 
-
-    #add deep learning module
-    #compute mel_spec
-    #deep learning
-    #EQ
-    #compute mel_spec
-    #deep learning
-    #Comp
-    #compute mel_spec
-    #deep learning
-    #Reverb
-    #compute mel_spec
-    #deep learning
-    #Level
-
-
-
-
-
+    
 
     mix = mixer_one.get_mix()
-    sf.write(write_path + foldername + "-mix.wav", mix, rate)
+
+    sf.write(write_path + foldername + "-deep.wav", mix, rate)
+
+    print(mixer_one.param_dict)
+
+    with open(write_path + 'json/' + foldername + '-deep.txt', 'w') as f:
+        json.dump(mixer_one.param_dict, f, indent=2)
 
 
 
