@@ -15,26 +15,23 @@ def deep_Reverb(self):
     mel_spec_dataset = mel_spec.mel_spec(acc, vox, rate)
 
     #output parameter in param_dict 
-    ReverbNet.run_ReverbNet(mel_spec_dataset)
-
+    ReverbNet.run_ReverbNet(self, mel_spec_dataset)
 
     vst_path = "../VST3/"
     vst_name = "FdnReverb.vst3"
 
     vst = load_plugin(vst_path + vst_name)
 
-
-    self.param_dict["room_size"] = vst.room_size
-    self.param_dict["reverberation_time_s"] = vst.reverberation_time_s
-    self.param_dict["lows_cutoff_frequency_hz"] = vst.lows_cutoff_frequency_hz
-    self.param_dict["lows_q_factor"] = vst.lows_q_factor
-    self.param_dict["lows_gain_db_s"] = vst.lows_gain_db_s
-    self.param_dict["highs_cutoff_frequency_hz"] = vst.highs_cutoff_frequency_hz
-    self.param_dict["highs_q_factor"] = vst.highs_q_factor
-    self.param_dict["highs_gain_db_s"] = vst.highs_gain_db_s
-    self.param_dict["dry_wet"] = vst.dry_wet
-    self.param_dict["fade_in_time_s"] = vst.fade_in_time_s
-
+    vst.room_size = self.param_dict["room_size"]
+    vst.reverberation_time_s = self.param_dict["reverberation_time_s"]
+    vst.lows_cutoff_frequency_hz = self.param_dict["lows_cutoff_frequency_hz"]
+    vst.lows_q_factor = self.param_dict["lows_q_factor"]
+    vst.lows_gain_db_s = self.param_dict["lows_gain_db_s"]
+    vst.highs_cutoff_frequency_hz = self.param_dict["highs_cutoff_frequency_hz"]
+    vst.highs_q_factor = self.param_dict["highs_q_factor"]
+    vst.highs_gain_db_s = self.param_dict["highs_gain_db_s"]
+    vst.fade_in_time_s = self.param_dict["fade_in_time_s"]
+    vst.dry_wet = self.param_dict["dry_wet"]
 
     output = vst(vox, rate)
     self.vox = output

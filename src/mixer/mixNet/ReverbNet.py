@@ -144,7 +144,7 @@ def limit_range(pred_arr):
 ###############################################################################
 
 
-def run_ReverbNet(data, model_path="./mixer/mixNet/ReverbNet.pt", model_class=ReverbNet, device=torch.device('cpu')):
+def run_ReverbNet(self, data, model_path="./mixer/mixNet/ReverbNet.pt", model_class=ReverbNet, device=torch.device('cpu')):
 
   if torch.cuda.is_available():
     map_location=lambda storage, loc: storage.cuda()
@@ -185,7 +185,18 @@ def run_ReverbNet(data, model_path="./mixer/mixNet/ReverbNet.pt", model_class=Re
 
   pred_arr = limit_range(pred_arr)
 
-  #store to dict
+
+  self.param_dict["room_size"] = pred_arr[0]
+  self.param_dict["reverberation_time_s"] = pred_arr[1]
+  self.param_dict["lows_cutoff_frequency_hz"] = pred_arr[2]
+  self.param_dict["lows_q_factor"] = pred_arr[3]
+  self.param_dict["lows_gain_db_s"] = pred_arr[4]
+  self.param_dict["highs_cutoff_frequency_hz"] = pred_arr[5]
+  self.param_dict["highs_q_factor"] = pred_arr[6]
+  self.param_dict["highs_gain_db_s"] = pred_arr[7]
+  self.param_dict["fade_in_time_s"] = pred_arr[8]
+  self.param_dict["dry_wet"] = pred_arr[9]
+  
 
   return None
             
