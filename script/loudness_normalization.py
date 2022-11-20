@@ -44,16 +44,16 @@ def loudness_normalization(audio_path):
 
 
 path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/human mix"
-loudness_normalization(path)
+#loudness_normalization(path)
 
 path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/deep-learning mix"
-loudness_normalization(path)
+#loudness_normalization(path)
 
 path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/rule-based mix"
-loudness_normalization(path)
+#loudness_normalization(path)
 
 path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/random mix"
-loudness_normalization(path)
+#loudness_normalization(path)
 
-#path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/education mix"
+path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/education mix"
 #loudness_normalization(path)
