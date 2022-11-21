@@ -5,10 +5,20 @@
 
 ## 11/22/2022
 
+interactive python terminal interface?
+generate Reaper session?
 
 ### **Done:**
 
 1. presentation slides
+2. rule-based by average value
+3. record json
+4. deep learning pipeline
+5. record json
+6. loudness normalization (script)
+7. another education mix
+8. survey ready
+9. checked the survey CSV output
 
 
 ### **To-do:**
