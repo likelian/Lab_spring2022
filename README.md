@@ -29,6 +29,20 @@ name the system differently
 
 <u>box plot violin plot of objective evaluation</u>
 
+
+boxplot of error
+different scale?
+
+PPT:
+make clear what I’ve done and what I will do
+
+one box plot for each
+
+box plot no absolute error, just error
+
+save the page space: reverb time = RT
+
+
 ### **Thoughts:**
 
 interactive python terminal interface?
