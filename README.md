@@ -5,6 +5,32 @@
 
 ## 11/22/2022
 
+
+### **Presentation:**
+
+randomlize typo
+
+get rid of CNN slide
+
+introduction to be high level
+I picked EQ Compression, Reverb, level
+
+audio example, good mix, bad mix
+
+flowchart, too much,
+
+inference the same for both system
+
+statisc driven deep learning driven
+
+separate training and inference
+
+name the system differently
+
+<u>box plot violin plot of objective evaluation</u>
+
+### **Thoughts:**
+
 interactive python terminal interface?
 generate Reaper session?
 
