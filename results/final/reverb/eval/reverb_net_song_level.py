@@ -4,23 +4,24 @@ import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
 import matplotlib.pyplot as plt
+import pandas as pd
 import json
 
 
 ###############################################################################
 
-class CompNet(nn.Module):
+class ReverbNet(nn.Module):
   def __init__(self):
     """Intitalize neural net layers"""
-    super(CompNet, self).__init__()
+    super(ReverbNet, self).__init__()
     self.conv1 = nn.Conv2d(in_channels=2, out_channels=8, kernel_size=3, stride=1, padding=0)
     self.conv2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1, padding=0)
     self.conv3 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=0)
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
     
-    #self.fc1 = nn.Linear(in_features=768, out_features=768)
-    self.fc2 = nn.Linear(in_features=768, out_features=1)
+    self.fc1 = nn.Linear(in_features=768, out_features=768)
+    self.fc2 = nn.Linear(in_features=768, out_features=10)
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -89,6 +90,52 @@ class CompNet(nn.Module):
 
 ###############################################################################
 
+def normalize(param):
+  """
+  intput: torch tensor
+  return: torch tensor
+  """
+  param_T = param.T
+
+  param_T[0] /= 30. #room_size [1, 30]
+  param_T[1] /= 9.0 #reverberation_time_s [0.1, 9.0]
+  param_T[2] /= 20000. #lows_cutoff_frequency_hz [20., 20000.]
+  param_T[3] /= 0.9 #lows_q_factor [0.01,  0.9]
+  param_T[4] = (param_T[4] + 80.) / 86. #lows_gain_db_s [-80., 6.]
+  param_T[5] /= 20000. #highs_cutoff_frequency_hz
+  param_T[6] /= 0.9 #highs_q_factor [0.01,  0.9]
+  param_T[7] = (param_T[7] + 80.) / 86. #highs_gain_db_s [-80., 6.]
+  param_T[8] /= 9.0 #fade_in_time_s [0., 9.]
+
+  param = param_T.T
+
+  return param
+
+
+def denormalize(param):
+  """
+  intput: torch tensor
+  return: torch tensor
+  """
+  param_T = param.T
+
+  param_T[0] *= 30. #room_size [1, 30]
+  param_T[1] *= 9.0 #reverberation_time_s [0.1, 9.0]
+  param_T[2] *= 20000. #lows_cutoff_frequency_hz [20., 20000.]
+  param_T[3] *= 0.9 #lows_q_factor [0.01,  0.9]
+  param_T[4] = param_T[4] * 86. - 80. #lows_gain_db_s [-80., 6.]
+  param_T[5] *= 20000. #highs_cutoff_frequency_hz
+  param_T[6] *= 0.9 #highs_q_factor [0.01,  0.9]
+  param_T[7] = param_T[7] * 86. - 80. #highs_gain_db_s [-80., 6.]
+  param_T[8] *= 9.0 #fade_in_time_s [0., 9.]
+
+  param = param_T.T
+
+  return param
+
+
+###############################################################################
+
 
 def eval_song_level(checkpoint, model_class, device, test_folder):
 
@@ -102,9 +149,21 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
   model.eval()
 
-  abs_error_list = []
-  error_list = []
-  mean_error_list = []
+  param_label_list = ["room_size", 
+                      "reverberation_time_s",
+                      "lows_cutoff_frequency_hz",
+                      "lows_q_factor",
+                      "lows_gain_db_s",
+                      "highs_cutoff_frequency_hz",
+                      "highs_q_factor",
+                      "highs_gain_db_s",
+                      "fade_in_time_s",
+                      "dry_wet"
+                      ]
+
+  test_indie_error_df = pd.DataFrame(columns=param_label_list)
+  error_df = pd.DataFrame(columns=param_label_list)
+  mean_error_df = pd.DataFrame(columns=param_label_list)
 
   #load data of each song
   for file in os.listdir(test_folder):
@@ -117,8 +176,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
             running_loss = 0.
 
-            test_pred_list = []
-            test_target_list = []
+            pred_arr = np.zeros(10)
+            counter = 0
 
             for test_acc, test_vox, test_target in test_loader:
                 # getting the validation set
@@ -133,80 +192,65 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
                 #optimizer.zero_grad()
                 test_pred = model(test_data)
 
-                test_pred = test_pred * 25. + 5.
+                test_pred = denormalize(test_pred)
 
-                test_pred_list.append(test_pred.cpu().detach().item())
-                test_target_list.append(test_target.cpu().detach().item())
+                #mean value prediction
+                #test_pred = torch.tensor([14.546935, 1.5948825, 101.77251, 0.5270046, -2.1335206, 11858.535,
+                #  0.7714809, -16.023586, 0.6773426, 0.11475082]).to(device)
 
 
-            test_pred_mean = np.mean(np.array(test_pred_list))
+                pred_arr += test_pred.detach().cpu().numpy()
+                counter += 1
+
             
-            test_target_mean = np.mean(np.array(test_target_list))
+            pred_arr /= counter
+            print(pred_arr)
+            abs_error = np.abs(pred_arr - test_target[0].detach().cpu().numpy())
+            error = pred_arr - test_target[0].detach().cpu().numpy()
 
-            #test_pred_mean = 16.3574
-
-            abs_error = np.abs(test_pred_mean - test_target_mean)
-            error = test_pred_mean - test_target_mean
-
-            print("test_pred_mean:   ", test_pred_mean)
-            print("test_target_mean: ", test_target_mean)
-            print("abs_error:        ", abs_error)
-            print(" ")
-
-            #remove!
-
-            if test_target_list[0] < 5. or test_target_list[0] > 30: continue
-            #abs_error_list.append(test_target_list[0])
-            abs_error_list.append(abs_error)
-
-            mean_error_list.append(16.3574 - test_target_mean)
-            error_list.append(error)
-            
             
 
+            test_indie_error_df.loc[file] = abs_error
+            error_df.loc[file] = error
+            
 
-  abs_error_mean = np.mean(np.array(abs_error_list))
+            test_pred = np.array([14.546935, 1.5948825, 101.77251, 0.5270046, -2.1335206, 11858.535,
+                  0.7714809, -16.023586, 0.6773426, 0.11475082])
+            maen_error = test_pred - test_target[0].detach().cpu().numpy()
+            mean_error_df.loc[file] = maen_error
 
-  print(mean_error_list)
-  print(error_list)
-
-
-  json_object = json.dumps(mean_error_list)
-  with open("loudness_range_mean_error_list.json", "w") as outfile:
-    outfile.write(json_object)
-
-  json_object = json.dumps(error_list)
-  with open("loudness_range_error_list.json", "w") as outfile:
-    outfile.write(json_object)
+          
 
 
 
+  abs_error_mean = test_indie_error_df.mean(axis=0)
 
   print("abs_error over 48 test songs", abs_error_mean)
 
-  #plt.hist(abs_error_list, bins=20) 
-  #plt.gca().set(title='song level model error historgram', xlabel='absolute error', ylabel='Counts')
-  #plt.gca().set(title='ground truth LRA', xlabel='ground truth LRA', ylabel='counts')
-  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "Ground Truth LRA")
-  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "song level model error historgram")
-  #plt.close()
 
+  json_object = json.dumps(mean_error_df.to_dict())
+  with open("reverb_mean_error_df.json", "w") as outfile:
+    outfile.write(json_object)
 
-  #plot abs_error_list
+  json_object = json.dumps(error_df.to_dict())
+  with open("reverb_error_df.json", "w") as outfile:
+    outfile.write(json_object)
+
 
 
 
 ###############################################################################
 
 
-test_folder = "/home/kli421/dir1/comp_mel/musdb18hq/test"
+test_folder = "/home/kli421/dir1/reverb_mel/musdb18/test/single_file"
 
-model_path = "/home/kli421/dir1/Lab_spring2022/results/Comp/lr=0.0001, weight_decay=0.000001/2.pt"
+model_path = "/home/kli421/dir1/Lab_spring2022/results/reverb/training/lr=0.00001/46.pt"
+
 checkpoint = torch.load(model_path)
 
 device = torch.device('cuda')
 
-model_class = CompNet
+model_class = ReverbNet
 
 eval_song_level(checkpoint, model_class, device, test_folder)
 

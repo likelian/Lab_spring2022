@@ -3,24 +3,21 @@ import torch
 import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
-import matplotlib.pyplot as plt
 import json
 
 
 ###############################################################################
 
-class CompNet(nn.Module):
+class FaderNet(nn.Module):
   def __init__(self):
     """Intitalize neural net layers"""
-    super(CompNet, self).__init__()
+    super(FaderNet, self).__init__()
     self.conv1 = nn.Conv2d(in_channels=2, out_channels=8, kernel_size=3, stride=1, padding=0)
     self.conv2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, stride=1, padding=0)
     self.conv3 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=0)
     self.conv4 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=0)
     self.conv5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=0)
-    
-    #self.fc1 = nn.Linear(in_features=768, out_features=768)
-    self.fc2 = nn.Linear(in_features=768, out_features=1)
+    self.fc1 = nn.Linear(in_features=768, out_features=1)
 
     self.batchnorm1 = nn.BatchNorm2d(num_features=8)
     self.batchnorm2 = nn.BatchNorm2d(num_features=16)
@@ -33,8 +30,6 @@ class CompNet(nn.Module):
     self.relu3 = nn.ReLU()
     self.relu4 = nn.ReLU()
     self.relu5 = nn.ReLU()
-
-    self.tanh1 = nn.Tanh()
 
     self.max_pool2d1 = nn.MaxPool2d(kernel_size=2)
     self.max_pool2d2 = nn.MaxPool2d(kernel_size=2)
@@ -79,11 +74,9 @@ class CompNet(nn.Module):
     # Fully connected layer 1.
     x = torch.flatten(x, 1)
     x = self.dropout(x)
-    #x = self.fc1(x)
-    #x = self.tanh1(x)
-    x = self.fc2(x)
+    x = self.fc1(x)
     x = torch.squeeze(x)
-    
+
     return x
 
 
@@ -133,8 +126,6 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
                 #optimizer.zero_grad()
                 test_pred = model(test_data)
 
-                test_pred = test_pred * 25. + 5.
-
                 test_pred_list.append(test_pred.cpu().detach().item())
                 test_target_list.append(test_target.cpu().detach().item())
 
@@ -143,70 +134,53 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             
             test_target_mean = np.mean(np.array(test_target_list))
 
-            #test_pred_mean = 16.3574
+            #test_pred_mean = -3.425692845827129
+            #test_pred_mean = -2.7
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
             error = test_pred_mean - test_target_mean
+            mean_error = -2.7 - test_target_mean
 
             print("test_pred_mean:   ", test_pred_mean)
             print("test_target_mean: ", test_target_mean)
             print("abs_error:        ", abs_error)
             print(" ")
 
-            #remove!
-
-            if test_target_list[0] < 5. or test_target_list[0] > 30: continue
-            #abs_error_list.append(test_target_list[0])
             abs_error_list.append(abs_error)
 
-            mean_error_list.append(16.3574 - test_target_mean)
             error_list.append(error)
-            
-            
+            mean_error_list.append(mean_error)
 
 
   abs_error_mean = np.mean(np.array(abs_error_list))
 
+  print("abs_error over 50 test songs", abs_error_mean)
+
   print(mean_error_list)
   print(error_list)
 
-
   json_object = json.dumps(mean_error_list)
-  with open("loudness_range_mean_error_list.json", "w") as outfile:
+  with open("relative_loudness_mean_error_list.json", "w") as outfile:
     outfile.write(json_object)
 
   json_object = json.dumps(error_list)
-  with open("loudness_range_error_list.json", "w") as outfile:
+  with open("relative_loudness_error_list.json", "w") as outfile:
     outfile.write(json_object)
-
-
-
-
-  print("abs_error over 48 test songs", abs_error_mean)
-
-  #plt.hist(abs_error_list, bins=20) 
-  #plt.gca().set(title='song level model error historgram', xlabel='absolute error', ylabel='Counts')
-  #plt.gca().set(title='ground truth LRA', xlabel='ground truth LRA', ylabel='counts')
-  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "Ground Truth LRA")
-  #plt.savefig("/home/kli421/dir1/Lab_spring2022/results/Comp/" + "song level model error historgram")
-  #plt.close()
-
-
-  #plot abs_error_list
 
 
 
 ###############################################################################
 
 
-test_folder = "/home/kli421/dir1/comp_mel/musdb18hq/test"
+test_folder = "/home/kli421/dir1/musdb18hq_mel/test"
 
-model_path = "/home/kli421/dir1/Lab_spring2022/results/Comp/lr=0.0001, weight_decay=0.000001/2.pt"
+#model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD/withModel/4.pt"
+model_path = "/home/kli421/dir1/Lab_spring2022/results/archive/MSD_remove_non_vocal/1/lr=0.001_0.pt"
 checkpoint = torch.load(model_path)
 
 device = torch.device('cuda')
 
-model_class = CompNet
+model_class = FaderNet
 
 eval_song_level(checkpoint, model_class, device, test_folder)
 
