@@ -51,7 +51,24 @@ axes[1].set_title("Compression")
 #######################
 
 
+model_error_path = "/home/kli421/dir1/Lab_spring2022/results/final/EQ/error/EQ_error_list.json"
+mean_error_path = "/home/kli421/dir1/Lab_spring2022/results/final/EQ/error/EQ_mean_error_list.json"
 
+f = open(model_error_path)
+data = json.load(f)
+data_arr = np.array(data)
+data_arr = np.where(data_arr > 30., 30., data_arr)
+data_arr = np.where(data_arr < -30., -30., data_arr)
+
+df = pd.DataFrame(data_arr[:100], columns = ['CNN'])
+
+f = open(mean_error_path)
+data = json.load(f)
+df["mean"] = data[:100]
+
+
+sns.boxplot(ax=axes[2], data=df).set(xlabel='',  ylabel='gain (dB)')
+axes[2].set_title("EQ")
 
 
 
