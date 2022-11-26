@@ -5,6 +5,7 @@ import numpy as np
 #from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pandas as pd
+import json
 
 
 ###############################################################################
@@ -161,6 +162,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
                       ]
 
   test_indie_error_df = pd.DataFrame(columns=param_label_list)
+  error_df = pd.DataFrame(columns=param_label_list)
+  mean_error_df = pd.DataFrame(columns=param_label_list)
 
   #load data of each song
   for file in os.listdir(test_folder):
@@ -203,7 +206,19 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             pred_arr /= counter
             print(pred_arr)
             abs_error = np.abs(pred_arr - test_target[0].detach().cpu().numpy())
+            error = pred_arr - test_target[0].detach().cpu().numpy()
+
+            
+
             test_indie_error_df.loc[file] = abs_error
+            error_df.loc[file] = error
+            
+
+            test_pred = np.array([14.546935, 1.5948825, 101.77251, 0.5270046, -2.1335206, 11858.535,
+                  0.7714809, -16.023586, 0.6773426, 0.11475082])
+            maen_error = test_pred - test_target[0].detach().cpu().numpy()
+            mean_error_df.loc[file] = maen_error
+
           
 
 
@@ -211,6 +226,15 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
   abs_error_mean = test_indie_error_df.mean(axis=0)
 
   print("abs_error over 48 test songs", abs_error_mean)
+
+
+  json_object = json.dumps(mean_error_df.to_dict())
+  with open("reverb_mean_error_df.json", "w") as outfile:
+    outfile.write(json_object)
+
+  json_object = json.dumps(error_df.to_dict())
+  with open("reverb_error_df.json", "w") as outfile:
+    outfile.write(json_object)
 
 
 

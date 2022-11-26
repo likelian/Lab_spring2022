@@ -139,7 +139,7 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
             error = test_pred_mean - test_target_mean
-            mean_error = test_pred_mean - (-2.7)
+            mean_error = -2.7 - test_target_mean
 
             print("test_pred_mean:   ", test_pred_mean)
             print("test_target_mean: ", test_target_mean)
