@@ -4,6 +4,7 @@ import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
 import matplotlib.pyplot as plt
+import json
 
 
 ###############################################################################
@@ -102,6 +103,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
   model.eval()
 
   abs_error_list = []
+  error_list = []
+  mean_error_list = []
 
   #load data of each song
   for file in os.listdir(test_folder):
@@ -140,9 +143,10 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             
             test_target_mean = np.mean(np.array(test_target_list))
 
-            test_pred_mean = 16.3574
+            #test_pred_mean = 16.3574
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
+            error = test_pred_mean - test_target_mean
 
             print("test_pred_mean:   ", test_pred_mean)
             print("test_target_mean: ", test_target_mean)
@@ -154,11 +158,29 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             if test_target_list[0] < 5. or test_target_list[0] > 30: continue
             #abs_error_list.append(test_target_list[0])
             abs_error_list.append(abs_error)
+
+            mean_error_list.append(16.3574 - test_target_mean)
+            error_list.append(error)
             
             
 
 
   abs_error_mean = np.mean(np.array(abs_error_list))
+
+  print(mean_error_list)
+  print(error_list)
+
+
+  json_object = json.dumps(mean_error_list)
+  with open("loudness_range_mean_error_list.json", "w") as outfile:
+    outfile.write(json_object)
+
+  json_object = json.dumps(error_list)
+  with open("loudness_range_error_list.json", "w") as outfile:
+    outfile.write(json_object)
+
+
+
 
   print("abs_error over 48 test songs", abs_error_mean)
 
