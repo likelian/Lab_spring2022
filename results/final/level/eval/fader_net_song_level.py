@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 #from tqdm import tqdm
+import json
 
 
 ###############################################################################
@@ -95,6 +96,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
   model.eval()
 
   abs_error_list = []
+  error_list = []
+  mean_error_list = []
 
   #load data of each song
   for file in os.listdir(test_folder):
@@ -135,6 +138,8 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
             #test_pred_mean = -2.7
 
             abs_error = np.abs(test_pred_mean - test_target_mean)
+            error = test_pred_mean - test_target_mean
+            mean_error = test_pred_mean - (-2.7)
 
             print("test_pred_mean:   ", test_pred_mean)
             print("test_target_mean: ", test_target_mean)
@@ -143,10 +148,24 @@ def eval_song_level(checkpoint, model_class, device, test_folder):
 
             abs_error_list.append(abs_error)
 
+            error_list.append(error)
+            mean_error_list.append(mean_error)
+
 
   abs_error_mean = np.mean(np.array(abs_error_list))
 
   print("abs_error over 50 test songs", abs_error_mean)
+
+  print(mean_error_list)
+  print(error_list)
+
+  json_object = json.dumps(mean_error_list)
+  with open("relative_loudness_mean_error_list.json", "w") as outfile:
+    outfile.write(json_object)
+
+  json_object = json.dumps(error_list)
+  with open("relative_loudness_error_list.json", "w") as outfile:
+    outfile.write(json_object)
 
 
 
