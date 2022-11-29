@@ -8,33 +8,33 @@
 
 ### **Presentation:**
 
-randomlize typo
+~~randomlize typo~~
 
-get rid of CNN slide
+~~get rid of CNN slide~~
 
-introduction to be high level
-I picked EQ Compression, Reverb, level
+~~introduction to be high level
+I picked EQ Compression, Reverb, level~~
 
-audio example, good mix, bad mix
+~~audio example, good mix, bad mix~~
 
-flowchart, too much,
+~~flowchart, too much,~~
 
-inference the same for both system
+~~inference the same for both system~~
 
-statisc driven deep learning driven
+~~statisc driven deep learning driven~~
 
-separate training and inference
+~~separate training and inference~~
 
-name the system differently
+~~name the system differently~~
 
-<u>box plot violin plot of objective evaluation</u>
+~~<u>box plot violin plot of objective evaluation</u>~~
 
 
-boxplot of error
-different scale?
+~~boxplot of error
+different scale?~~
 
 PPT:
-make clear what I’ve done and what I will do
+~~make clear what I’ve done and what I will do~~
 
 one box plot for each
 
