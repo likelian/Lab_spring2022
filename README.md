@@ -1,6 +1,44 @@
 # Lab_fall2022
 * * *
 
+## 11/29/2022
+
+
+
+### **To-do:**
+
+data cleaning:
+1. manually delete rows and columns  (or with pandas?)
+2. organize by audio engineering skills
+3. add question label (level, reverb, overall, etc.)
+4. add mixing approach label (random, human, rule, etc.)
+5. get the counts of each category by skill level, question type, mixing approach type.
+6. violin plot [0., 1.], for each question type, for each group, the average rating. Overall rating is the most important one.
+
+
+more to do:
+data analysis of the testing audio output
+data analysis of daw parameters
+
+
+### **Meeting:**
+
+start with overall rating of different approaches
+correlation between individual mixing aspects
+Send Alex with anything
+
+Alex has connections in business development in China.
+Contact Xie Shaoduo.
+VC money => selling the company at one point
+Music industry is not big enough when start-ups scaling up.
+
+
+### **Done:**
+
+30 finished results
+
+
+
 
 
 ## 11/22/2022
