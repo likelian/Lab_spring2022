@@ -72,6 +72,8 @@ def plot(effect, counter, isTop=False, isBottom=False):
     else:
         ax=axes[counter].set(yticklabels=[])
     
+    
+    
 
 
     if isTop:
@@ -107,8 +109,9 @@ for effect in effect_list:
     plot(effect, counter, isTop=True)
     counter += 1
 
-fig.suptitle('Unexperienced')
+#fig.suptitle('Unexperienced')
 fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
 fig.savefig(plot_path + "Unexperienced.png")
 plt.clf()
 
@@ -139,8 +142,9 @@ for effect in effect_list:
     plot(effect, counter)
     counter += 1
 
-fig.suptitle('Hoppyist')
+#fig.suptitle('Hoppyist')
 fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
 fig.savefig(plot_path + "Hoppyist.png")
 plt.clf()
 
@@ -155,14 +159,15 @@ effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
 sns.set_style("whitegrid")
 fig, axes = plt.subplots(1, 5, figsize=(20, 4))
 
-fig.subplots_adjust(hspace=0.125, wspace=1)
+
 counter = 0
 for effect in effect_list:
     plot(effect, counter)
     counter += 1
 
-fig.suptitle('Professionals')
+#fig.suptitle('Professionals')
 fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
 fig.savefig(plot_path + "Professional.png")
 plt.clf()
 
@@ -170,7 +175,7 @@ plt.clf()
 effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
 sns.set_style("whitegrid")
 
-fig, axes = plt.subplots(1, 5, figsize=(20, 5))
+fig, axes = plt.subplots(1, 5, figsize=(20, 4))
 
 fig.subplots_adjust(hspace=0.3, wspace=1)
 
@@ -180,12 +185,13 @@ df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
 
 counter = 0
 for effect in effect_list:
-    plot(effect, counter, isBottom=True)
+    plot(effect, counter, isTop=True, isBottom=True)
     counter += 1
 
 
-fig.suptitle('All Participants')
+#fig.suptitle('All Participants')
 fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
 fig.savefig(plot_path + "All.png")
 plt.clf()
 
