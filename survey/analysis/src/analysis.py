@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from numpy import mean
 
 
 
@@ -64,21 +65,39 @@ def vote_to_score(effect):
 
 plot_path = "../plot/"
 
-def plot(effect):
+def plot(effect, counter):
     score_df = vote_to_score(effect)
-    plot = sns.violinplot(data=score_df, cut=0)
+    plot = sns.violinplot(ax=axes[counter], data=score_df, cut=0, inner = 'box', bw=0.35)
+    plot = sns.boxplot(ax=axes[counter], data=score_df, showmeans=True,
+            meanprops={"marker":"s","markerfacecolor":"white", "markeredgecolor":"blue", "markersize": "10"}, width=0.01)
+    #sns.pointplot(data=score_df, estimator=mean, join = False, color="white", errorbar=None)
+    if counter == 0:
+        ax=axes[counter].set(ylabel='score')
+    ax=axes[counter].set(title=effect)
+    #plot = sns.boxplot(data=score_df)
+    
     #fig = plot.get_figure()
     #fig.savefig(plot_path + effect + ".png")
     #plot.figure.savefig(plot_path + effect + ".png")
-    plt.savefig(plot_path + effect + ".png")
+
+
+    #plt.savefig(plot_path + effect + ".png")
+    #plt.clf()
+
 
 
 
 effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
+fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+fig.subplots_adjust(hspace=0.125, wspace=1)
 
+counter = 0
 for effect in effect_list:
-    plot(effect)
+    plot(effect, counter)
+    counter += 1
 
+fig.tight_layout()
+fig.savefig(plot_path + "rating.png")
 
 
 
