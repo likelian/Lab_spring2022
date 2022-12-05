@@ -8,12 +8,7 @@ from numpy import mean
 
 
 
-csv_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/analysis/overall.csv"
 
-
-df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
-
-#print(df)
 
 
 rating_dict = {
@@ -65,15 +60,27 @@ def vote_to_score(effect):
 
 plot_path = "../plot/"
 
-def plot(effect, counter):
+def plot(effect, counter, isTop=False, isBottom=False):
+
     score_df = vote_to_score(effect)
-    plot = sns.violinplot(ax=axes[counter], data=score_df, cut=0, inner = 'box', bw=0.35)
+    plot = sns.violinplot(ax=axes[counter], data=score_df, cut=0.1, inner = 'box', bw=0.35)
     plot = sns.boxplot(ax=axes[counter], data=score_df, showmeans=True,
             meanprops={"marker":"s","markerfacecolor":"white", "markeredgecolor":"blue", "markersize": "10"}, width=0.01)
     #sns.pointplot(data=score_df, estimator=mean, join = False, color="white", errorbar=None)
     if counter == 0:
         ax=axes[counter].set(ylabel='score')
-    ax=axes[counter].set(title=effect)
+    else:
+        ax=axes[counter].set(yticklabels=[])
+    
+
+
+    if isTop:
+        ax=axes[counter].set(title=effect)
+
+    if not isBottom:
+         ax=axes[counter].set(xticklabels=[])
+
+    
     #plot = sns.boxplot(data=score_df)
     
     #fig = plot.get_figure()
@@ -87,8 +94,44 @@ def plot(effect, counter):
 
 
 
+csv_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/analysis/Unexperienced-Table 1.csv"
+
+df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
 effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
+sns.set_style("whitegrid")
 fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+
+fig.subplots_adjust(hspace=0.125, wspace=1)
+counter = 0
+for effect in effect_list:
+    plot(effect, counter, isTop=True)
+    counter += 1
+
+fig.suptitle('Unexperienced')
+fig.tight_layout()
+fig.savefig(plot_path + "Unexperienced.png")
+plt.clf()
+
+
+
+
+
+
+
+
+
+
+
+csv_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/analysis/Hoppyist-Table 1.csv"
+
+df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
+
+
+
+effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
+sns.set_style("whitegrid")
+fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+
 fig.subplots_adjust(hspace=0.125, wspace=1)
 
 counter = 0
@@ -96,10 +139,55 @@ for effect in effect_list:
     plot(effect, counter)
     counter += 1
 
+fig.suptitle('Hoppyist')
 fig.tight_layout()
-fig.savefig(plot_path + "rating.png")
+fig.savefig(plot_path + "Hoppyist.png")
+plt.clf()
 
 
+
+
+csv_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/analysis/Professional-Table 1.csv"
+
+df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
+
+effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
+sns.set_style("whitegrid")
+fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+
+fig.subplots_adjust(hspace=0.125, wspace=1)
+counter = 0
+for effect in effect_list:
+    plot(effect, counter)
+    counter += 1
+
+fig.suptitle('Professionals')
+fig.tight_layout()
+fig.savefig(plot_path + "Professional.png")
+plt.clf()
+
+
+effect_list = ["Level Balance", "Compression", "EQ", "Reverb", "Overall"]
+sns.set_style("whitegrid")
+
+fig, axes = plt.subplots(1, 5, figsize=(20, 5))
+
+fig.subplots_adjust(hspace=0.3, wspace=1)
+
+csv_path = "/Users/likelian/Desktop/Lab/Lab_spring2022/survey/analysis/All-Table 1.csv"
+
+df = pd.read_csv(csv_path, encoding = 'unicode_escape', engine ='python')
+
+counter = 0
+for effect in effect_list:
+    plot(effect, counter, isBottom=True)
+    counter += 1
+
+
+fig.suptitle('All Participants')
+fig.tight_layout()
+fig.savefig(plot_path + "All.png")
+plt.clf()
 
 
 
