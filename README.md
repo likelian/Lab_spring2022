@@ -4,6 +4,20 @@
 
 ## 12/6/2022
 
+
+
+[Final semeter report](https://github.com/likelian/Lab_spring2022/blob/main/doc/report_final/Automatic_Vocal_Mixing_Using_Convolutional_Neural_Networks.pdf)
+
+### **To-do:**
+
+1. violin plot ylabel “text”,  gridline
+2. ~~run tests between all pairs,  check to see what to do with likerit scale~~
+3. ~~same color for 3 4 plots
+4. remove -30 votes
+5. larger readable text~~
+
+
+### **Done:**
 1. writing paper
 
 
