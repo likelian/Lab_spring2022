@@ -2,6 +2,8 @@
 * * *
 
 
+[Poster](https://github.com/likelian/Lab_spring2022/blob/main/doc/poster_final/poster_final.pdf)
+
 ### **More to do:**
 
 
