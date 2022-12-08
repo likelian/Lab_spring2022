@@ -2,6 +2,31 @@
 * * *
 
 
+### **More to do:**
+
+
+releases reverb data
+
+objective test results on the 15 songs
+
+people cannot hear individual effects
+
+effects influence each other
+
+questions about the noise of the training ground truth
+
+Which effect is most important?
+What do people prefer when the original audio source differ in quality? (an experiment of selecting a portion of the songs, and all mixing methods show no difference in listening results but different in mixing parameters)
+Do audio experience matter? Compare with mixing parameter difference.
+
+limitation:
+poor reverb plugin
+
+A baseline system people can use from Github
+
+generate reaper session
+
+
 ## 12/6/2022
 
 
